@@ -1,34 +1,31 @@
 import React, { useState } from "react";
+import { render } from "react-dom";
 import Button from "./Components/Button/button";
 import Checkbox from "./Components/Checkbox/checkbox";
+import Search from "./Components/Searchbar/searchbar";
 
 function App() {
   const [checked, setChecked] = useState(false);
   const toggleChecked = () => setChecked((value) => !value);
 
   return (
-    <>
-      <div>
-        <label>
-          <Checkbox checked={checked} onChange={toggleChecked} />
-          <span>Label Text</span>
-        </label>
-      </div>
-      <div>
+    <div align="center">
+      <div align="center">
         <Button>Hello World</Button>
       </div>
       <div>
-        <form action="/action_page.php">
-          <input type="text" placeholder="Search.." name="search" />
-          <button type="submit">Submit</button>
-        </form>
+        <Search />
       </div>
+      <br />
       <div>
-        <input type="checkbox" id="chkb" name="chkb" value="Name" />
-        <label htmlFor="Name"> Remember me</label>
+        <label>
+          <Checkbox checked={checked} onChange={toggleChecked} />
+          <span style={{ marginLeft: 8 }}>Remember me</span>
+        </label>
       </div>
-    </>
+    </div>
   );
 }
 
+render(<App />, document.getElementById("root"));
 export default App;
