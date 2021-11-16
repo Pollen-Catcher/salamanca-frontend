@@ -4,6 +4,8 @@ import Button from "./Components/Button/button";
 import Checkbox from "./Components/Checkbox/checkbox";
 import Search from "./Components/Searchbar/searchbar";
 import Table from "./Components/Table/table";
+import Sidebar from "./Components/Sidebar/Sidebar";
+import Speech from "./Components/Speech/speech";
 
 function App() {
   const [checked, setChecked] = useState(false);
@@ -27,9 +29,15 @@ function App() {
 
 
   return (
-    <div align="center">
-      <div align="center">
+    <div>
+      <div>
         <Button>Hello World</Button>
+      </div>
+      <div>
+        <Speech></Speech>
+      </div>
+      <div>
+        <Sidebar />
       </div>
       <div>
         <Search />

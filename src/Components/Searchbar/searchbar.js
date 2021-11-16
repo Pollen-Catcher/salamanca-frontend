@@ -1,6 +1,5 @@
 import React from "react";
 
-// eslint-disable-next-line react/prop-types
 const SearchBar = ({ keyword, setKeyword }) => {
   const BarStyling = {
     width: "20rem",
