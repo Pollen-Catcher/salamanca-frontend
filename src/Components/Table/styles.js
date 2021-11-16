@@ -33,7 +33,7 @@ const Styles = styled.div`
     }
 
     th {
-      background: #157cff;
+      background: #108AC9;
       color: white;
       font-size: 20px;
       width: 100px;
