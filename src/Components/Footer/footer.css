@@ -1,0 +1,17 @@
+.footer {
+    width: 100%;
+    height: 120px;
+    margin-top: 80px;
+    background-color: rgb(56, 56, 209);
+  
+    position: relative;
+  }
+
+ footer__copyright {
+    position: absolute;
+    bottom: 8px;
+
+    width: 100%;
+    text-align: center;
+    color: white;
+  }

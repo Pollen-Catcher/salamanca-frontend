@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { render } from "react-dom";
 import Button from "./Components/Button/button";
 import Checkbox from "./Components/Checkbox/checkbox";
-import Search from "./Components/Searchbar/searchbar";
 import Table from "./Components/Table/table";
-import Sidebar from "./Components/Sidebar/Sidebar";
 import Speech from "./Components/Speech/speech";
+import Footer from "./Components/Footer/footer";
 
 function App() {
   const [checked, setChecked] = useState(false);
@@ -27,22 +26,14 @@ function App() {
     _11h: '32',
   }];
 
-
   return (
     <div>
       <div>
         <Button>Hello World</Button>
       </div>
       <div>
-        <Speech></Speech>
+        <Speech />
       </div>
-      <div>
-        <Sidebar />
-      </div>
-      <div>
-        <Search />
-      </div>
-      <br />
       <div>
         <label>
           <Checkbox checked={checked} onChange={toggleChecked} />
@@ -51,6 +42,9 @@ function App() {
       </div>
       <div>
         <Table data={test_data} />
+      </div>
+      <div>
+        <Footer/>
       </div>
     </div>
   );
