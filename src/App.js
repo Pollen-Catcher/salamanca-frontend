@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { render } from "react-dom";
 import SearchBar from "./Components/Searchbar/searchbar";
-import Button from "./Components/Button/button";
 import Checkbox from "./Components/Checkbox/checkbox";
 import Table from "./Components/Table/table";
 import Speech from "./Components/Speech/speech";
