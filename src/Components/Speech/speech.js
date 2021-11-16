@@ -37,7 +37,7 @@ function Speech() {
   const microphoneRef = useRef(null);
   if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
     return (
-      <div className="mircophone-container">
+      <div className="microphone-container">
         Browser is not Support Speech Recognition.
       </div>
     );
@@ -60,7 +60,7 @@ function Speech() {
   };
   return (
     <div className="microphone-wrapper">
-      <div className="mircophone-container">
+      <div className="microphone-container">
         <div
           className="microphone-icon-container"
           ref={microphoneRef}
