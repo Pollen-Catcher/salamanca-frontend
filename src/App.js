@@ -5,6 +5,7 @@ import Checkbox from "./Components/Checkbox/checkbox";
 import Table from "./Components/Table/table";
 import Speech from "./Components/Speech/speech";
 import Footer from "./Components/Footer/footer";
+import Navbar from "./Components/Navbar/navbar";
 
 function App() {
   const [checked, setChecked] = useState(false);
@@ -28,6 +29,9 @@ function App() {
 
   return (
     <div>
+      <div>
+        <Navbar />
+      </div>
       <div>
         <SearchBar/>
       </div>

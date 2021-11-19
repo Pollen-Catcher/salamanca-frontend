@@ -1,0 +1,51 @@
+.Navbar{
+    background-color: #108AC9;
+    width: 100%;
+    height: 60px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    display: flex;
+}
+
+.Navbar .leftSide{
+    flex: 50%;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.Navbar .leftSide .links{
+    max-height: 60px;
+}
+
+.Navbar .leftSide .links a{
+    text-decoration: none;
+    color: white;
+    font-size: 25px;
+    margin-left: 20px;
+}
+
+.Navbar .leftSide .signUp a{
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    font-size: 25px;
+    margin-left: 20px;
+}
+
+@media only screen and (max-width: 900px){
+    .Navbar .leftSide .links a{
+        font-size: 20px;
+    }
+    .Navbar .leftSide .signUp a{
+        font-size: 20 px;
+    }
+}
+
+@media only screen and (max-width: 750px){
+    .Navbar .leftSide .links a{
+        font-size: 17px;
+    }
+    .Navbar .leftSide .signUp a{
+        font-size: 17 px;
+    }
+}
