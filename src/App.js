@@ -41,7 +41,7 @@ function App() {
       <div>
         <label>
           <Checkbox checked={checked} onChange={toggleChecked} />
-          <span style={{ marginLeft: 8 }}>Remember me</span>
+          <span style={{ marginLeft: 8, color: "red" }}>Remember me</span>
         </label>
       </div>
       <div>
