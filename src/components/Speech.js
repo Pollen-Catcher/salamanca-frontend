@@ -8,6 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import pollenList from "../data/pollenList";
 
 function Speech() {
   const commands = [
@@ -84,7 +85,7 @@ function Speech() {
       </div>
       {transcript && (
         <div className="microphone-result-container">
-          <div style={{ color: '#5e6060' }} className="microphone-result-text">{transcript}</div>
+          <div style={{ color: '#5e6060' }} className="microphone-result-text">{proposeFunction(transcript)}</div>
           <br />
           <Button
             className="microphone-reset btn"
@@ -99,4 +100,18 @@ function Speech() {
     </div>
   );
 }
+
+function proposeFunction(transcript) {
+
+  let pollen = propose(transcript, pollenList, {
+    ignoreCase: true
+  });
+
+  if (pollen == null){
+    return transcript;
+  }
+
+  return pollen;
+}
+
 export default Speech;
