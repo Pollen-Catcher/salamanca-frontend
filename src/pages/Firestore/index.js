@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import Firestore from "./firestore";
+import Firestore from "./Firestore";
 import db from "../../config/firebase";
 
 const Index = () => {
@@ -16,7 +16,7 @@ const Index = () => {
   const addPolen = async () => {
     await addDoc(pollenCollectionRef, {
       nome: name,
-      intervalo: {
+      intervals: {
         _00h: 0,
         _01h: 0,
         _02h: 0,

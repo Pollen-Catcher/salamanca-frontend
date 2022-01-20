@@ -1,11 +1,11 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Content from './Content';
-import Index from '../pages/Firestore/index';
+import * as React from "react";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Content from "./Content/index";
+import Firestore from "../pages/Firestore/index";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -36,7 +36,7 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
@@ -48,21 +48,39 @@ export default function BasicTabs() {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab style={{ color: '#eaeff1' }} label="Main Page" {...a11yProps(0)} />
-          <Tab style={{ color: '#eaeff1' }} label="Firestore CRUD" {...a11yProps(1)} />
+    <Box sx={{ width: "100%" }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+        >
+          <Tab
+            style={{ color: "#eaeff1" }}
+            label="Main Page"
+            {...a11yProps(0)}
+          />
+          <Tab
+            style={{ color: "#eaeff1" }}
+            label="Firestore CRUD"
+            {...a11yProps(1)}
+          />
         </Tabs>
       </Box>
-      <TabPanel style={{ backgroundColor: '#eaeff1' }} value={value} index={0}>
-        <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
+      <TabPanel style={{ backgroundColor: "#eaeff1" }} value={value} index={0}>
+        <Box
+          component="main"
+          sx={{ flex: 1, py: 6, px: 4, bgcolor: "#eaeff1" }}
+        >
           <Content />
         </Box>
       </TabPanel>
-      <TabPanel style={{ backgroundColor: '#eaeff1' }} value={value} index={1}>
-        <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
-          <Index />
+      <TabPanel style={{ backgroundColor: "#eaeff1" }} value={value} index={1}>
+        <Box
+          component="main"
+          sx={{ flex: 1, py: 6, px: 4, bgcolor: "#eaeff1" }}
+        >
+          <Firestore />
         </Box>
       </TabPanel>
     </Box>

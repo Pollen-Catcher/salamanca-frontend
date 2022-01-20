@@ -2,7 +2,7 @@ import { Container, Button, Stack, TextField } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Flex, Wrapper, TableContainer, StyledTableCell } from "./styles";
 import columns from "../../data/colunas";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Outlet } from "react-router-dom";
 import Speech from "../../components/Speech";
@@ -17,12 +17,12 @@ function Firestore({ setName, pollens, addPollen, handleEdit }) {
             display: "flex",
           }}
         >
-          <div style={{ width: "50%"}} >
+          <div style={{ width: "50%" }}>
             <Typography
               noWrap
               variant="h6"
               component="div"
-              style={{ color: '#6b6960' }}
+              style={{ color: "#6b6960" }}
               sx={{ display: { xs: "none", sm: "block" } }}
             >
               Add a New Name
@@ -35,18 +35,29 @@ function Firestore({ setName, pollens, addPollen, handleEdit }) {
                 variant={"outlined"}
                 onChange={(e) => setName(e.target.value)}
               />
-              <Button color={"primary"} variant={"contained"} onClick={addPollen}>
+              <Button
+                color={"primary"}
+                variant={"contained"}
+                onClick={addPollen}
+              >
                 {" "}
                 Add
               </Button>
             </Stack>
           </div>
-          <div style={{ width: "25%", marginTop: 10, marginBottom: 10, marginLeft: 40 }}>
-          <Typography
+          <div
+            style={{
+              width: "25%",
+              marginTop: 10,
+              marginBottom: 10,
+              marginLeft: 40,
+            }}
+          >
+            <Typography
               noWrap
               variant="h6"
               component="div"
-              style={{ color: '#6b6960' }}
+              style={{ color: "#6b6960" }}
               sx={{ display: { xs: "none", sm: "block" } }}
               align="center"
             >
@@ -58,7 +69,7 @@ function Firestore({ setName, pollens, addPollen, handleEdit }) {
         </Box>
         <br />
 
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }} />
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }} />
         <div align="left" style={{ width: "100%" }}>
           <Box sx={{ display: "flex-inline" }}>
             <br />
@@ -66,7 +77,7 @@ function Firestore({ setName, pollens, addPollen, handleEdit }) {
               noWrap
               variant="h6"
               component="div"
-              style={{ color: '#6b6960' }}
+              style={{ color: "#6b6960" }}
               sx={{ display: { xs: "none", sm: "block" } }}
             >
               View and Edit
