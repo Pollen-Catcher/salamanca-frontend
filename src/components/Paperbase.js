@@ -205,7 +205,7 @@ export default function Paperbase() {
         </Box>
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <Header onDrawerToggle={handleDrawerToggle} />
-          <Box component="footer" sx={{ p: 2, bgcolor: "#eaeff1" }}>
+          <Box component="footer" sx={{ p: 2, bgcolor: "#eaeff1", marginTop: "215px" }}>
             <Copyright />
           </Box>
         </Box>
