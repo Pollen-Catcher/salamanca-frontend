@@ -10,6 +10,17 @@ const deletePolen = async (id) => {
 
 export default [
   {
+    field: "actions",
+    type: "actions",
+    getActions: (params) => [
+      <GridActionsCellItem
+        icon={<DeleteIcon />}
+        label="Delete"
+        onClick={() => deletePolen(params.id)}
+      />,
+    ],
+  },
+  {
     field: "nome",
     headerName: "Nome",
     editable: true,
@@ -97,16 +108,5 @@ export default [
     type: "number",
     headerAlign: "center",
     editable: true,
-  },
-  {
-    field: "actions",
-    type: "actions",
-    getActions: (params) => [
-      <GridActionsCellItem
-        icon={<DeleteIcon />}
-        label="Delete"
-        onClick={() => deletePolen(params.id)}
-      />,
-    ],
   },
 ];
