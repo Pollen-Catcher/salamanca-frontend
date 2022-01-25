@@ -1,14 +1,16 @@
 /* eslint-disable no-sparse-arrays */
-import { useRef, useState } from "react";
+import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import * as React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Button from "@mui/material/Button";
-import Alert from "@mui/material/Alert";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import pollenList from "../data/pollenList";
+import { Button, Alert, ButtonGroup } from "@mui/material";
+//import pollenList from "../data/pollenList";
+import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
+import db from "../config/firebase";
+import propose from "propose";
+import { collection } from "firebase/firestore";
 
 function Speech() {
   const commands = [
@@ -30,7 +32,6 @@ function Speech() {
         handleReset();
       },
     },
-    ,
     {
       command: "reset background colour",
       callback: () => {
@@ -64,6 +65,28 @@ function Speech() {
     stopHandle();
     resetTranscript();
   };
+
+  /*const [pollenList, loading, error] = useCollectionDataOnce(
+    collection(db, "pollens"),
+    {
+      idField: "id",
+    }
+  );*/
+
+  const [proposedTranscript, setProposedTranscript] = useState("");
+  const pollenList = ["Betula", "Acer", "Populus", "Lince"];
+  useEffect(() => {
+    const pollen = propose(transcript, pollenList, {
+      ignoreCase: true,
+    });
+
+    if (pollen == null) {
+      setProposedTranscript(transcript);
+    } else {
+      setProposedTranscript(pollen);
+    }
+  }, [transcript]);
+
   return (
     <div align="center" className="microphone-wrapper">
       <div className="microphone-container">
@@ -80,12 +103,23 @@ function Speech() {
         <br />
         <br />
         <div className="microphone-status">
-          {isListening && <Alert style={{ color: '#233143', backgroundColor: '#b8bcc2' }} severity="info">Listening...</Alert>}
+          {isListening && (
+            <Alert
+              style={{ color: "#233143", backgroundColor: "#b8bcc2" }}
+              severity="info"
+            >
+              Listening...
+            </Alert>
+          )}
         </div>
       </div>
       {transcript && (
         <div className="microphone-result-container">
-          <div style={{ color: '#5e6060' }} className="microphone-result-text">{proposeFunction(transcript)}</div>
+          <div style={{ color: "#5e6060" }} className="microphone-result-text">
+            {transcript}
+            {":  "}
+            {proposedTranscript}
+          </div>
           <br />
           <Button
             className="microphone-reset btn"
@@ -99,19 +133,6 @@ function Speech() {
       )}
     </div>
   );
-}
-
-function proposeFunction(transcript) {
-
-  let pollen = propose(transcript, pollenList, {
-    ignoreCase: true
-  });
-
-  if (pollen == null){
-    return transcript;
-  }
-
-  return pollen;
 }
 
 export default Speech;
