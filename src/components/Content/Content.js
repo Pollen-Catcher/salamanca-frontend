@@ -17,6 +17,7 @@ import {
 import { Controller } from "react-hook-form";
 import { Search, Refresh } from "@mui/icons-material";
 import { CreateSheetBox } from "./styles";
+import Table from './table';
 import PropTypes from "prop-types";
 
 function Content({
@@ -122,7 +123,7 @@ function Content({
         </Toolbar>
       </AppBar>
       <Typography sx={{ my: 5, mx: 2 }} color="text.secondary" align="center">
-        Your projects will appear here...
+        <Table />
       </Typography>
     </Paper>
   );
