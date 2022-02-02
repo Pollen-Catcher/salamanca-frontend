@@ -1,7 +1,7 @@
 import { collection, getDocs } from "firebase/firestore";
 import db from "../config/firebase";
 
-export default async function pollenList() {
+export default async function getPollenList() {
   let pollenList = [];
 
   const dbPollens = await getDocs(collection(db, "pollens"));
@@ -10,5 +10,5 @@ export default async function pollenList() {
     pollenList.push(doc.data().nome)
   });
 
-  return (pollenList);
+  return pollenList;
 }

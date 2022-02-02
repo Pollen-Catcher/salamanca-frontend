@@ -11,6 +11,7 @@ import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
 import db from "../config/firebase";
 import propose from "propose";
 import { collection } from "firebase/firestore";
+import db_pollenList from "../data/pollenList";
 
 function Speech() {
   const commands = [
@@ -74,17 +75,19 @@ function Speech() {
   );*/
 
   const [proposedTranscript, setProposedTranscript] = useState("");
-  const pollenList = ["Betula", "Acer", "Populus", "Lince"];
   useEffect(() => {
-    const pollen = propose(transcript, pollenList, {
-      ignoreCase: true,
-    });
+    db_pollenList().then(pollenList => {
+      const pollen = propose(transcript, pollenList, {
+        ignoreCase: true,
+        threshold: 0.3,
+      })
 
-    if (pollen == null) {
-      setProposedTranscript(transcript);
-    } else {
-      setProposedTranscript(pollen);
-    }
+      if (pollen == null) {
+        setProposedTranscript(transcript);
+      } else {
+        setProposedTranscript(pollen);
+      }
+    })    
   }, [transcript]);
 
   return (
