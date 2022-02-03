@@ -79,7 +79,7 @@ function Speech() {
     db_pollenList().then(pollenList => {
       const pollen = propose(transcript, pollenList, {
         ignoreCase: true,
-        threshold: 0.3,
+        threshold: 0.2,
       })
 
       if (pollen == null) {
