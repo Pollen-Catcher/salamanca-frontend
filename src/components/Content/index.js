@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import db from "../../config/firebase";
-import { useCollectionData } from "react-firebase-hooks/firestore";
 import Content from "./Content";
 
 const defaultValues = {
@@ -20,11 +19,6 @@ const Index = ({}) => {
   //form
   const { handleSubmit, reset, setValue, control } = useForm({ defaultValues });
   const [data, setData] = useState(null);
-
-  //firestore
-  const [sheets, loading, error] = useCollectionData(collection(db, "sheets"), {
-    idField: "id",
-  });
 
   const addSheet = async (data) => {
     setData(data);
@@ -54,7 +48,6 @@ const Index = ({}) => {
       handleSubmit={handleSubmit}
       control={control}
       addSheet={addSheet}
-      sheets={sheets}
     />
   );
 };

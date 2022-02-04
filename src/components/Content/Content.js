@@ -27,7 +27,6 @@ function Content({
   handleSubmit,
   control,
   addSheet,
-  sheets,
 }) {
   return (
     <Paper sx={{ maxWidth: 936, margin: "auto", overflow: "hidden" }}>
@@ -122,9 +121,7 @@ function Content({
           </Grid>
         </Toolbar>
       </AppBar>
-      <Typography sx={{ my: 5, mx: 2 }} color="text.secondary" align="center">
         <Table />
-      </Typography>
     </Paper>
   );
 }
@@ -136,7 +133,6 @@ Content.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   control: PropTypes.any.isRequired,
   addSheet: PropTypes.func.isRequired,
-  sheets: PropTypes.array.isRequired,
 };
 
 export default Content;
