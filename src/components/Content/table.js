@@ -13,12 +13,13 @@ import TableCell, {tableCellClasses} from "@mui/material/TableCell";
 import { collection, doc, deleteDoc } from "firebase/firestore";
 import db from "../../config/firebase";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from '@mui/icons-material/Edit';
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { styled } from "@mui/material/styles";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: "#707070",
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -29,6 +30,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
+    width: '100%',
   },
   // hide last border
   "&:last-child td, &:last-child th": {
@@ -47,29 +49,50 @@ function Crud() {
     await deleteDoc(currentRef);
   };
 
+  const editSheet = async (params) => {
+    const currentRef = doc(db, "pollens", params.id);
+    await updateDoc(currentRef, {
+      [`intervalo.${params.field}`]: params.value,
+    });
+  };
+  
   return (
-    <Typography sx={{ my: 5, mx: 2 }} color="text.secondary" align="center">
-      <TableContainer component={Paper}>
-        <Table aria-aria-label="customized table"></Table>
-        <TableHead>
+    <Typography container color="text.secondary" align="center">
+      <Table>
+        <TableHead item>
           <TableRow>
-            <StyledTableCell>Name</StyledTableCell>
-            <StyledTableCell align="right">Location</StyledTableCell>
-            <StyledTableCell align="right">Delete</StyledTableCell>
+            <StyledTableCell align="center">Name</StyledTableCell>
+            <StyledTableCell align="center">Location</StyledTableCell>
+            <StyledTableCell align="center">First Created</StyledTableCell>
+            <StyledTableCell align="center">Last Modified</StyledTableCell>
+            <StyledTableCell align="center">Edit</StyledTableCell>
+            <StyledTableCell align="center">Delete</StyledTableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody item>
           {!loading &&
             sheets.map((sheet) => {
               return (
                 <StyledTableRow key={sheets.name}>
-                  <StyledTableCell align='right'>{sheet.name}</StyledTableCell>
-                  <StyledTableCell align='right'>{sheet.location}</StyledTableCell>
+                  <TableCell align='center'>{sheet.name}</TableCell>
+                  <TableCell align='center'>{sheet.location}</TableCell>
+                  <TableCell align='center'>{new Date(sheet.createdAt.seconds * 1000).toLocaleDateString("en-US")}</TableCell>
+                  <TableCell align='center'>{new Date(sheet.lastEditedAt.seconds * 1000).toLocaleDateString("en-US")}</TableCell>
+                  <TableCell align='center'><EditIcon 
+                      onClick={() => {
+                        editSheet(sheet.id);
+                      }}
+                    /></TableCell>
+                  <TableCell align='center'><DeleteIcon 
+                      onClick={() => {
+                        deleteSheet(sheet.id);
+                      }}
+                    /></TableCell>
                 </StyledTableRow>
               );
             })}
         </TableBody>
-      </TableContainer>
+      </Table>
 
       {/* <Grid
         container
