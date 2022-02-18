@@ -16,10 +16,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from '@mui/icons-material/Edit';
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { styled } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#707070",
+    backgroundColor: "#108AC9",
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -38,11 +39,23 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const useStyles = makeStyles({
+  header: {
+    fontWeight: "bold",
+    textAlign: "center",
+
+  },
+
+});
+
 function Crud() {
   //firestore
   const [sheets, loading, error] = useCollectionData(collection(db, "sheets"), {
     idField: "id",
   });
+
+  //styles
+  const classes = useStyles();
 
   const deleteSheet = async (id) => {
     const currentRef = doc(db, "sheets", id);
@@ -58,15 +71,15 @@ function Crud() {
   
   return (
     <Typography container color="text.secondary" align="center">
-      <Table>
+      <Table stickyHeader>
         <TableHead item>
           <TableRow>
-            <StyledTableCell align="center">Name</StyledTableCell>
-            <StyledTableCell align="center">Location</StyledTableCell>
-            <StyledTableCell align="center">First Created</StyledTableCell>
-            <StyledTableCell align="center">Last Modified</StyledTableCell>
-            <StyledTableCell align="center">Edit</StyledTableCell>
-            <StyledTableCell align="center">Delete</StyledTableCell>
+            <StyledTableCell className={classes.header}>Name</StyledTableCell>
+            <StyledTableCell className={classes.header}>Location</StyledTableCell>
+            <StyledTableCell className={classes.header}>First Created</StyledTableCell>
+            <StyledTableCell className={classes.header}>Last Modified</StyledTableCell>
+            <StyledTableCell className={classes.header}>Edit</StyledTableCell>
+            <StyledTableCell className={classes.header}>Delete</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody item>
@@ -76,8 +89,24 @@ function Crud() {
                 <StyledTableRow key={sheets.name}>
                   <TableCell align='center'>{sheet.name}</TableCell>
                   <TableCell align='center'>{sheet.location}</TableCell>
-                  <TableCell align='center'>{new Date(sheet.createdAt.seconds * 1000).toLocaleDateString("en-US")}</TableCell>
-                  <TableCell align='center'>{new Date(sheet.lastEditedAt.seconds * 1000).toLocaleDateString("en-US")}</TableCell>
+                  <TableCell align='center'>{new Date(sheet.createdAt.seconds * 1000).toLocaleDateString("en-US", {
+                    year: 'numeric', 
+                    month: 'numeric', 
+                    day: 'numeric', 
+                    hour: 'numeric', 
+                    minute: 'numeric', 
+                    second: 'numeric'
+                    })}
+                    </TableCell>
+                  <TableCell align='center'>{new Date(sheet.lastEditedAt.seconds * 1000).toLocaleDateString("en-US", {
+                    year: 'numeric', 
+                    month: 'numeric', 
+                    day: 'numeric', 
+                    hour: 'numeric', 
+                    minute: 'numeric', 
+                    second: 'numeric'
+                    })}
+                    </TableCell>
                   <TableCell align='center'><EditIcon 
                       onClick={() => {
                         editSheet(sheet.id);
@@ -93,38 +122,6 @@ function Crud() {
             })}
         </TableBody>
       </Table>
-
-      {/* <Grid
-        container
-        columns={3}
-        direction={"column"}
-        alignItems={"center"}
-        spacing={5}
-        justifyContent={"center"}
-        divider
-      >
-        <Grid direction={"row"}>
-          <h3>Name</h3>
-          <h3>Location</h3>
-        </Grid>
-        {!loading &&
-          sheets.map((sheet) => {
-            return (
-              <div>
-                <Grid item xs={12} direction={"row"}> 
-                  <h4>
-                    {sheet.name} {sheet.location}
-                    <DeleteIcon
-                      onClick={() => {
-                        deleteSheet(sheet.id);
-                      }}
-                    />
-                  </h4>
-                </Grid>
-              </div>
-            );
-          })}
-      </Grid> */}
     </Typography>
   );
 }
