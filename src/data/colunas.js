@@ -9,7 +9,7 @@ const deletePolen = async (id) => {
 };
 
 export default [
-  {
+  /*{
     field: "actions",
     type: "actions",
     getActions: (params) => [
@@ -19,7 +19,7 @@ export default [
         onClick={() => deletePolen(params.id)}
       />,
     ],
-  },
+  },*/
   {
     field: "nome",
     headerName: "Nome",

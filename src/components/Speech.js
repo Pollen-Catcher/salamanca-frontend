@@ -1,57 +1,136 @@
-/* eslint-disable no-sparse-arrays */
-import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Alert, ButtonGroup } from "@mui/material";
 import propose from "propose";
-import db_pollenList from "../data/pollenList";
-import { addPolen, updateNumber } from "../pages/Firestore/index";
+import { doc, updateDoc, increment, deleteDoc } from "firebase/firestore";
+import convertStringToNumber from "convert-string-to-number";
+import wordsToNumbers from "words-to-numbers";
+import db from "../config/firebase";
+import PropTypes from "prop-types";
+import usePollenList from "../data/pollenList";
+import { useEffect } from "react";
+function Speech({ pollens }) {
+  const {pollenList} = usePollenList();
+  const [pollenNames, setPollenNames] = useState([]);
 
-/*const commands = [
-  {
-    command: "open *",
-    callback: (website) => {
-      window.open("http://" + website.split(" ").join(""));
-    },
-  },
-  {
-    command: "reset",
-    callback: () => {
-      handleReset();
-    },
-  },
-  {
-    command: "add *",
-    callback: (polenType) => {
-      speechFunction(polenType);
-    },
-  },
-];*/
+  useEffect(() => {
+    if (pollenList && pollenList.length > 0) {
+      //get the pollens names
+      const pollenNames = pollenList.map((pollen) => pollen.nome);
+      setPollenNames(pollenNames);
+    }
+  }, [pollenList]);
 
-function speechFunction(pollenType) {
-  console.log(pollenType);
-}
+  const commands = [
+    {
+      command: ["reset", "clear"],
+      callback: () => {
+        handleReset();
+      },
+    },
+    {
+      command: ["delete *", "del *"],
+      callback: async (pollenType, { resetTranscript }) => {
+        console.log(pollenType);
 
-function Speech() {
-  //const { transcript, resetTranscript } = useSpeechRecognition({ commands });
-  const { transcript, resetTranscript } = useSpeechRecognition();
+        const proposedPollen = propose(pollenType, pollenNames, {
+          ignoreCase: true,
+          threshold: 0.2,
+        });
+
+        if (!proposedPollen) {
+          console.log("No pollen found");
+          resetTranscript();
+          return;
+        }
+
+        const pollen = pollens.find((p) => p.nome === proposedPollen);
+        if (!pollen.id) {
+          console.log("No pollen found");
+          resetTranscript();
+          return;
+        }
+
+        const ref = doc(db, "pollens", pollen.id);
+        await deleteDoc(ref);
+
+        resetTranscript();
+      },
+    },
+    {
+      command: [
+        "increment * *",
+        "increase * *",
+        "add * *",
+        "adds * *",
+        "increments * *",
+      ],
+      callback: async (pollenType, amount, { resetTranscript }) => {
+        console.log(pollenType, amount);
+
+        const proposedPollen = propose(pollenType, pollenNames, {
+          ignoreCase: true,
+          threshold: 0.2,
+        });
+
+        console.log("Proposed pollen: ", proposedPollen);
+
+        if (!proposedPollen) {
+          console.log("No pollen found");
+          resetTranscript();
+          return;
+        }
+
+        let intAmount;
+        if (typeof amount === "string") {
+          intAmount = wordsToNumbers(amount);
+          if (isNaN(intAmount)) {
+            intAmount = convertStringToNumber(amount);
+            if (isNaN(intAmount)) {
+              resetTranscript();
+              return;
+            }
+          }
+        } else {
+          intAmount = amount;
+        }
+
+        const pollen = pollens.find((p) => p.nome === proposedPollen);
+        if (!pollen.id) {
+          console.log("No pollen found");
+          resetTranscript();
+          return;
+        }
+
+        console.log(pollen);
+        console.log(proposedPollen, intAmount, pollen.id);
+
+        const ref = doc(db, "pollens", pollen.id);
+        await updateDoc(ref, {
+          ["intervalo._00h"]: increment(intAmount),
+        });
+
+        resetTranscript();
+      },
+    },
+  ];
+
+  const { transcript, resetTranscript } = useSpeechRecognition({ commands });
   const [isListening, setIsListening] = useState(false);
-  const microphoneRef = useRef(null);
 
   const handleListing = () => {
     setIsListening(true);
-    microphoneRef.current.classList.add("listening");
     SpeechRecognition.startListening({
+      language: "en-US",
       continuous: true,
     });
   };
 
   const stopHandle = () => {
     setIsListening(false);
-    microphoneRef.current.classList.remove("listening");
     SpeechRecognition.stopListening();
   };
 
@@ -61,75 +140,11 @@ function Speech() {
     resetTranscript();
   };
 
-  const possibleCommands = ["add", "delete"];
-  const pollens = ["Acer", "Bosque"];
-  const [proposedTranscript, setProposedTranscript] = useState("");
-
-  useEffect(async () => {
-    const keywords = transcript.split(" ");
-
-    if (transcript && keywords.length > 3) {
-      let action, pollen, end, value;
-
-      //add acer
-      const keywords = transcript.split(" ");
-
-      action = propose(keywords[0], possibleCommands, {
-        ignoreCase: true,
-        threshold: 0.1,
-      });
-
-      /*await db_pollenList().then((pollenList) => {
-        pollen = propose(keywords[1], pollenList, {
-          ignoreCase: true,
-          threshold: 0.1,
-        });
-      });*/
-
-      pollen = propose(keywords[1], pollens, {
-        ignoreCase: true,
-        threshold: 0.1,
-      });
-
-      value = keywords[2]
-
-      end = propose(keywords[3], ["end"], {
-        ignoreCase: true,
-        threshold: 0.1,
-      });
-
-      handleCommands({ action, pollen, value, end});
-    }
-  }, [transcript]);
-
-  function handleCommands({ action, pollen, value, end }) {
-    if (end === "end") {
-      handleReset();
-      console.log(action, pollen, value, end);
-
-      if (action == "add") {
-        console.log("add");
-        //add to db
-        //addPolen(pollen);
-        updateNumber(value);
-      }
-
-      if(action == "delete"){
-        console.log("delete");
-        //id = searchPollen_id(pollen);
-        //deletePolen(id);
-      }
-
-    }
-  }
-
   return (
     <div align="center" className="microphone-wrapper">
       <div className="microphone-container">
         <ButtonGroup disableElevation variant="contained">
-          <Button ref={microphoneRef} onClick={handleListing}>
-            Listen
-          </Button>
+          <Button onClick={handleListing}>Listen</Button>
           {isListening && (
             <Button className="microphone-stop btn" onClick={stopHandle}>
               Stop
@@ -153,8 +168,6 @@ function Speech() {
         <div className="microphone-result-container">
           <div style={{ color: "#5e6060" }} className="microphone-result-text">
             {transcript}
-            {":  "}
-            {proposedTranscript}
           </div>
           <br />
           <Button
@@ -170,5 +183,9 @@ function Speech() {
     </div>
   );
 }
+
+Speech.propTypes = {
+  pollens: PropTypes.array.isRequired,
+};
 
 export default Speech;

@@ -64,7 +64,7 @@ function Firestore({ setName, pollens, addPollen, handleEdit }) {
               Click to Start Listening
             </Typography>
             <br />
-            <Speech />
+            <Speech pollens={pollens} />
           </div>
         </Box>
         <br />
