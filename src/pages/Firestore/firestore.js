@@ -22,7 +22,7 @@ function Firestore({ setName, pollens, addPollen, handleEdit }) {
               noWrap
               variant="h6"
               component="div"
-              style={{ color: '#6b6960' }}
+              style={{ color: '#b6b5b5' }}
               sx={{ display: { xs: "none", sm: "block" } }}
             >
               Add a New Name
@@ -46,7 +46,7 @@ function Firestore({ setName, pollens, addPollen, handleEdit }) {
               noWrap
               variant="h6"
               component="div"
-              style={{ color: '#6b6960' }}
+              style={{ color: '#b6b5b5' }}
               sx={{ display: { xs: "none", sm: "block" } }}
               align="center"
             >
@@ -66,7 +66,7 @@ function Firestore({ setName, pollens, addPollen, handleEdit }) {
               noWrap
               variant="h6"
               component="div"
-              style={{ color: '#6b6960' }}
+              style={{ color: '#b6b5b5' }}
               sx={{ display: { xs: "none", sm: "block" } }}
             >
               View and Edit
@@ -76,6 +76,20 @@ function Firestore({ setName, pollens, addPollen, handleEdit }) {
               <Flex>
                 {pollens && (
                   <DataGrid
+                  sx={{
+                    color: '#b6b5b5',
+                    boxShadow: 2,
+                    '& .MuiDataGrid-columnHeaders': {
+                      backgroundColor: '#0a1c31',
+                      color: '#b6b5b5',
+                    },
+                    '& .MuiDataGrid-columnSeparator': {
+                      color: '#b6b5b5',
+                    },
+                    '& .MuiDataGrid-row:hover': {
+                      backgroundColor: '#8a8a8a',
+                    },
+                  }}
                     pageSize={20}
                     rowsPerPageOptions={[20]}
                     columns={columns}

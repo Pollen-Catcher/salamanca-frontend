@@ -51,17 +51,17 @@ export default function BasicTabs() {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab style={{ color: '#eaeff1' }} label="Main Page" {...a11yProps(0)} />
-          <Tab style={{ color: '#eaeff1' }} label="Firestore CRUD" {...a11yProps(1)} />
+          <Tab style={{ color: '#0a1c31' }} label="Main Page" {...a11yProps(0)} />
+          <Tab style={{ color: '#0a1c31' }} label="Firestore CRUD" {...a11yProps(1)} />
         </Tabs>
       </Box>
-      <TabPanel style={{ backgroundColor: '#eaeff1' }} value={value} index={0}>
-        <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
+      <TabPanel style={{ backgroundColor: '#0a1c31' }} value={value} index={0}>
+        <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#0a1c31' }}>
           <Content />
         </Box>
       </TabPanel>
-      <TabPanel style={{ backgroundColor: '#eaeff1' }} value={value} index={1}>
-        <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
+      <TabPanel style={{ backgroundColor: '#0a1c31' }} value={value} index={1}>
+        <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#0a1c31' }}>
           <Index />
         </Box>
       </TabPanel>

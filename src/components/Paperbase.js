@@ -10,7 +10,7 @@ import Header from './Header';
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="text.secondary" align="center">
+    <Typography variant="body2" color="#b6b5b5" align="center">
       {'Copyright © '}
       <Link color="inherit" href="LINK AQUI">
         PalinOptimize
@@ -175,7 +175,7 @@ export default function Paperbase() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box style={{ backgroundColor: '#eaeff1' }} sx={{ display: 'flex', minHeight: '100vh' }}>
+      <Box style={{ backgroundColor: '#0a1c31' }} sx={{ display: 'flex', minHeight: '100vh' }}>
         <CssBaseline />
         <Box
           component="nav"
@@ -197,7 +197,7 @@ export default function Paperbase() {
         </Box>
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <Header onDrawerToggle={handleDrawerToggle} />
-          <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
+          <Box component="footer" sx={{ p: 2, bgcolor: '#0a1c31' }}>
             <Copyright />
           </Box>
         </Box>

@@ -49,7 +49,7 @@ export default function Content() {
           </Grid>
         </Toolbar>
       </AppBar>
-      <Typography sx={{ my: 5, mx: 2 }} color="text.secondary" align="center">
+      <Typography sx={{ my: 5, mx: 2 }} color= "text.secondary" align="center">
         Your projects will appear here...
       </Typography>
     </Paper>

@@ -8,7 +8,7 @@ const deletePolen = async (id) => {
   await deleteDoc(currentRef);
 };
 
-export default [
+const conteudo =  [
   {
     field: "nome",
     headerName: "Nome",
@@ -99,6 +99,79 @@ export default [
     editable: true,
   },
   {
+    field: "_12h",
+    headerName: "12 - 13",
+    type: "number",
+    headerAlign: "center",
+    editable: true,
+  },{
+    field: "_13h",
+    headerName: "13 - 14",
+    type: "number",
+    headerAlign: "center",
+    editable: true,
+  },{
+    field: "_14h",
+    headerName: "14 - 15",
+    type: "number",
+    headerAlign: "center",
+    editable: true,
+  },{
+    field: "_15h",
+    headerName: "15 - 16",
+    type: "number",
+    headerAlign: "center",
+    editable: true,
+  },{
+    field: "_16h",
+    headerName: "16 - 17",
+    type: "number",
+    headerAlign: "center",
+    editable: true,
+  },{
+    field: "_17h",
+    headerName: "17 - 18",
+    type: "number",
+    headerAlign: "center",
+    editable: true,
+  },{
+    field: "_18h",
+    headerName: "18 - 19",
+    type: "number",
+    headerAlign: "center",
+    editable: true,
+  },{
+    field: "_19h",
+    headerName: "19 - 20",
+    type: "number",
+    headerAlign: "center",
+    editable: true,
+  },{
+    field: "_20h",
+    headerName: "20 - 21",
+    type: "number",
+    headerAlign: "center",
+    editable: true,
+  },{
+    field: "_21h",
+    headerName: "21 - 22",
+    type: "number",
+    headerAlign: "center",
+    editable: true,
+  },{
+    field: "_22h",
+    headerName: "22 - 23",
+    type: "number",
+    headerAlign: "center",
+    editable: true,
+  },{
+    field: "_23h",
+    headerName: "23 - 00",
+    type: "number",
+    headerAlign: "center",
+    editable: true,
+  },
+  {
     field: "actions",
     type: "actions",
     getActions: (params) => [
@@ -110,3 +183,5 @@ export default [
     ],
   },
 ];
+
+export default conteudo;
