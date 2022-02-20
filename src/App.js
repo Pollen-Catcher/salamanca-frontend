@@ -1,4 +1,5 @@
 import Paperbase from './components/Paperbase';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
@@ -9,3 +10,4 @@ function App() {
 }
 
 export default App;
+

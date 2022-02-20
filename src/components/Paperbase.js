@@ -1,20 +1,20 @@
-import * as React from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import CssBaseline from "@mui/material/CssBaseline";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-import Navigator from "./Navigator";
-import Header from "./Header";
+import * as React from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
+import Navigator from './Navigator';
+import Header from './Header';
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {"Copyright © "}
+    <Typography variant="body2" color="#b6b5b5" align="center">
+      {'Copyright © '}
       <Link color="inherit" href="LINK AQUI">
         PalinOptimize
-      </Link>{" "}
+      </Link>{' '}
       {new Date().getFullYear()}.
     </Typography>
   );
@@ -23,14 +23,9 @@ function Copyright() {
 let theme = createTheme({
   palette: {
     primary: {
-      light: "#63ccff",
-      main: "#009be5",
-      dark: "#006db3",
-    },
-    secondary: {
-      light: "#4239e8",
-      main: "#0044ff",
-      contrastText: "#ffffff",
+      light: '#63ccff',
+      main: '#009be5',
+      dark: '#006db3',
     },
   },
   typography: {
@@ -63,19 +58,19 @@ theme = {
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: "#081627",
+          backgroundColor: '#081627',
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: "none",
+          textTransform: 'none',
         },
         contained: {
-          boxShadow: "none",
-          "&:active": {
-            boxShadow: "none",
+          boxShadow: 'none',
+          '&:active': {
+            boxShadow: 'none',
           },
         },
       },
@@ -96,11 +91,11 @@ theme = {
     MuiTab: {
       styleOverrides: {
         root: {
-          textTransform: "none",
-          margin: "0 16px",
+          textTransform: 'none',
+          margin: '0 16px',
           minWidth: 0,
           padding: 0,
-          [theme.breakpoints.up("md")]: {
+          [theme.breakpoints.up('md')]: {
             padding: 0,
             minWidth: 0,
           },
@@ -124,15 +119,15 @@ theme = {
     MuiDivider: {
       styleOverrides: {
         root: {
-          backgroundColor: "rgb(255,255,255,0.15)",
+          backgroundColor: 'rgb(255,255,255,0.15)',
         },
       },
     },
     MuiListItemButton: {
       styleOverrides: {
         root: {
-          "&.Mui-selected": {
-            color: "#4fc3f7",
+          '&.Mui-selected': {
+            color: '#4fc3f7',
           },
         },
       },
@@ -148,10 +143,10 @@ theme = {
     MuiListItemIcon: {
       styleOverrides: {
         root: {
-          color: "inherit",
-          minWidth: "auto",
+          color: 'inherit',
+          minWidth: 'auto',
           marginRight: theme.spacing(2),
-          "& svg": {
+          '& svg': {
             fontSize: 20,
           },
         },
@@ -172,7 +167,7 @@ const drawerWidth = 256;
 
 export default function Paperbase() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
+  const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -180,10 +175,7 @@ export default function Paperbase() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box
-        style={{ backgroundColor: "#eaeff1" }}
-        sx={{ display: "flex", minHeight: "100vh" }}
-      >
+      <Box style={{ backgroundColor: '#eaeff1' }} sx={{ display: 'flex', minHeight: '100vh' }}>
         <CssBaseline />
         <Box
           component="nav"
@@ -200,12 +192,12 @@ export default function Paperbase() {
 
           <Navigator
             PaperProps={{ style: { width: drawerWidth } }}
-            sx={{ display: { sm: "block", xs: "none" } }}
+            sx={{ display: { sm: 'block', xs: 'none' } }}
           />
         </Box>
-        <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <Header onDrawerToggle={handleDrawerToggle} />
-          <Box component="footer" sx={{ p: 2, bgcolor: "#eaeff1", marginTop: "215px" }}>
+          <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
             <Copyright />
           </Box>
         </Box>

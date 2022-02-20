@@ -3,13 +3,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Paperbase from './components/Paperbase';
+import { BrowserRouter, Routes, Route, Router } from "react-router-dom";
+import Edit from './components/Content/edit';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+  <Router>
+    <div>
+      <Route path="/" element={App} />
+      <Route path='/edit/:id' component={Edit} />
+    </div>
+  </Router>,
+  document.getElementById('root'));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

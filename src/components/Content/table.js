@@ -17,6 +17,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
+import Edit from "./edit";
+import { Link } from 'react-router-dom';
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -62,15 +65,8 @@ function Crud() {
     await deleteDoc(currentRef);
   };
 
-  const editSheet = async (params) => {
-    const currentRef = doc(db, "pollens", params.id);
-    await updateDoc(currentRef, {
-      [`intervalo.${params.field}`]: params.value,
-    });
-  };
-  
   return (
-    <Typography container color="text.secondary" align="center">
+    <Typography container component={'span'} variant={'body2'} color="text.secondary" align="center">
       <Table stickyHeader>
         <TableHead item>
           <TableRow>
@@ -107,11 +103,10 @@ function Crud() {
                     second: 'numeric'
                     })}
                     </TableCell>
-                  <TableCell align='center'><EditIcon 
-                      onClick={() => {
-                        editSheet(sheet.id);
-                      }}
+
+                  <TableCell align='center'><DeleteIcon 
                     /></TableCell>
+
                   <TableCell align='center'><DeleteIcon 
                       onClick={() => {
                         deleteSheet(sheet.id);
