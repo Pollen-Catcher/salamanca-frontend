@@ -1,4 +1,3 @@
-/* eslint-disable no-sparse-arrays */
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
@@ -8,10 +7,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Alert, ButtonGroup } from "@mui/material";
 //import pollenList from "../data/pollenList";
 import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
-import db from "../config/firebase";
+import db from "../../config/firebase";
 import propose from "propose";
 import { collection } from "firebase/firestore";
-import db_pollenList from "../data/pollenList";
+import db_pollenList from "../../data/pollenList";
 
 function Speech() {
   const commands = [

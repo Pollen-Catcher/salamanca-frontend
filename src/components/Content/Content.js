@@ -17,7 +17,7 @@ import {
 import { Controller } from "react-hook-form";
 import { Search, Refresh } from "@mui/icons-material";
 import { CreateSheetBox } from "./styles";
-import Table from './table';
+import Table from "./table";
 import PropTypes from "prop-types";
 
 function Content({
@@ -121,7 +121,7 @@ function Content({
           </Grid>
         </Toolbar>
       </AppBar>
-        <Table />
+      <Table />
     </Paper>
   );
 }

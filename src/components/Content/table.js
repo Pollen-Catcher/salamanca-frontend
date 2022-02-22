@@ -8,6 +8,7 @@ import {
   TableRow,
   Paper,
   Stack,
+  Box,
 } from "@mui/material";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { collection, doc, deleteDoc } from "firebase/firestore";
@@ -17,13 +18,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
-import Edit from "./edit";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -68,15 +63,9 @@ function Crud() {
   };
 
   return (
-    <Typography
-      container
-      component={"span"}
-      variant={"body2"}
-      color="text.secondary"
-      align="center"
-    >
+    <Box sx={{ color: "text.secondary" }}>
       <Table stickyHeader>
-        <TableHead item>
+        <TableHead>
           <TableRow>
             <StyledTableCell className={classes.header}>Name</StyledTableCell>
             <StyledTableCell className={classes.header}>
@@ -92,13 +81,13 @@ function Crud() {
             <StyledTableCell className={classes.header}>Delete</StyledTableCell>
           </TableRow>
         </TableHead>
-        <TableBody item>
+        <TableBody>
           {!loading &&
             sheets.map((sheet) => {
               return (
-                <StyledTableRow key={sheets.name}>
+                <StyledTableRow key={sheet.name}>
                   <TableCell align="center">
-                    <Link to={`sheets/${sheet.id}`}>{sheet.name}</Link>
+                    <Link to={`${sheet.id}`}>{sheet.name}</Link>
                   </TableCell>
                   <TableCell align="center">{sheet.location}</TableCell>
                   <TableCell align="center">
@@ -142,7 +131,7 @@ function Crud() {
             })}
         </TableBody>
       </Table>
-    </Typography>
+    </Box>
   );
 }
 

@@ -5,7 +5,7 @@ import columns from "../../data/colunas";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Outlet } from "react-router-dom";
-import Speech from "../../components/Speech";
+import Speech from "../../components/Speech/Speech";
 
 function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
   return (

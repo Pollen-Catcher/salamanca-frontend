@@ -1,14 +1,18 @@
-import Paperbase from "./components/Paperbase";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Firestore from "./pages/Firestore/index";
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
+import { Layout } from "./pages";
 
 function App() {
   return (
     <Router>
-        <Routes>
-            <Route path="/" element={<Paperbase />}/>
-            <Route path="sheets/:sheetId" element={<Firestore/>}/>
-        </Routes>
+      <Routes>
+        <Route path="/" element={<Navigate replace to="sheets" />} />
+        <Route path="sheets/*" element={<Layout />} />
+      </Routes>
     </Router>
   );
 }

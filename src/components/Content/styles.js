@@ -1,13 +1,10 @@
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
-import { experimental_sx as sx } from "@mui/system";
 
-export const CreateSheetBox = styled(Box)(
-  sx({
-    marginTop: 3,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    gap: 3,
-  })
-);
+export const CreateSheetBox = styled(Box)`
+  margin-top: 3px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 3px;
+`
