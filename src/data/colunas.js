@@ -8,7 +8,6 @@ const deletePolen = async (id) => {
   await deleteDoc(currentRef);
 };
 
-export default [
   /*{
     field: "actions",
     type: "actions",
@@ -20,6 +19,8 @@ export default [
       />,
     ],
   },*/
+
+const conteudo =  [
   {
     field: "name",
     headerName: "Nome",
@@ -183,3 +184,5 @@ export default [
     editable: true,
   },
 ];
+
+export default conteudo;
