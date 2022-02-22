@@ -1,14 +1,46 @@
-import { collection, getDocs } from "firebase/firestore";
-import db from "../config/firebase";
-
-export default async function getPollenList() {
-  let pollenList = [];
-
-  const dbPollens = await getDocs(collection(db, "pollens"));
-
-  dbPollens.forEach((doc) => {
-    pollenList.push(doc.data().nome)
-  });
-
-  return pollenList;
-}
+export const pollenList = [
+  "Acer",
+  "Aesculus",
+  "Alnus",
+  "Amaranthaceae",
+  "Apiaceae",
+  "Artemisia",
+  "Asteraceae",
+  "Betula",
+  "Brassicaceae",
+  "Cannabis",
+  "Castanea",
+  "Casuarina",
+  "Cedrus",
+  "Corylus",
+  "Cupressaceae",
+  "Cyperaceae",
+  "Echium",
+  "Ericaceae",
+  "Fabaceae",
+  "Fraxinus",
+  "Helianthus",
+  "Juncaceae",
+  "Liguliflora",
+  "Ligustrum",
+  "Mercurialis",
+  "Morus",
+  "Myrtaceae",
+  "Olea",
+  "Oleaeceae",
+  "Palmae",
+  "Pinus",
+  "Plantago",
+  "Platanus",
+  "Poaceae",
+  "Populus",
+  "Quercus",
+  "Rosaceae",
+  "Rumex",
+  "Salix",
+  "Sambucus",
+  "Ulmus",
+  "Urticaceae",
+  "Urtica memb",
+  "Indeterminado",
+];
