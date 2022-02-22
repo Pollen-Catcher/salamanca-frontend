@@ -1,40 +1,37 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import AppBar from '@mui/material/AppBar';
-import Avatar from '@mui/material/Avatar';
-import Grid from '@mui/material/Grid';
-import HelpIcon from '@mui/icons-material/Help';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import Toolbar from '@mui/material/Toolbar';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
-import BasicTabs from "../components/TabPanel";
+import PropTypes from "prop-types";
+import {
+  AppBar,
+  Avatar,
+  Grid,
+  Toolbar,
+  Tooltip,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import { Help, Menu, Notifications } from "@mui/icons-material";
+import { BasicTabs } from "../../components";
 
-function Header(props) {
-  const { onDrawerToggle } = props;
-
+function Header({ onDrawerToggle }) {
   return (
-    <React.Fragment>
+    <>
       <AppBar color="primary" position="sticky" elevation={0}>
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
-            <Grid sx={{ display: { sm: 'none', xs: 'block' } }} item>
+            <Grid sx={{ display: { sm: "none", xs: "block" } }} item>
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
                 onClick={onDrawerToggle}
                 edge="start"
               >
-                <MenuIcon />
+                <Menu />
               </IconButton>
             </Grid>
             <Grid item xs />
             <Grid item>
               <Tooltip title="Alerts • No alerts">
                 <IconButton color="inherit">
-                  <NotificationsIcon />
+                  <Notifications />
                 </IconButton>
               </Tooltip>
             </Grid>
@@ -63,17 +60,22 @@ function Header(props) {
             <Grid item>
               <Tooltip title="Help">
                 <IconButton color="inherit">
-                  <HelpIcon />
+                  <Help />
                 </IconButton>
               </Tooltip>
             </Grid>
           </Grid>
         </Toolbar>
       </AppBar>
-      <AppBar component="div" position="static" elevation={0} sx={{ zIndex: 0 }}>
+      <AppBar
+        component="div"
+        position="static"
+        elevation={0}
+        sx={{ zIndex: 0 }}
+      >
         <BasicTabs />
       </AppBar>
-    </React.Fragment>
+    </>
   );
 }
 

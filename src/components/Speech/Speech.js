@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
@@ -6,24 +6,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Alert, ButtonGroup } from "@mui/material";
 import propose from "propose";
 import { doc, updateDoc, increment, deleteDoc } from "firebase/firestore";
-import convertStringToNumber from "convert-string-to-number";
 import wordsToNumbers from "words-to-numbers";
-import db from "../config/firebase";
+import db from "../../config/firebase";
 import PropTypes from "prop-types";
-import usePollenList from "../data/pollenList";
-import { useEffect } from "react";
+import { pollenList } from "../../data/pollenList";
 function Speech({ pollens }) {
-  const {pollenList} = usePollenList();
-  const [pollenNames, setPollenNames] = useState([]);
-
-  useEffect(() => {
-    if (pollenList && pollenList.length > 0) {
-      //get the pollens names
-      const pollenNames = pollenList.map((pollen) => pollen.nome);
-      setPollenNames(pollenNames);
-    }
-  }, [pollenList]);
-
   const commands = [
     {
       command: ["reset", "clear"],
@@ -36,7 +23,7 @@ function Speech({ pollens }) {
       callback: async (pollenType, { resetTranscript }) => {
         console.log(pollenType);
 
-        const proposedPollen = propose(pollenType, pollenNames, {
+        const proposedPollen = propose(pollenType, pollenList, {
           ignoreCase: true,
           threshold: 0.2,
         });
@@ -71,7 +58,7 @@ function Speech({ pollens }) {
       callback: async (pollenType, amount, { resetTranscript }) => {
         console.log(pollenType, amount);
 
-        const proposedPollen = propose(pollenType, pollenNames, {
+        const proposedPollen = propose(pollenType, pollenList, {
           ignoreCase: true,
           threshold: 0.2,
         });
@@ -87,13 +74,6 @@ function Speech({ pollens }) {
         let intAmount;
         if (typeof amount === "string") {
           intAmount = wordsToNumbers(amount);
-          if (isNaN(intAmount)) {
-            intAmount = convertStringToNumber(amount);
-            if (isNaN(intAmount)) {
-              resetTranscript();
-              return;
-            }
-          }
         } else {
           intAmount = amount;
         }

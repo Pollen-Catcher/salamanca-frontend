@@ -1,23 +1,46 @@
-import { collection, getDocs } from "firebase/firestore";
-import { useState, useEffect } from "react";
-import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
-import db from "../config/firebase";
-
-export default async function usePollenList() {
-  const [pollenList, setPollenList] = useState([]);
-
-  useEffect(() => {
-    const pollenListRef = collection(db, "pollens");
-    getDocs(pollenListRef).then((querySnapshot) => {
-      const pollens = querySnapshot.docs.map((doc) => {
-        return {
-          id: doc.id,
-          ...doc.data(),
-        };
-      });
-      setPollenList(pollens);
-    });
-  }, []);
-
-  return {pollenList};
-}
+export const pollenList = [
+  "Acer",
+  "Aesculus",
+  "Alnus",
+  "Amaranthaceae",
+  "Apiaceae",
+  "Artemisia",
+  "Asteraceae",
+  "Betula",
+  "Brassicaceae",
+  "Cannabis",
+  "Castanea",
+  "Casuarina",
+  "Cedrus",
+  "Corylus",
+  "Cupressaceae",
+  "Cyperaceae",
+  "Echium",
+  "Ericaceae",
+  "Fabaceae",
+  "Fraxinus",
+  "Helianthus",
+  "Juncaceae",
+  "Liguliflora",
+  "Ligustrum",
+  "Mercurialis",
+  "Morus",
+  "Myrtaceae",
+  "Olea",
+  "Oleaeceae",
+  "Palmae",
+  "Pinus",
+  "Plantago",
+  "Platanus",
+  "Poaceae",
+  "Populus",
+  "Quercus",
+  "Rosaceae",
+  "Rumex",
+  "Salix",
+  "Sambucus",
+  "Ulmus",
+  "Urticaceae",
+  "Urtica memb",
+  "Indeterminado",
+];
