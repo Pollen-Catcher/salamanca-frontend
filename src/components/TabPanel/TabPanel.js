@@ -38,13 +38,13 @@ export default function BasicTabs() {
           onChange={(event, value) => setValue(value)}
           aria-label="basic tabs example"
         >
-          <Tab style={{ color: "#eaeff1" }} label="Main Page" component={Link} to="sheets" />
+          <Tab style={{ color: "#0a1c31" }} label="Main Page" component={Link} to="sheets" />
         </Tabs>
       </Box>
-      <TabPanel style={{ backgroundColor: "#eaeff1" }} value={value} index={0}>
+      <TabPanel style={{ backgroundColor: "#f0f0f0" }} value={value} index={0}>
         <Box
           component="main"
-          sx={{ flex: 1, py: 6, px: 4, bgcolor: "#eaeff1" }}
+          sx={{ flex: 1, py: 6, px: 4, backgroundColor: "#f0f0f0" }}
         >
           <Routes>
             <Route path="*" element={<Content />} />

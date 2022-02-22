@@ -40,7 +40,7 @@ export default function Layout() {
   return (
     <>
       <Box
-        sx={{ display: "flex", minHeight: "100vh", backgroundColor: "#eaeff1" }}
+        sx={{ display: "flex", minHeight: "100vh"}}
       >
         <Box
           component="nav"
@@ -63,7 +63,6 @@ export default function Layout() {
           <Header onDrawerToggle={handleDrawerToggle} />
         </Box>
       </Box>
-      <Copyright />
     </>
   );
 }

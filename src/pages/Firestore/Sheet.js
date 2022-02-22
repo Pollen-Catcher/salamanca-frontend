@@ -1,6 +1,6 @@
-import { Container, Button, Stack, TextField } from "@mui/material";
+import { Button, Stack, TextField } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { Flex, Wrapper, TableContainer, StyledTableCell } from "./styles";
+import { Flex, TableContainer } from "./styles";
 import columns from "../../data/colunas";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -10,7 +10,7 @@ import Speech from "../../components/Speech/Speech";
 function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
   return (
     <div>
-      <Wrapper>
+      <div>
         {/* Area de entrada de dados */}
         <Box
           sx={{
@@ -98,8 +98,10 @@ function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
                       color: '#b6b5b5',
                     },
                     '& .MuiDataGrid-row:hover': {
-                      backgroundColor: '#8a8a8a',
+                      backgroundColor: '#f0f0f0',
+                      color: '#0a1c31',
                     },
+                    backgroundColor: '#0a1c31',
                   }}
                     pageSize={20}
                     rowsPerPageOptions={[20]}
@@ -117,7 +119,7 @@ function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
             </TableContainer>
           </Box>
         </div>
-      </Wrapper>
+      </div>
       <Outlet />
     </div>
   );

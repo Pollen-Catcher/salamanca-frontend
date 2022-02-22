@@ -1,11 +1,9 @@
 import styled from "styled-components";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 
-export const Wrapper = styled.div``;
-
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: "#fff",
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -21,6 +19,6 @@ export const TableContainer = styled.div`
 export const Flex = styled.div`
   display: flex;
   height: 100%;
-  align: center;
+  align-items: center;
   flex-grow: 1;
 `;

@@ -1,4 +1,4 @@
-export const pollenList = [
+export const pollensList = [
   "Acer",
   "Aesculus",
   "Alnus",
@@ -44,3 +44,5 @@ export const pollenList = [
   "Urtica memb",
   "Indeterminado",
 ];
+
+export const commandsList = ["add", "delete"];

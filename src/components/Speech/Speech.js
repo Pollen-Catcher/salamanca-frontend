@@ -1,16 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Alert, ButtonGroup } from "@mui/material";
 import propose from "propose";
-import { doc, updateDoc, increment, deleteDoc } from "firebase/firestore";
+import { doc, updateDoc, increment } from "firebase/firestore";
 import wordsToNumbers from "words-to-numbers";
 import db from "../../config/firebase";
 import PropTypes from "prop-types";
-import { pollenList } from "../../data/pollenList";
+import { pollensList, commandsList } from "../../data/arrays";
+
 function Speech({ pollens }) {
+  const [interval, setInterval] = useState("intervals._0h");
+  const [currentCommand, setCurrentCommand] = useState("add");
+
   const commands = [
     {
       command: ["reset", "clear"],
@@ -19,51 +23,42 @@ function Speech({ pollens }) {
       },
     },
     {
-      command: ["delete *", "del *"],
-      callback: async (pollenType, { resetTranscript }) => {
-        console.log(pollenType);
-
-        const proposedPollen = propose(pollenType, pollenList, {
+      command: ["use command *", "use *"],
+      callback: (commandType, { resetTranscript }) => {
+        const proposedCommand = propose(commandType, commandsList, {
           ignoreCase: true,
-          threshold: 0.2,
+          threshold: 0.4,
         });
 
-        if (!proposedPollen) {
-          console.log("No pollen found");
+        if (!proposedCommand) {
+          console.log("Command not found");
           resetTranscript();
           return;
         }
 
-        const pollen = pollens.find((p) => p.nome === proposedPollen);
-        if (!pollen.id) {
-          console.log("No pollen found");
-          resetTranscript();
-          return;
-        }
-
-        const ref = doc(db, "pollens", pollen.id);
-        await deleteDoc(ref);
-
+        setCurrentCommand(proposedCommand);
         resetTranscript();
       },
     },
     {
-      command: [
-        "increment * *",
-        "increase * *",
-        "add * *",
-        "adds * *",
-        "increments * *",
-      ],
+      command: ["assign *", "pin *"],
+      callback: (hour, { resetTranscript }) => {
+        setInterval("intervals._" + hour + "h");
+        resetTranscript();
+      },
+    },
+    {
+      command: ["do * *"],
       callback: async (pollenType, amount, { resetTranscript }) => {
-        console.log(pollenType, amount);
+        if (interval.length == 0) {
+          console.log("ERROR - Undefined interval");
+        }
 
-        const proposedPollen = propose(pollenType, pollenList, {
+        const proposedPollen = propose(pollenType, pollensList, {
           ignoreCase: true,
           threshold: 0.2,
         });
 
-        console.log("Proposed pollen: ", proposedPollen);
 
         if (!proposedPollen) {
           console.log("No pollen found");
@@ -78,20 +73,43 @@ function Speech({ pollens }) {
           intAmount = amount;
         }
 
-        const pollen = pollens.find((p) => p.nome === proposedPollen);
-        if (!pollen.id) {
+        if (isNaN(intAmount)) {
+          console.log("Invalid amount");
+          resetTranscript();
+          return;
+        }
+
+        const pollen = pollens.find((p) => p.name === proposedPollen);
+        if (!pollen.id) { // adicionar o pollen ao banco de dados
           console.log("No pollen found");
           resetTranscript();
           return;
         }
 
         console.log(pollen);
-        console.log(proposedPollen, intAmount, pollen.id);
 
-        const ref = doc(db, "pollens", pollen.id);
-        await updateDoc(ref, {
-          ["intervalo._00h"]: increment(intAmount),
-        });
+        const ref = doc(
+          db,
+          "sheets",
+          "qcMt55cB912kjwRfxoVQ",
+          "pollens",
+          pollen.id
+        );
+
+        console.log(interval);
+
+        switch (currentCommand) {
+          case "add":
+            await updateDoc(ref, {
+              [interval]: increment(intAmount),
+            });
+            break;
+          case "delete":
+            await updateDoc(ref, {
+              [interval]: increment(-intAmount),
+            });
+            break;
+        }
 
         resetTranscript();
       },
@@ -115,7 +133,6 @@ function Speech({ pollens }) {
   };
 
   const handleReset = () => {
-    console.log("reset");
     stopHandle();
     resetTranscript();
   };
@@ -131,8 +148,10 @@ function Speech({ pollens }) {
             </Button>
           )}
         </ButtonGroup>
+
         <br />
         <br />
+
         <div className="microphone-status">
           {isListening && (
             <Alert
@@ -144,6 +163,7 @@ function Speech({ pollens }) {
           )}
         </div>
       </div>
+
       {transcript && (
         <div className="microphone-result-container">
           <div style={{ color: "#5e6060" }} className="microphone-result-text">

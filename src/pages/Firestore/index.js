@@ -5,34 +5,6 @@ import Sheet from "./Sheet";
 import db from "../../config/firebase";
 import { useParams } from "react-router-dom";
 
-//adicionar novo polen
-export const addPolen = async (name) => {
-  await addDoc(collection(db, "pollens"), {
-    nome: name,
-    intervalo: {
-      _00h: 0,
-      _01h: 0,
-      _02h: 0,
-      _03h: 0,
-      _04h: 0,
-      _05h: 0,
-      _06h: 0,
-      _07h: 0,
-      _08h: 0,
-      _09h: 0,
-      _10h: 0,
-      _11h: 0,
-    },
-  });
-};
-
-export const updateNumber =  async (value) => {
-  const currentRef = doc(db, "pollens", "vMGL3X0ZSwfqp9w447Rp");
-    await updateDoc(currentRef, {
-      [`intervalo._00h`]: value,
-    });
-}
-
 const Index = () => {
   const { sheetId } = useParams();
   const [name, setName] = useState("");
@@ -47,16 +19,16 @@ const Index = () => {
     await addDoc(pollenCollectionRef, {
       name: name,
       intervals: {
-        _00h: 0,
-        _01h: 0,
-        _02h: 0,
-        _03h: 0,
-        _04h: 0,
-        _05h: 0,
-        _06h: 0,
-        _07h: 0,
-        _08h: 0,
-        _09h: 0,
+        _0h: 0,
+        _1h: 0,
+        _2h: 0,
+        _3h: 0,
+        _4h: 0,
+        _5h: 0,
+        _6h: 0,
+        _7h: 0,
+        _8h: 0,
+        _9h: 0,
         _10h: 0,
         _11h: 0,
         _12h: 0,
@@ -79,7 +51,7 @@ const Index = () => {
   const handleCellEditCommit = async (params) => {
     const currentRef = doc(db, "sheets", sheetId, "pollens", params.id);
     await updateDoc(currentRef, {
-      [`intervalo.${params.field}`]: params.value,
+      [`intervals.${params.field}`]: params.value,
     });
   };
 
