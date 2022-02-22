@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import Firestore from "./Firestore";
+import Sheet from "./Sheet";
 import db from "../../config/firebase";
+import { useParams } from "react-router-dom";
 
 const Index = () => {
+  const { sheetId } = useParams();
   const [name, setName] = useState("");
 
-  const pollenCollectionRef = collection(db, "pollens");
+  const pollenCollectionRef = collection(db, "sheets", sheetId, "pollens");
   const [pollens, loading, error] = useCollectionData(pollenCollectionRef, {
     idField: "id",
   }); // data
@@ -15,7 +17,7 @@ const Index = () => {
   //adicionar novo polen
   const addPolen = async () => {
     await addDoc(pollenCollectionRef, {
-      nome: name,
+      name: name,
       intervals: {
         _00h: 0,
         _01h: 0,
@@ -47,16 +49,17 @@ const Index = () => {
 
   //evento de edição da tabela
   const handleCellEditCommit = async (params) => {
-    const currentRef = doc(db, "pollens", params.id);
+    const currentRef = doc(db, "sheets", sheetId, "pollens", params.id);
     await updateDoc(currentRef, {
       [`intervalo.${params.field}`]: params.value,
     });
   };
 
   return (
-    <Firestore
+    <Sheet
       setName={setName}
       pollens={pollens}
+      loading={loading}
       addPollen={addPolen}
       handleEdit={handleCellEditCommit}
     />

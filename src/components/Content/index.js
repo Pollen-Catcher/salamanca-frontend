@@ -24,20 +24,12 @@ const Index = ({}) => {
     setData(data);
     const { name, location } = data;
 
-    const docRef = await addDoc(collection(db, "sheets"), {
+    await addDoc(collection(db, "sheets"), {
       name,
       location: location,
       createdAt: Timestamp.now(),
       lastEditedAt: Timestamp.now(),
     });
-
-    /*await addDoc(collection(db, `${docRef.path}/pollens`), {
-      sheetId: docRef.id,
-      name,
-      location,
-      createdAt: Timestamp.now(),
-      lastEditedAt: Timestamp.now(),
-    });*/
   };
 
   return (

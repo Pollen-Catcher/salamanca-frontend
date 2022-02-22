@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import { Outlet } from "react-router-dom";
 import Speech from "../../components/Speech";
 
-function Firestore({ setName, pollens, addPollen, handleEdit }) {
+function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
   return (
     <div>
       <Wrapper>
@@ -92,8 +92,8 @@ function Firestore({ setName, pollens, addPollen, handleEdit }) {
                     columns={columns}
                     rows={pollens.map((p) => ({
                       id: p.id,
-                      nome: p.nome,
-                      ...p.intervalo,
+                      name: p.name,
+                      ...p.intervals,
                     }))}
                     onRowClick={(row) => console.log(row)}
                     onCellEditCommit={handleEdit}
@@ -109,4 +109,4 @@ function Firestore({ setName, pollens, addPollen, handleEdit }) {
   );
 }
 
-export default Firestore;
+export default Sheet;

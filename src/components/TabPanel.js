@@ -5,7 +5,6 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Content from "./Content/index";
-import Firestore from "../pages/Firestore/index";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,11 +59,6 @@ export default function BasicTabs() {
             label="Main Page"
             {...a11yProps(0)}
           />
-          <Tab
-            style={{ color: "#eaeff1" }}
-            label="Firestore CRUD"
-            {...a11yProps(1)}
-          />
         </Tabs>
       </Box>
       <TabPanel style={{ backgroundColor: "#eaeff1" }} value={value} index={0}>
@@ -73,14 +67,6 @@ export default function BasicTabs() {
           sx={{ flex: 1, py: 6, px: 4, bgcolor: "#eaeff1" }}
         >
           <Content />
-        </Box>
-      </TabPanel>
-      <TabPanel style={{ backgroundColor: "#eaeff1" }} value={value} index={1}>
-        <Box
-          component="main"
-          sx={{ flex: 1, py: 6, px: 4, bgcolor: "#eaeff1" }}
-        >
-          <Firestore />
         </Box>
       </TabPanel>
     </Box>

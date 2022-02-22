@@ -21,7 +21,7 @@ export default [
     ],
   },
   {
-    field: "nome",
+    field: "name",
     headerName: "Nome",
     editable: true,
   },

@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+/*import React, { Component } from 'react';
 import firebase from '../../config/firebase';
 import { Link } from 'react-router-dom';
+
+// Class components :(
 
 class Edit extends Component {
 
@@ -92,4 +94,4 @@ class Edit extends Component {
     }
 }
 
-export default Edit;
+export default Edit;*/
