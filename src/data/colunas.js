@@ -7,7 +7,6 @@ const deletePolen = async (id) => {
   const currentRef = doc(db, "pollens", id);
   await deleteDoc(currentRef);
 };
-
   /*{
     field: "actions",
     type: "actions",
@@ -20,7 +19,7 @@ const deletePolen = async (id) => {
     ],
   },*/
 
-const content =  [
+export const content =  [
   {
     field: "name",
     headerName: "Nome",
@@ -184,5 +183,3 @@ const content =  [
     editable: true,
   },
 ];
-
-export default content;

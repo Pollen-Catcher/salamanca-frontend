@@ -5,7 +5,7 @@ import Sheet from "./Sheet";
 import db from "../../config/firebase";
 import { useParams } from "react-router-dom";
 
-const Index = () => {
+export default () => {
   const { sheetId } = useParams();
   const [name, setName] = useState("");
 
@@ -47,7 +47,6 @@ const Index = () => {
     });
   };
 
-  //evento de edição da tabela
   const handleCellEditCommit = async (params) => {
     const currentRef = doc(db, "sheets", sheetId, "pollens", params.id);
     await updateDoc(currentRef, {
@@ -65,5 +64,3 @@ const Index = () => {
     />
   );
 };
-
-export default Index;

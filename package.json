@@ -22,7 +22,6 @@
     "react-scripts": "5.0.0",
     "react-speech-recognition": "^3.9.0",
     "react-swipeable-views": "^0.14.0",
-    "styled-components": "^5.3.3",
     "web-vitals": "^2.1.2",
     "words-to-numbers": "^1.5.1"
   },

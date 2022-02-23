@@ -1,17 +1,15 @@
 import { Button, Stack, TextField } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Flex, TableContainer } from "./styles";
-import columns from "../../data/colunas";
+import { content } from "../../data/colunas";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Outlet } from "react-router-dom";
 import Speech from "../../components/Speech/Speech";
 
 function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
   return (
     <div>
       <div>
-        {/* Area de entrada de dados */}
         <Box
           sx={{
             display: "flex",
@@ -22,7 +20,7 @@ function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
               noWrap
               variant="h6"
               component="div"
-              style={{ color: '#b6b5b5' }}
+              style={{ color: "#b6b5b5" }}
               sx={{ display: { xs: "none", sm: "block" } }}
             >
               Add a New Name
@@ -57,7 +55,7 @@ function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
               noWrap
               variant="h6"
               component="div"
-              style={{ color: '#b6b5b5' }}
+              style={{ color: "#b6b5b5" }}
               sx={{ display: { xs: "none", sm: "block" } }}
               align="center"
             >
@@ -77,7 +75,7 @@ function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
               noWrap
               variant="h6"
               component="div"
-              style={{ color: '#b6b5b5' }}
+              style={{ color: "#b6b5b5" }}
               sx={{ display: { xs: "none", sm: "block" } }}
             >
               View and Edit
@@ -87,25 +85,25 @@ function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
               <Flex>
                 {pollens && (
                   <DataGrid
-                  sx={{
-                    color: '#b6b5b5',
-                    boxShadow: 2,
-                    '& .MuiDataGrid-columnHeaders': {
-                      backgroundColor: '#0a1c31',
-                      color: '#b6b5b5',
-                    },
-                    '& .MuiDataGrid-columnSeparator': {
-                      color: '#b6b5b5',
-                    },
-                    '& .MuiDataGrid-row:hover': {
-                      backgroundColor: '#f0f0f0',
-                      color: '#0a1c31',
-                    },
-                    backgroundColor: '#0a1c31',
-                  }}
+                    sx={{
+                      color: "#b6b5b5",
+                      boxShadow: 2,
+                      "& .MuiDataGrid-columnHeaders": {
+                        backgroundColor: "#0a1c31",
+                        color: "#b6b5b5",
+                      },
+                      "& .MuiDataGrid-columnSeparator": {
+                        color: "#b6b5b5",
+                      },
+                      "& .MuiDataGrid-row:hover": {
+                        backgroundColor: "#f0f0f0",
+                        color: "#0a1c31",
+                      },
+                      backgroundColor: "#0a1c31",
+                    }}
                     pageSize={20}
                     rowsPerPageOptions={[20]}
-                    columns={columns}
+                    columns={content}
                     rows={pollens.map((p) => ({
                       id: p.id,
                       name: p.name,
@@ -120,7 +118,6 @@ function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
           </Box>
         </div>
       </div>
-      <Outlet />
     </div>
   );
 }

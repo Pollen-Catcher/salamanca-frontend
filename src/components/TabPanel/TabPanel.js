@@ -1,15 +1,11 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Tabs, Tab, Typography, Box } from "@mui/material";
+import { Tabs, Tab, Box } from "@mui/material";
 import { Content } from "../../components";
-import {
-  Route,
-  Routes,
-  Link,
-} from "react-router-dom";
-import { Firestore } from "../../pages";
+import { Route, Routes, Link } from "react-router-dom";
+import { SheetPage } from "../../pages";
 
-function TabPanel({ children, value, index, ...other }) {
+const TabPanel = ({ children, value, index, ...other }) => {
   return (
     <div
       role="tabpanel"
@@ -18,14 +14,10 @@ function TabPanel({ children, value, index, ...other }) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {children}
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
-}
+};
 
 export default function BasicTabs() {
   const [value, setValue] = useState(0);
@@ -38,7 +30,12 @@ export default function BasicTabs() {
           onChange={(event, value) => setValue(value)}
           aria-label="basic tabs example"
         >
-          <Tab style={{ color: "#0a1c31" }} label="Main Page" component={Link} to="sheets" />
+          <Tab
+            style={{ color: "#0a1c31" }}
+            label="Main Page"
+            component={Link}
+            to="/"
+          />
         </Tabs>
       </Box>
       <TabPanel style={{ backgroundColor: "#f0f0f0" }} value={value} index={0}>
@@ -48,7 +45,7 @@ export default function BasicTabs() {
         >
           <Routes>
             <Route path="*" element={<Content />} />
-            <Route path=":sheetId" element={<Firestore />} />
+            <Route path=":sheetId" element={<SheetPage />} />
           </Routes>
         </Box>
       </TabPanel>

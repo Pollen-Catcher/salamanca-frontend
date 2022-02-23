@@ -185,7 +185,7 @@ function Speech({ pollens }) {
 }
 
 Speech.propTypes = {
-  pollens: PropTypes.array.isRequired,
+  pollens: PropTypes.array,
 };
 
 export default Speech;

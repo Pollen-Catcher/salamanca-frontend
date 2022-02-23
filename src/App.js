@@ -10,8 +10,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate replace to="sheets" />} />
-        <Route path="sheets/*" element={<Layout />} />
+        <Route path="*" element={<Layout />} />
+        <Route path="/*" element={<Layout />} />
       </Routes>
     </Router>
   );
