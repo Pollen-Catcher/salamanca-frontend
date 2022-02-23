@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Speech from "../../components/Speech/Speech";
 
-function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
+function Sheet({ setName, pollens, sheetId, loading, addPollen, handleEdit }) {
   return (
     <div>
       <Box
@@ -57,11 +57,10 @@ function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
             Click to Start Listening
           </Typography>
           <br />
-          <Speech pollens={pollens} />
+          <Speech pollens={pollens} sheetId={sheetId} />
         </div>
       </Box>
       <br />
-
       <Box sx={{ borderBottom: 1, borderColor: "divider" }} />
       <div align="left" style={{ width: "100%" }}>
         <Box sx={{ display: "flex-inline" }}>
@@ -96,7 +95,7 @@ function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
                     },
                     backgroundColor: "#0a1c31",
                   }}
-                  rowsPerPageOptions={[20]}
+                  rowsPerPageOptions={[100]}
                   columns={content}
                   rows={pollens.map((p) => ({
                     id: p.id,
@@ -104,7 +103,7 @@ function Sheet({ setName, pollens, loading, addPollen, handleEdit }) {
                     ...p.intervals,
                   }))}
                   onRowClick={(row) => console.log(row)}
-                  onCellEditCommit={handleEdit}
+                  //onCellEditCommit={handleEdit}
                 />
               )}
             </Flex>

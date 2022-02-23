@@ -1,6 +1,4 @@
-import { GridActionsCellItem } from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { doc, deleteDoc } from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import db from "../config/firebase";
 
 const deletePolen = async (id) => {
@@ -19,7 +17,7 @@ const deletePolen = async (id) => {
     ],
   },*/
 
-export const content =  [
+export const content = [
   {
     field: "name",
     headerName: "Nome",
@@ -31,7 +29,7 @@ export const content =  [
     headerName: "0",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
   {
@@ -39,7 +37,7 @@ export const content =  [
     headerName: "1",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
   {
@@ -47,7 +45,7 @@ export const content =  [
     headerName: "2",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
   {
@@ -55,7 +53,7 @@ export const content =  [
     headerName: "3",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
   {
@@ -63,7 +61,7 @@ export const content =  [
     headerName: "4",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
   {
@@ -71,7 +69,7 @@ export const content =  [
     headerName: "5",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
   {
@@ -79,7 +77,7 @@ export const content =  [
     headerName: "6",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
   {
@@ -87,7 +85,7 @@ export const content =  [
     headerName: "7",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
   {
@@ -95,7 +93,7 @@ export const content =  [
     headerName: "8",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
   {
@@ -103,7 +101,7 @@ export const content =  [
     headerName: "9",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
   {
@@ -111,7 +109,7 @@ export const content =  [
     headerName: "10",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
   {
@@ -119,7 +117,7 @@ export const content =  [
     headerName: "11",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
   {
@@ -127,84 +125,95 @@ export const content =  [
     headerName: "12",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
-  },{
+  },
+  {
     field: "_13h",
     headerName: "13",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
-  },{
+  },
+  {
     field: "_14h",
     headerName: "14",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
-  },{
+  },
+  {
     field: "_15h",
     headerName: "15",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
-  },{
+  },
+  {
     field: "_16h",
     headerName: "16",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
-  },{
+  },
+  {
     field: "_17h",
     headerName: "17",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
-  },{
+  },
+  {
     field: "_18h",
     headerName: "18",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
-  },{
+  },
+  {
     field: "_19h",
     headerName: "19",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
-  },{
+  },
+  {
     field: "_20h",
     headerName: "20",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
-  },{
+  },
+  {
     field: "_21h",
     headerName: "21",
     type: "number",
-    headerAlign: "center",  
-    editable: true,
+    headerAlign: "center",
+    editable: false,
     width: 50,
-  },{
+  },
+  {
     field: "_22h",
     headerName: "22",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
-  },{
+  },
+  {
     field: "_23h",
     headerName: "23",
     type: "number",
     headerAlign: "center",
-    editable: true,
+    editable: false,
     width: 50,
   },
 ];

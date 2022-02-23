@@ -3,15 +3,15 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Button, Alert, ButtonGroup } from "@mui/material";
+import { Alert, Button, ButtonGroup } from "@mui/material";
 import propose from "propose";
-import { doc, updateDoc, increment } from "firebase/firestore";
+import { doc, increment, updateDoc } from "firebase/firestore";
 import wordsToNumbers from "words-to-numbers";
-import db from "../../config/firebase";
 import PropTypes from "prop-types";
-import { pollensList, commandsList } from "../../data/arrays";
+import db from "../../config/firebase";
+import { commandsList, pollensList } from "../../data/arrays";
 
-function Speech({ pollens }) {
+function Speech({ pollens, sheetId }) {
   const [interval, setInterval] = useState("intervals._0h");
   const [currentCommand, setCurrentCommand] = useState("add");
 
@@ -43,22 +43,30 @@ function Speech({ pollens }) {
     {
       command: ["assign *", "pin *"],
       callback: (hour, { resetTranscript }) => {
-        setInterval("intervals._" + hour + "h");
+        let intAmount;
+        if (typeof hour === "string") {
+          intAmount = wordsToNumbers(hour, { fuzzy: true });
+          console.log("intAmount", intAmount);
+        } else {
+          intAmount = hour;
+        }
+
+        if (!isNaN(intAmount) && intAmount >= 0 && intAmount <= 23) {
+          setInterval(`intervals._${intAmount}h`);
+        } else {
+          console.log("Invalid hour");
+        }
+
         resetTranscript();
       },
     },
     {
       command: ["do * *"],
       callback: async (pollenType, amount, { resetTranscript }) => {
-        if (interval.length == 0) {
-          console.log("ERROR - Undefined interval");
-        }
-
         const proposedPollen = propose(pollenType, pollensList, {
           ignoreCase: true,
           threshold: 0.2,
         });
-
 
         if (!proposedPollen) {
           console.log("No pollen found");
@@ -80,28 +88,20 @@ function Speech({ pollens }) {
         }
 
         const pollen = pollens.find((p) => p.name === proposedPollen);
-        if (!pollen.id) { // adicionar o pollen ao banco de dados
+        if (!pollen.id) {
           console.log("No pollen found");
           resetTranscript();
           return;
         }
 
-        console.log(pollen);
-
-        const ref = doc(
-          db,
-          "sheets",
-          "qcMt55cB912kjwRfxoVQ",
-          "pollens",
-          pollen.id
-        );
-
-        console.log(interval);
+        const ref = doc(db, "sheets", sheetId, "pollens", pollen.id);
 
         switch (currentCommand) {
           case "add":
             await updateDoc(ref, {
               [interval]: increment(intAmount),
+            }).then(() => {
+              console.log("Added");
             });
             break;
           case "delete":
@@ -148,10 +148,8 @@ function Speech({ pollens }) {
             </Button>
           )}
         </ButtonGroup>
-
         <br />
         <br />
-
         <div className="microphone-status">
           {isListening && (
             <Alert

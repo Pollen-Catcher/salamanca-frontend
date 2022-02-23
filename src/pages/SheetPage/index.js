@@ -59,6 +59,7 @@ export default () => {
     <Sheet
       setName={setName}
       pollens={pollens}
+      sheetId={sheetId}
       loading={loading}
       addPollen={addPolen}
       handleEdit={handleCellEditCommit}
