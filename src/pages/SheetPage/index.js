@@ -7,14 +7,15 @@ import { useParams } from "react-router-dom";
 
 export default () => {
   const { sheetId } = useParams();
+
   const [name, setName] = useState("");
 
   const pollenCollectionRef = collection(db, "sheets", sheetId, "pollens");
   const [pollens, loading, error] = useCollectionData(pollenCollectionRef, {
     idField: "id",
-  }); // data
+    snapshotOptions: { includeMetadataChanges: true },
+  });
 
-  //adicionar novo polen
   const addPolen = async () => {
     await addDoc(pollenCollectionRef, {
       name: name,

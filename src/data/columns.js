@@ -24,6 +24,7 @@ export const content =  [
     field: "name",
     headerName: "Nome",
     editable: false,
+    width: 80,
   },
   {
     field: "_0h",
@@ -31,6 +32,7 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
   {
     field: "_1h",
@@ -38,6 +40,7 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
   {
     field: "_2h",
@@ -45,6 +48,7 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
   {
     field: "_3h",
@@ -52,6 +56,7 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
   {
     field: "_4h",
@@ -59,6 +64,7 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
   {
     field: "_5h",
@@ -66,6 +72,7 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
   {
     field: "_6h",
@@ -73,6 +80,7 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
   {
     field: "_7h",
@@ -80,6 +88,7 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
   {
     field: "_8h",
@@ -87,6 +96,7 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
   {
     field: "_9h",
@@ -94,6 +104,7 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
   {
     field: "_10h",
@@ -101,6 +112,7 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
   {
     field: "_11h",
@@ -108,6 +120,7 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
   {
     field: "_12h",
@@ -115,71 +128,83 @@ export const content =  [
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },{
     field: "_13h",
     headerName: "13",
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },{
     field: "_14h",
     headerName: "14",
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },{
     field: "_15h",
     headerName: "15",
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },{
     field: "_16h",
     headerName: "16",
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },{
     field: "_17h",
     headerName: "17",
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },{
     field: "_18h",
     headerName: "18",
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },{
     field: "_19h",
     headerName: "19",
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },{
     field: "_20h",
     headerName: "20",
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },{
     field: "_21h",
     headerName: "21",
     type: "number",
-    headerAlign: "center",
+    headerAlign: "center",  
     editable: true,
+    width: 50,
   },{
     field: "_22h",
     headerName: "22",
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },{
     field: "_23h",
     headerName: "23",
     type: "number",
     headerAlign: "center",
     editable: true,
+    width: 50,
   },
 ];

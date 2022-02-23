@@ -10,7 +10,7 @@ const defaultValues = {
   location: "",
 };
 
-const Index = ({}) => {
+export default ({}) => {
   //modal dialog
   const [openCreateSheet, setOpenCreateSheet] = useState(false);
   const handleOpenCreateSheet = () => setOpenCreateSheet(true);
@@ -43,7 +43,3 @@ const Index = ({}) => {
     />
   );
 };
-
-Index.propTypes = {};
-
-export default Index;
