@@ -4,7 +4,7 @@ import { Flex, TableContainer } from "./styles";
 import { content } from "../../data/columns";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import Speech from "../../components/Speech/Speech";
+import { Speech } from "../../components";
 
 function Sheet({ setName, pollens, sheetId, loading, addPollen, handleEdit }) {
   return (
