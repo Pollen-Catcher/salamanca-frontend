@@ -43,9 +43,11 @@ function Speech({ pollens, sheetId }) {
     {
       command: ["assign *", "pin *"],
       callback: (hour, { resetTranscript }) => {
+        console.log("assign", hour);
+
         let intAmount;
         if (typeof hour === "string") {
-          intAmount = wordsToNumbers(hour, { fuzzy: true });
+          intAmount = wordsToNumbers(hour);
           console.log("intAmount", intAmount);
         } else {
           intAmount = hour;

@@ -1,24 +1,14 @@
 import * as React from "react";
-import {
-  Typography,
-  Table,
-  TableBody,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Stack,
-  Box,
-} from "@mui/material";
+import { Box, Table, TableBody, TableHead, TableRow } from "@mui/material";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import { collection, doc, deleteDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc } from "firebase/firestore";
 import db from "../../config/firebase";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { sheetConverter } from "../../models/Sheet";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -49,10 +39,10 @@ const useStyles = makeStyles({
 });
 
 function Crud() {
-  //firestore
-  const [sheets, loading, error] = useCollectionData(collection(db, "sheets"), {
-    idField: "id",
-  });
+  const sheetCollectionRef = collection(db, "sheets").withConverter(
+    sheetConverter
+  );
+  const [sheets, loading, error] = useCollectionData(sheetCollectionRef);
 
   //styles
   const classes = useStyles();

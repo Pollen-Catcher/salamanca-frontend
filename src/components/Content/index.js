@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { addDoc, collection, Timestamp } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import db from "../../config/firebase";
 import Content from "./Content";
+import { Sheet, sheetConverter } from "../../models/Sheet";
 
 const defaultValues = {
   name: "",
@@ -18,18 +18,14 @@ export default ({}) => {
 
   //form
   const { handleSubmit, reset, setValue, control } = useForm({ defaultValues });
-  const [data, setData] = useState(null);
+  //const [data, setData] = useState(null);
 
   const addSheet = async (data) => {
-    setData(data);
+    //setData(data);
     const { name, location } = data;
 
-    await addDoc(collection(db, "sheets"), {
-      name,
-      location: location,
-      createdAt: Timestamp.now(),
-      lastEditedAt: Timestamp.now(),
-    });
+    const sheet = new Sheet(name, location);
+    await addDoc(collection(db, "sheets").withConverter(sheetConverter), sheet);
   };
 
   return (
@@ -42,4 +38,5 @@ export default ({}) => {
       addSheet={addSheet}
     />
   );
-};
+};;
+;
