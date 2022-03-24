@@ -5,14 +5,14 @@ import { Navigator, Header } from "../../components";
 const Copyright = () => {
   return (
     <Box sx = {{
-        position: "absolute",
+        position: "relative",
         display: "flex",
         bottom: 0,
         width: "100%",
         textAlign: "center",
         justifyContent: "center",
         alignItems: "center",
-
+        backgroundColor: "#f0f0f0",
         p: 2,
     }}>
       <Typography variant="body2" color="#b6b5b5" align="center">
@@ -40,7 +40,7 @@ export default function Layout() {
   return (
     <>
       <Box
-        sx={{ display: "flex", minHeight: "100vh"}}
+        sx={{ display: "flex", minHeight: "100vh", position: "relative", backgroundColor: "#f0f0f0"}}
       >
         <Box
           component="nav"
@@ -63,6 +63,7 @@ export default function Layout() {
           <Header onDrawerToggle={handleDrawerToggle} />
         </Box>
       </Box>
+      <Copyright/>
     </>
   );
 }

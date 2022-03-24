@@ -90,7 +90,7 @@ function Sheet({ setName, pollens, sheetId, loading, addPollen, handleEdit }) {
                     name: p.name,
                     ...p.intervals,
                   }))}
-                  style={{ width: "80%" }}
+                  style={{ position: "relative", width: "100%" }}
                 />
               )}
               {/*pollens && (

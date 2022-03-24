@@ -8,7 +8,6 @@ export const TableContainer = styled(Box)(({ theme }) => ({
 
 export const Flex = styled(Box)(({ theme }) => ({
   display: "flex",
-  height: "100%",
   alignItems: "center",
   flexGrow: 1,
 }));
