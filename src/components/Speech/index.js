@@ -2,16 +2,30 @@ import { useState } from "react";
 import propose from "propose";
 import { commandsList, pollensList } from "../../data/arrays";
 import wordsToNumbers from "words-to-numbers";
-import { doc, increment, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  increment,
+  updateDoc,
+} from "firebase/firestore";
 import db from "../../config/firebase";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import Speech from "./Speech";
+import { Pollen, pollenConverter } from "../../models/Pollen";
 
 export default ({ pollens, sheetId }) => {
   const [interval, setInterval] = useState("intervals._0h");
   const [currentCommand, setCurrentCommand] = useState("add");
+
+  const pollenCollectionRef = collection(
+    db,
+    "sheets",
+    sheetId,
+    "pollens"
+  ).withConverter(pollenConverter);
 
   const commands = [
     {
@@ -67,6 +81,7 @@ export default ({ pollens, sheetId }) => {
           ignoreCase: true,
           threshold: 0.2,
         });
+        console.log("proposedPollen", proposedPollen);
 
         if (!proposedPollen) {
           console.log("No pollen found");
@@ -87,14 +102,21 @@ export default ({ pollens, sheetId }) => {
           return;
         }
 
-        const pollen = pollens.find((p) => p.name === proposedPollen);
-        if (!pollen.id) {
-          console.log("No pollen found");
-          resetTranscript();
-          return;
+        let { id } = pollens.find((p) => p.name === proposedPollen) || {};
+        if (!id) {
+          if (!pollensList.includes(proposedPollen)) {
+            console.log("No pollen found");
+            resetTranscript();
+            return;
+          } else {
+            const newPollen = new Pollen(proposedPollen);
+            const docRef = await addDoc(pollenCollectionRef, newPollen);
+            id = docRef.id;
+            console.log("newPollen", id);
+          }
         }
 
-        const ref = doc(db, "sheets", sheetId, "pollens", pollen.id);
+        const ref = doc(db, "sheets", sheetId, "pollens", id);
 
         switch (currentCommand) {
           case "add":

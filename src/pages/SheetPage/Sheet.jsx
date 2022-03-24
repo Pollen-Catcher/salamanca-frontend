@@ -1,7 +1,8 @@
 import { Button, Stack, TextField } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+//import { DataGrid } from "@mui/x-data-grid";
+import DataGrid from "react-data-grid";
 import { Flex, TableContainer } from "./styles";
-import { content } from "../../data/columns";
+import { columns } from "../../data/columns";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Speech } from "../../components";
@@ -79,6 +80,17 @@ function Sheet({ setName, pollens, sheetId, loading, addPollen, handleEdit }) {
             <Flex>
               {pollens && (
                 <DataGrid
+                  columns={columns}
+                  rows={pollens.map((p) => ({
+                    id: p.id,
+                    name: p.name,
+                    ...p.intervals,
+                  }))}
+                  style={{ width: "80%" }}
+                />
+              )}
+              {/*pollens && (
+                <DataGrid
                   sx={{
                     color: "#b6b5b5",
                     boxShadow: 2,
@@ -105,7 +117,7 @@ function Sheet({ setName, pollens, sheetId, loading, addPollen, handleEdit }) {
                   onRowClick={(row) => console.log(row)}
                   //onCellEditCommit={handleEdit}
                 />
-              )}
+              )*/}
             </Flex>
           </TableContainer>
         </Box>
