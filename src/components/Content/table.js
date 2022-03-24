@@ -4,11 +4,13 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { collection, deleteDoc, doc } from "firebase/firestore";
 import db from "../../config/firebase";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
 import { sheetConverter } from "../../models/Sheet";
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -106,7 +108,7 @@ function Crud() {
                   </TableCell>
 
                   <TableCell align="center">
-                    <DeleteIcon />
+                    <Link to={`${sheet.id}`}><EditIcon sx={{ color: '#202020' }} /></Link>
                   </TableCell>
 
                   <TableCell align="center">
