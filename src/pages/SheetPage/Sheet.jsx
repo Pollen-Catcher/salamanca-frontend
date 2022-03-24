@@ -15,43 +15,47 @@ function Sheet({ setName, pollens, sheetId, loading, addPollen, handleEdit }) {
           display: "flex",
         }}
       >
-        <div style={{ width: "50%" }}>
+        <Box
+          sx={{
+            p: 2,
+            width: '15%',
+            backgroundColor: '#e8e8e8',
+            border: '1px solid #e8e8e8',
+            borderRadius: '5px'
+          }}>
           <Typography
             noWrap
-            variant="h6"
+            align="center"
             component="div"
-            style={{ color: "#b6b5b5" }}
-            sx={{ display: { xs: "none", sm: "block" } }}
+            style={{ color: "#081627" }}
+            sx={{ display: { xs: "5", sm: "block" } }}
           >
             Add a New Name
           </Typography>
           <br />
+          
           <Stack direction={"row"} spacing={2}>
-            <TextField
-              label={"Name"}
-              color={"primary"}
-              variant={"outlined"}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Button color={"primary"} variant={"contained"} onClick={addPollen}>
+            <TextField id="standard-basic" label="Name" variant="standard" onChange={(e) => setName(e.target.value)} />
+            <Flex><Button color={"primary"} variant={"contained"} onClick={addPollen}>
               {" "}
               Add
-            </Button>
+            </Button></Flex>
           </Stack>
-        </div>
-        <div
-          style={{
-            width: "25%",
-            marginTop: 10,
-            marginBottom: 10,
-            marginLeft: 40,
-          }}
-        >
+          
+        </Box>
+        <Box
+          sx={{
+            p: 2,
+            width: '20%',
+            backgroundColor: '#e8e8e8',
+            border: '1px solid #e8e8e8',
+            borderRadius: '5px',
+            marginLeft: "5%",
+          }}>
           <Typography
             noWrap
-            variant="h6"
             component="div"
-            style={{ color: "#b6b5b5" }}
+            style={{ color: "#081627" }}
             sx={{ display: { xs: "none", sm: "block" } }}
             align="center"
           >
@@ -59,7 +63,7 @@ function Sheet({ setName, pollens, sheetId, loading, addPollen, handleEdit }) {
           </Typography>
           <br />
           <Speech pollens={pollens} sheetId={sheetId} />
-        </div>
+        </Box>
       </Box>
       <br />
       <Box sx={{ borderBottom: 1, borderColor: "divider" }} />
