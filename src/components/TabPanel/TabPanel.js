@@ -31,7 +31,7 @@ export default function BasicTabs() {
           aria-label="basic tabs example"
         >
           <Tab
-            style={{ color: "#0a1c31" }}
+            style={{ color: "#f0f0f0" }}
             label="Main Page"
             component={Link}
             to="/"
