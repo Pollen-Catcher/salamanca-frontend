@@ -10,3 +10,8 @@
 
 1. O Prettier e Eslint são pacotes para formatar o código e manter a consistência do trabalho para todos. Dessa forma todos estarão utilizando as mesmas configurações
 2. O Material-UI é uma dependência excelente para construir os componentes em JS. Você pode aprender mais sobre isso no site https://mui.com/pt/components/ . Também existe a opção de fazer da maneira nativa, utilizando os arquivos .css
+
+## Para compilar o último commit, devem ser instaladas as seguintes linhas de comando:
+1. npm install @mui/x-data-grid-pro
+2. npm i @mui/x-license-pro
+3. npm audit fix --force
