@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import {initializeApp} from "firebase/app";
-import {getAnalytics} from "firebase/analytics";
-import {getFirestore} from "firebase/firestore";
+import { getAnalytics } from "firebase/analytics";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -20,6 +20,6 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
-//connectFirestoreEmulator(db, "localhost", 8080);
+connectFirestoreEmulator(db, "localhost", 8080);
 
 export default db;

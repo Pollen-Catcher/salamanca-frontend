@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import Sheet from "./Sheet";
+import SheetPage from "./SheetPage";
 import db from "../../config/firebase";
 import { useParams } from "react-router-dom";
 import { Pollen, pollenConverter } from "../../models/Pollen";
@@ -32,7 +32,7 @@ export default () => {
   };
 
   return (
-    <Sheet
+    <SheetPage
       setName={setName}
       pollens={pollens}
       sheetId={sheetId}

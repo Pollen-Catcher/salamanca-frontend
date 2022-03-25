@@ -1,14 +1,23 @@
-import Box from "@mui/material/Box";
-import { styled } from "@mui/material/styles";
+import { css } from "@emotion/css";
 
-export const TableContainer = styled(Box)(({ theme }) => ({
-  height: 700,
-  width: "100%",
-}));
+export const oddRow = css`
+  .rdg-cell {
+    background-color: #212529;
+    color: white;
+  }
 
-export const Flex = styled(Box)(({ theme }) => ({
-  display: "flex",
-  height: "100%",
-  alignItems: "center",
-  flexGrow: 1,
-}));
+  &:hover .rdg-cell {
+    background-color: darkblue;
+  }
+`;
+
+export const evenRow = css`
+  .rdg-cell {
+    background-color: #2c3034;
+    color: white;
+  }
+
+  &:hover .rdg-cell {
+    background-color: darkblue;
+  }
+`;
