@@ -4,6 +4,7 @@ import {
   Routes,
 } from "react-router-dom";
 import { Layout } from "./pages";
+import { LoginPage } from "./pages";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="*" element={<Layout />} />
         <Route path="/*" element={<Layout />} />
+        <Route path="/loginPage" element={<LoginPage />} />
       </Routes>
     </Router>
   );
