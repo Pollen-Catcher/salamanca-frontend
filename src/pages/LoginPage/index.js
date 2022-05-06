@@ -2,19 +2,71 @@ import { useState } from "react";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut} from "firebase/auth";
 import Login from "./LoginPage";
 import db from "../../config/firebase";
+import {auth} from "../../config/firebase";
 import { useParams } from "react-router-dom";
 
-const LogIn = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-}
-
 export default() => {
+  
+  const [registerEmail, setRegisterEmail] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
 
+  const [user, setUser] = useState({});
 
+  onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser);
+
+  })
+
+  const register = async () => {
+
+    try {
+      const user = await createUserWithEmailAndPassword(
+        auth, 
+        registerEmail, 
+        registerPassword
+        );
+      console.log(user)
+
+    }catch(error) {
+      console.log(error.message);
+    }
+  };
+
+  const login = async () => {
+
+    try {
+      const user = await signInWithEmailAndPassword(
+        auth, 
+        loginEmail, 
+        loginPassword
+        );
+      console.log(user)
+
+    }catch(error) {
+      console.log(error.message);
+    }  
+  };
+
+  const logout = async () => {
+
+    await signOut(auth);
+  };
+    
   return(
-    <Login />
+    <Login
+      setRegisterEmail = {setRegisterEmail}
+      setRegisterPassword = {setRegisterPassword}
+      setLoginEmail = {setLoginEmail}
+      setLoginPassword = {setLoginPassword}
+      register = {register}
+      logout = {logout}
+      login = {login}
+      user = {user}
+     />
   );
 };
