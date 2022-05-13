@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { addDoc, collection } from "firebase/firestore";
-import db from "../../config/firebase";
+import { getFirestore, addDoc, collection } from "firebase/firestore";
+import { app } from "../../config/firebase";
 import Content from "./Content";
 import { Sheet, sheetConverter } from "../../models/Sheet";
 
@@ -9,6 +9,8 @@ const defaultValues = {
   name: "",
   location: "",
 };
+
+const db = getFirestore(app);
 
 export default ({}) => {
   //modal dialog

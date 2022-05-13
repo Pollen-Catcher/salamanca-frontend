@@ -1,10 +1,18 @@
 import { useState } from "react";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  addDoc,
+  collection,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import SheetPage from "./SheetPage";
-import db from "../../config/firebase";
+import { app } from "../../config/firebase";
 import { useParams } from "react-router-dom";
 import { Pollen, pollenConverter } from "../../models/Pollen";
+
+const db = getFirestore(app);
 
 export default () => {
   const { sheetId } = useParams();

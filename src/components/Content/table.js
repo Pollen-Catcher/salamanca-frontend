@@ -1,14 +1,16 @@
 import * as React from "react";
 import { Box, Table, TableBody, TableHead, TableRow } from "@mui/material";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import { collection, deleteDoc, doc } from "firebase/firestore";
-import db from "../../config/firebase";
+import { collection, deleteDoc, doc, getFirestore } from "firebase/firestore";
+import { app } from "../../config/firebase";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
 import { sheetConverter } from "../../models/Sheet";
+
+const db = getFirestore(app);
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {

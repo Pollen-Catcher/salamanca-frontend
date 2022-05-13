@@ -1,5 +1,7 @@
-import { deleteDoc, doc } from "firebase/firestore";
-import db from "../config/firebase";
+import { getFirestore, deleteDoc, doc } from "firebase/firestore";
+import { app } from "../config/firebase";
+
+const db = getFirestore(app);
 
 const deletePolen = async (id) => {
   const currentRef = doc(db, "pollens", id);

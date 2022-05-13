@@ -3,18 +3,21 @@ import propose from "propose";
 import { commandsList, pollensList } from "../../data/arrays";
 import wordsToNumbers from "words-to-numbers";
 import {
+  getFirestore,
   addDoc,
   collection,
   doc,
   increment,
   updateDoc,
 } from "firebase/firestore";
-import db from "../../config/firebase";
+import { app } from "../../config/firebase";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import Speech from "./Speech";
 import { Pollen, pollenConverter } from "../../models/Pollen";
+
+const db = getFirestore(app);
 
 export default ({ pollens, sheetId }) => {
   const [interval, setInterval] = useState("intervals._0h");
