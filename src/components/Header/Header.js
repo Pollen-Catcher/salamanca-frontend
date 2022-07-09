@@ -9,7 +9,6 @@ import {
   IconButton,
 } from "@mui/material";
 import { Help, Menu, Notifications } from "@mui/icons-material";
-import { BasicTabs } from "../../components";
 
 function Header({ onDrawerToggle }) {
   return (
@@ -54,7 +53,7 @@ function Header({ onDrawerToggle }) {
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                Authentication
+                Pollen Catcher
               </Typography>
             </Grid>
             <Grid item>
@@ -66,14 +65,6 @@ function Header({ onDrawerToggle }) {
             </Grid>
           </Grid>
         </Toolbar>
-      </AppBar>
-      <AppBar
-        component="div"
-        position="static"
-        elevation={0}
-        sx={{ zIndex: 0 }}
-      >
-        <BasicTabs />
       </AppBar>
     </>
   );

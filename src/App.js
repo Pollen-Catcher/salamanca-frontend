@@ -1,18 +1,16 @@
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-} from "react-router-dom";
-import { Layout } from "./pages";
-import { LoginPage } from "./pages";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Projects, Sheets } from "./components";
+import { Layout, LoginPage } from "./pages";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="*" element={<Layout />} />
-        <Route path="/*" element={<Layout />} />
-        <Route path="/loginPage" element={<LoginPage />} />
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Projects />} />
+          <Route path=":sheetId" element={<Sheets />} />
+        </Route>
+        <Route path="loginPage" element={<LoginPage />} />
       </Routes>
     </Router>
   );

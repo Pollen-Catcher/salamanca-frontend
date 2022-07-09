@@ -1,7 +1,6 @@
 import {
   AppBar,
   Toolbar,
-  Typography,
   Paper,
   Grid,
   Button,
@@ -17,10 +16,9 @@ import {
 import { Controller } from "react-hook-form";
 import { Search, Refresh } from "@mui/icons-material";
 import { CreateSheetBox } from "./styles";
-import Table from "./table";
-import PropTypes from "prop-types";
+import Table from "./Table";
 
-function Content({
+function Projects({
   openCreateSheet,
   handleOpenCreateSheet,
   handleCloseCreateSheet,
@@ -126,13 +124,4 @@ function Content({
   );
 }
 
-Content.propTypes = {
-  openCreateSheet: PropTypes.bool.isRequired,
-  handleOpenCreateSheet: PropTypes.func.isRequired,
-  handleCloseCreateSheet: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  control: PropTypes.any.isRequired,
-  addSheet: PropTypes.func.isRequired,
-};
-
-export default Content;
+export default Projects;

@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import { Speech } from "../../components";
 import { evenRow, oddRow } from "./styles";
 
-function SheetPage({
+function Sheets({
   setName,
   pollens,
   sheetId,
@@ -39,17 +39,19 @@ function SheetPage({
             Add a New Name
           </Typography>
           <br />
-          
+
           <Stack direction={"row"} spacing={2}>
             <TextField id="standard-basic" label="Name" variant="standard" onChange={(e) => setName(e.target.value)} />
-            <Flex><Button color={"primary"} variant={"contained"} onClick={addPollen}>
-              {" "}
-              Add
-            </Button></Flex>
+            <Box>
+              <Button color={"primary"} variant={"contained"} onClick={addPollen} className="bg-black">
+                {" "}
+                Add
+              </Button>
+            </Box>
           </Stack>
-          
+
         </Box>
-        <Box
+        <Box flex
           sx={{
             p: 2,
             width: '20%',
@@ -111,4 +113,4 @@ function SheetPage({
   );
 }
 
-export default SheetPage;
+export default Sheets;

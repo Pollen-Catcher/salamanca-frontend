@@ -1,10 +1,18 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import './index.css';
+import { createRoot } from "react-dom/client";
+import {
+  createTheme,
+  StyledEngineProvider,
+  ThemeProvider,
+} from "@mui/material/styles";
 import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from "./config/firebase";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { FirebaseContext } from "./contexts/firebaseContext";
+import "./index.css";
 
 let theme = createTheme({
   palette: {
@@ -148,17 +156,26 @@ theme = {
   },
 };
 
-ReactDOM.render(
-  <React.StrictMode>
-    <CssBaseline />
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+connectFirestoreEmulator(db, "localhost", 8080);
+connectAuthEmulator(auth, "http://localhost:9099");
+
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+root.render(
+  <React.StrictMode>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <FirebaseContext.Provider value={{ db, auth }}>
+          <App />
+        </FirebaseContext.Provider>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </React.StrictMode>
+);

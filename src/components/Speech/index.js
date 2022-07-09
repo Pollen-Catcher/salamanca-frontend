@@ -1,25 +1,22 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import propose from "propose";
 import { commandsList, pollensList } from "../../data/arrays";
-import wordsToNumbers from "words-to-numbers";
 import {
-  getFirestore,
   addDoc,
   collection,
   doc,
   increment,
   updateDoc,
 } from "firebase/firestore";
-import { app } from "../../config/firebase";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import Speech from "./Speech";
 import { Pollen, pollenConverter } from "../../models/Pollen";
-
-const db = getFirestore(app);
+import { FirebaseContext } from "../../contexts/firebaseContext";
+import Speech from "./Speech";
 
 export default ({ pollens, sheetId }) => {
+  const { db } = useContext(FirebaseContext);
   const [interval, setInterval] = useState("intervals._0h");
   const [currentCommand, setCurrentCommand] = useState("add");
 
@@ -38,11 +35,11 @@ export default ({ pollens, sheetId }) => {
       },
     },
     {
-      command: ["use command *", "use *"],
+      command: ["use command :commandType", "use :commandType"],
       callback: (commandType, { resetTranscript }) => {
         const proposedCommand = propose(commandType, commandsList, {
           ignoreCase: true,
-          threshold: 0.4,
+          threshold: 0.2,
         });
 
         if (!proposedCommand) {
@@ -56,20 +53,12 @@ export default ({ pollens, sheetId }) => {
       },
     },
     {
-      command: ["assign *", "pin *"],
+      command: ["assign :hour", "pin :hour"],
       callback: (hour, { resetTranscript }) => {
         console.log("assign", hour);
 
-        let intAmount;
-        if (typeof hour === "string") {
-          intAmount = wordsToNumbers(hour);
-          console.log("intAmount", intAmount);
-        } else {
-          intAmount = hour;
-        }
-
-        if (!isNaN(intAmount) && intAmount >= 0 && intAmount <= 23) {
-          setInterval(`intervals._${intAmount}h`);
+        if (!isNaN(hour) && hour >= 0 && hour <= 23) {
+          setInterval(`intervals._${hour}h`);
         } else {
           console.log("Invalid hour");
         }
@@ -78,7 +67,7 @@ export default ({ pollens, sheetId }) => {
       },
     },
     {
-      command: ["do * *"],
+      command: ["do :pollenType :amount"],
       callback: async (pollenType, amount, { resetTranscript }) => {
         const proposedPollen = propose(pollenType, pollensList, {
           ignoreCase: true,
@@ -92,14 +81,7 @@ export default ({ pollens, sheetId }) => {
           return;
         }
 
-        let intAmount;
-        if (typeof amount === "string") {
-          intAmount = wordsToNumbers(amount);
-        } else {
-          intAmount = amount;
-        }
-
-        if (isNaN(intAmount)) {
+        if (isNaN(amount)) {
           console.log("Invalid amount");
           resetTranscript();
           return;
@@ -124,14 +106,14 @@ export default ({ pollens, sheetId }) => {
         switch (currentCommand) {
           case "add":
             await updateDoc(ref, {
-              [interval]: increment(intAmount),
+              [interval]: increment(amount),
             }).then(() => {
               console.log("Added");
             });
             break;
           case "delete":
             await updateDoc(ref, {
-              [interval]: increment(-intAmount),
+              [interval]: increment(-amount),
             });
             break;
         }
@@ -141,7 +123,9 @@ export default ({ pollens, sheetId }) => {
     },
   ];
 
-  const { transcript, resetTranscript } = useSpeechRecognition({ commands });
+  const { resetTranscript, transcript } = useSpeechRecognition({
+    commands,
+  });
   const [isListening, setIsListening] = useState(false);
 
   const handleListening = () => {

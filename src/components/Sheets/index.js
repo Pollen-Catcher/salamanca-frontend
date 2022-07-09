@@ -1,21 +1,14 @@
-import { useState } from "react";
-import {
-  getFirestore,
-  addDoc,
-  collection,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
+import { useContext, useState } from "react";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import SheetPage from "./SheetPage";
-import { app } from "../../config/firebase";
 import { useParams } from "react-router-dom";
 import { Pollen, pollenConverter } from "../../models/Pollen";
-
-const db = getFirestore(app);
+import { FirebaseContext } from "../../contexts/firebaseContext";
+import Sheets from "./Sheet";
 
 export default () => {
   const { sheetId } = useParams();
+  const { db } = useContext(FirebaseContext);
 
   const [name, setName] = useState("");
 
@@ -40,7 +33,7 @@ export default () => {
   };
 
   return (
-    <SheetPage
+    <Sheets
       setName={setName}
       pollens={pollens}
       sheetId={sheetId}

@@ -1,24 +1,3 @@
-import { getFirestore, deleteDoc, doc } from "firebase/firestore";
-import { app } from "../config/firebase";
-
-const db = getFirestore(app);
-
-const deletePolen = async (id) => {
-  const currentRef = doc(db, "pollens", id);
-  await deleteDoc(currentRef);
-};
-/*{
-  field: "actions",
-  type: "actions",
-  getActions: (params) => [
-    <GridActionsCellItem
-      icon={<DeleteIcon />}
-      label="Delete"
-      onClick={() => deletePolen(params.id)}
-    />,
-  ],
-},*/
-
 export const columns = [
   { key: "name", name: "Name" },
   { key: "_0h", name: "0" },

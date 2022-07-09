@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { Outlet } from "react-router-dom";
 import { useMediaQuery, useTheme, Box, Typography, Link } from "@mui/material";
 import { Navigator, Header } from "../../components";
 
 const Copyright = () => {
   return (
-    <Box sx = {{
+    <Box
+      sx={{
         position: "relative",
         display: "flex",
         bottom: 0,
@@ -14,7 +16,8 @@ const Copyright = () => {
         alignItems: "center",
         backgroundColor: "#f0f0f0",
         p: 2,
-    }}>
+      }}
+    >
       <Typography variant="body2" color="#b6b5b5" align="center">
         {"Copyright © "}
         <Link color="inherit" href="LINK AQUI">
@@ -40,7 +43,12 @@ export default function Layout() {
   return (
     <>
       <Box
-        sx={{ display: "flex", minHeight: "100vh", position: "relative", backgroundColor: "#f0f0f0"}}
+        sx={{
+          display: "flex",
+          minHeight: "100vh",
+          position: "relative",
+          backgroundColor: "#f0f0f0",
+        }}
       >
         <Box
           component="nav"
@@ -61,9 +69,17 @@ export default function Layout() {
         </Box>
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <Header onDrawerToggle={handleDrawerToggle} />
+          <Box
+            component="main"
+            sx={{ flex: 1, py: 6, px: 4, bgcolor: "#eaeff1" }}
+          >
+            <Outlet />
+          </Box>
+          <Box component="footer" sx={{ p: 2, bgcolor: "#eaeff1" }}>
+            <Copyright />
+          </Box>
         </Box>
       </Box>
-      <Copyright/>
     </>
   );
 }

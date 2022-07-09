@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
-import { getFirestore, addDoc, collection } from "firebase/firestore";
-import { app } from "../../config/firebase";
-import Content from "./Content";
+import { addDoc, collection } from "firebase/firestore";
 import { Sheet, sheetConverter } from "../../models/Sheet";
+import { FirebaseContext } from "../../contexts/firebaseContext";
+import Projects from "./Projects";
 
 const defaultValues = {
   name: "",
   location: "",
 };
 
-const db = getFirestore(app);
-
 export default ({}) => {
+  const { db } = useContext(FirebaseContext);
+  
   //modal dialog
   const [openCreateSheet, setOpenCreateSheet] = useState(false);
   const handleOpenCreateSheet = () => setOpenCreateSheet(true);
@@ -31,7 +31,7 @@ export default ({}) => {
   };
 
   return (
-    <Content
+    <Projects
       openCreateSheet={openCreateSheet}
       handleOpenCreateSheet={handleOpenCreateSheet}
       handleCloseCreateSheet={handleCloseCreateSheet}
