@@ -1,6 +1,6 @@
 export class Pollen {
   constructor(name) {
-    this.name = name;
+    this.name = name
     this.intervals = {
       _0h: 0,
       _1h: 0,
@@ -26,11 +26,11 @@ export class Pollen {
       _21h: 0,
       _22h: 0,
       _23h: 0,
-    };
+    }
   }
 
   toString() {
-    return this.name + ": " + JSON.stringify(this.intervals);
+    return this.name + ': ' + JSON.stringify(this.intervals)
   }
 }
 
@@ -40,14 +40,14 @@ export const pollenConverter = {
     return {
       name: pollen.name,
       intervals: pollen.intervals,
-    };
+    }
   },
   fromFirestore: (snapshot, options) => {
-    const data = snapshot.data(options);
+    const data = snapshot.data(options)
     return {
       id: snapshot.id,
       name: data.name,
       intervals: data.intervals,
-    };
+    }
   },
-};
+}

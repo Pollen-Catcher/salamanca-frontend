@@ -1,25 +1,28 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
+/* eslint-disable no-unused-vars */
+import './index.css'
+
+import CssBaseline from '@mui/material/CssBaseline'
 import {
   createTheme,
   StyledEngineProvider,
   ThemeProvider,
-} from "@mui/material/styles";
-import App from "./App";
-import CssBaseline from "@mui/material/CssBaseline";
-import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "./config/firebase";
-import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
-import { connectAuthEmulator, getAuth } from "firebase/auth";
-import { FirebaseContext } from "./contexts/firebaseContext";
-import "./index.css";
+} from '@mui/material/styles'
+import { initializeApp } from 'firebase/app'
+import { connectAuthEmulator, getAuth } from 'firebase/auth'
+import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore'
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+
+import App from './App'
+import { firebaseConfig } from './config/firebase'
+import { FirebaseContext } from './contexts/firebaseContext'
 
 let theme = createTheme({
   palette: {
     primary: {
-      light: "#63ccff",
-      main: "#009be5",
-      dark: "#006db3",
+      light: '#63ccff',
+      main: '#009be5',
+      dark: '#006db3',
     },
   },
   typography: {
@@ -44,26 +47,26 @@ let theme = createTheme({
       minHeight: 48,
     },
   },
-});
+})
 theme = {
   ...theme,
   components: {
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: "#081627",
+          backgroundColor: '#081627',
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: "none",
+          textTransform: 'none',
         },
         contained: {
-          boxShadow: "none",
-          "&:active": {
-            boxShadow: "none",
+          boxShadow: 'none',
+          '&:active': {
+            boxShadow: 'none',
           },
         },
       },
@@ -84,11 +87,11 @@ theme = {
     MuiTab: {
       styleOverrides: {
         root: {
-          textTransform: "none",
-          margin: "0 16px",
+          textTransform: 'none',
+          margin: '0 16px',
           minWidth: 0,
           padding: 0,
-          [theme.breakpoints.up("md")]: {
+          [theme.breakpoints.up('md')]: {
             padding: 0,
             minWidth: 0,
           },
@@ -112,15 +115,15 @@ theme = {
     MuiDivider: {
       styleOverrides: {
         root: {
-          backgroundColor: "rgb(255,255,255,0.15)",
+          backgroundColor: 'rgb(255,255,255,0.15)',
         },
       },
     },
     MuiListItemButton: {
       styleOverrides: {
         root: {
-          "&.Mui-selected": {
-            color: "#4fc3f7",
+          '&.Mui-selected': {
+            color: '#4fc3f7',
           },
         },
       },
@@ -136,10 +139,10 @@ theme = {
     MuiListItemIcon: {
       styleOverrides: {
         root: {
-          color: "inherit",
-          minWidth: "auto",
+          color: 'inherit',
+          minWidth: 'auto',
           marginRight: theme.spacing(2),
-          "& svg": {
+          '& svg': {
             fontSize: 20,
           },
         },
@@ -154,18 +157,18 @@ theme = {
       },
     },
   },
-};
+}
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+const app = initializeApp(firebaseConfig)
+const db = getFirestore(app)
+const auth = getAuth(app)
 
-connectFirestoreEmulator(db, "localhost", 8080);
-connectAuthEmulator(auth, "http://localhost:9099");
+// connectFirestoreEmulator(db, 'localhost', 8080)
+// connectAuthEmulator(auth, 'http://localhost:9099')
 
-const container = document.getElementById("root");
-const root = createRoot(container);
+const container = document.getElementById('root')
+const root = createRoot(container)
 
 root.render(
   <React.StrictMode>
@@ -178,4 +181,4 @@ root.render(
       </ThemeProvider>
     </StyledEngineProvider>
   </React.StrictMode>
-);
+)

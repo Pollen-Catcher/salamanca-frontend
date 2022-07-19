@@ -1,4 +1,4 @@
-import { css } from "@emotion/css";
+import { css } from '@emotion/css'
 
 export const oddRow = css`
   .rdg-cell {
@@ -9,7 +9,7 @@ export const oddRow = css`
   &:hover .rdg-cell {
     background-color: darkblue;
   }
-`;
+`
 
 export const evenRow = css`
   .rdg-cell {
@@ -20,4 +20,4 @@ export const evenRow = css`
   &:hover .rdg-cell {
     background-color: darkblue;
   }
-`;
+`

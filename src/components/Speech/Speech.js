@@ -1,5 +1,6 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Alert, Button, ButtonGroup } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete'
+import { Alert, Button, ButtonGroup } from '@mui/material'
+import PropTypes from 'prop-types'
 
 function Speech({
   transcript,
@@ -24,7 +25,7 @@ function Speech({
         <div className="microphone-status">
           {isListening && (
             <Alert
-              style={{ color: "#233143", backgroundColor: "#b8bcc2" }}
+              style={{ color: '#233143', backgroundColor: '#b8bcc2' }}
               severity="info"
             >
               Listening...
@@ -35,7 +36,7 @@ function Speech({
 
       {transcript && (
         <div className="microphone-result-container">
-          <div style={{ color: "#5e6060" }} className="microphone-result-text">
+          <div style={{ color: '#5e6060' }} className="microphone-result-text">
             {transcript}
           </div>
           <br />
@@ -50,7 +51,15 @@ function Speech({
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default Speech;
+Speech.propTypes = {
+  transcript: PropTypes.string,
+  isListening: PropTypes.bool,
+  handleListening: PropTypes.func,
+  stopHandle: PropTypes.func,
+  handleReset: PropTypes.func,
+}
+
+export default Speech

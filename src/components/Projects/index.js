@@ -1,34 +1,34 @@
-import { useContext, useState } from "react";
-import { useForm } from "react-hook-form";
-import { addDoc, collection } from "firebase/firestore";
-import { Sheet, sheetConverter } from "../../models/Sheet";
-import { FirebaseContext } from "../../contexts/firebaseContext";
-import Projects from "./Projects";
+import { addDoc, collection } from 'firebase/firestore'
+import { useContext, useState } from 'react'
+import { useForm } from 'react-hook-form'
+
+import { FirebaseContext } from '../../contexts/firebaseContext'
+import { Sheet, sheetConverter } from '../../models/Sheet'
+import Projects from './Projects'
 
 const defaultValues = {
-  name: "",
-  location: "",
-};
+  name: '',
+  location: '',
+}
 
-export default ({}) => {
-  const { db } = useContext(FirebaseContext);
-  
+export default () => {
+  const { db } = useContext(FirebaseContext)
+
   //modal dialog
-  const [openCreateSheet, setOpenCreateSheet] = useState(false);
-  const handleOpenCreateSheet = () => setOpenCreateSheet(true);
-  const handleCloseCreateSheet = () => setOpenCreateSheet(false);
+  const [openCreateSheet, setOpenCreateSheet] = useState(false)
+  const handleOpenCreateSheet = () => setOpenCreateSheet(true)
+  const handleCloseCreateSheet = () => setOpenCreateSheet(false)
 
   //form
-  const { handleSubmit, reset, setValue, control } = useForm({ defaultValues });
+  const { handleSubmit, control } = useForm({ defaultValues })
   //const [data, setData] = useState(null);
 
   const addSheet = async (data) => {
-    //setData(data);
-    const { name, location } = data;
+    const { name, location } = data
 
-    const sheet = new Sheet(name, location);
-    await addDoc(collection(db, "sheets").withConverter(sheetConverter), sheet);
-  };
+    const sheet = new Sheet(name, location)
+    await addDoc(collection(db, 'sheets').withConverter(sheetConverter), sheet)
+  }
 
   return (
     <Projects
@@ -39,5 +39,5 @@ export default ({}) => {
       control={control}
       addSheet={addSheet}
     />
-  );
-};
+  )
+}

@@ -1,6 +1,7 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Projects, Sheets } from "./components";
-import { Layout, LoginPage } from "./pages";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+
+import { Projects, Sheets } from './components'
+import { Layout, LoginPage } from './pages'
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
         <Route path="loginPage" element={<LoginPage />} />
       </Routes>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App

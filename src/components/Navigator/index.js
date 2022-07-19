@@ -1,70 +1,70 @@
 import {
+  DnsRounded as DnsRoundedIcon,
+  Home as HomeIcon,
+  People as PeopleIcon,
+  Public as PublicIcon,
+  Settings as SettingsIcon,
+  SettingsEthernet as SettingsEthernetIcon,
+} from '@mui/icons-material'
+import {
+  Box,
   Divider,
   Drawer,
   List,
-  Box,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-} from "@mui/material";
-import {
-  Home as HomeIcon,
-  People as PeopleIcon,
-  DnsRounded as DnsRoundedIcon,
-  Public as PublicIcon,
-  SettingsEthernet as SettingsEthernetIcon,
-  Settings as SettingsIcon,
-} from "@mui/icons-material";
-import { Link } from "react-router-dom";
+} from '@mui/material'
+import { Link } from 'react-router-dom'
 
 const categories = [
   {
-    id: "Build",
+    id: 'Build',
     children: [
       {
-        id: "Authentication",
+        id: 'Authentication',
         icon: <PeopleIcon />,
         active: true,
       },
-      { id: "Firestore", icon: <DnsRoundedIcon /> },
-      { id: "Hosting", icon: <PublicIcon /> },
-      { id: "Functions", icon: <SettingsEthernetIcon /> },
+      { id: 'Firestore', icon: <DnsRoundedIcon /> },
+      { id: 'Hosting', icon: <PublicIcon /> },
+      { id: 'Functions', icon: <SettingsEthernetIcon /> },
     ],
   },
   {
-    id: "Content",
-    children: [{ id: "Configuration", icon: <SettingsIcon /> }],
+    id: 'Content',
+    children: [{ id: 'Configuration', icon: <SettingsIcon /> }],
   },
-];
+]
 
 const item = {
-  py: "2px",
+  py: '2px',
   px: 3,
-  color: "rgba(255, 255, 255, 0.7)",
-  "&:hover, &:focus": {
-    bgcolor: "rgba(255, 255, 255, 0.08)",
+  color: 'rgba(255, 255, 255, 0.7)',
+  '&:hover, &:focus': {
+    bgcolor: 'rgba(255, 255, 255, 0.08)',
   },
-};
+}
 
 const itemCategory = {
-  boxShadow: "0 -1px 0 rgb(255,255,255,0.1) inset",
+  boxShadow: '0 -1px 0 rgb(255,255,255,0.1) inset',
   py: 1.5,
   px: 3,
-};
+}
 
 export default function Navigator(props) {
-  const { ...other } = props;
+  const { ...other } = props
 
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
         <ListItem
-          sx={{ ...item, ...itemCategory, fontSize: 22, color: "#fff" }}
+          sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}
         >
           Pollen Catcher
         </ListItem>
-        <Link to={"/"} style={{ textDecoration: "none" }}>
+        <Link to={'/'} style={{ textDecoration: 'none' }}>
           <ListItem sx={{ ...item, ...itemCategory }}>
             <ListItemIcon>
               <HomeIcon />
@@ -73,9 +73,9 @@ export default function Navigator(props) {
           </ListItem>
         </Link>
         {categories.map(({ id, children }) => (
-          <Box key={id} sx={{ bgcolor: "#101F33" }}>
+          <Box key={id} sx={{ bgcolor: '#101F33' }}>
             <ListItem sx={{ py: 2, px: 3 }}>
-              <ListItemText sx={{ color: "#fff" }}>{id}</ListItemText>
+              <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
             </ListItem>
             {children.map(({ id: childId, icon, active }) => (
               <ListItem disablePadding key={childId}>
@@ -91,5 +91,5 @@ export default function Navigator(props) {
         ))}
       </List>
     </Drawer>
-  );
+  )
 }

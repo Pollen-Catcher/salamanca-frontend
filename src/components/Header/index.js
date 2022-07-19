@@ -1,14 +1,14 @@
-import PropTypes from "prop-types";
+import { Help, Menu, Notifications } from '@mui/icons-material'
 import {
   AppBar,
   Avatar,
   Grid,
+  IconButton,
   Toolbar,
   Tooltip,
   Typography,
-  IconButton,
-} from "@mui/material";
-import { Help, Menu, Notifications } from "@mui/icons-material";
+} from '@mui/material'
+import PropTypes from 'prop-types'
 
 function Header({ onDrawerToggle }) {
   return (
@@ -16,7 +16,7 @@ function Header({ onDrawerToggle }) {
       <AppBar color="primary" position="sticky" elevation={0}>
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
-            <Grid sx={{ display: { sm: "none", xs: "block" } }} item>
+            <Grid sx={{ display: { sm: 'none', xs: 'block' } }} item>
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -67,11 +67,11 @@ function Header({ onDrawerToggle }) {
         </Toolbar>
       </AppBar>
     </>
-  );
+  )
 }
 
 Header.propTypes = {
   onDrawerToggle: PropTypes.func.isRequired,
-};
+}
 
-export default Header;
+export default Header
