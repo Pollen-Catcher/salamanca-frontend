@@ -44,5 +44,3 @@ export const pollensList = [
   'Urtica memb',
   'Indeterminado',
 ]
-
-export const commandsList = ['add', 'delete']
