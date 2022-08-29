@@ -6,7 +6,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { sizeHeight } from '@mui/system';
 import { useState } from "react";
-import { auth } from '../../config/firebase';
+import { auth, signInWithGoogle } from '../../config/firebase';
 
 function Login({setRegisterEmail, setRegisterPassword, setLoginEmail, setLoginPassword, register, logout, login, user}) {  
   
@@ -43,6 +43,7 @@ function Login({setRegisterEmail, setRegisterPassword, setLoginEmail, setLoginPa
         </Typography>
         <Button type ="submit" color="primary" variant="contained" onClick={login} style={buttonStyle} fullWidth>Sign In</Button>
         <Button type ="submit" color="primary" variant="contained" onClick={logout} style= {buttonStyle} fullWidth>Sign Out</Button>
+        <Button type ="submit" color="primary" variant="contained" onClick={signInWithGoogle} style={buttonStyle} fullWidth>Sign In with Google </Button>
       </Paper>
 
       <h4>USER LOGGED IN: 

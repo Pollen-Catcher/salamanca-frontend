@@ -5,7 +5,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut} from "firebase/auth";
 import Login from "./LoginPage";
 import db from "../../config/firebase";
-import {auth} from "../../config/firebase";
+import {auth, signInWithGoogle} from "../../config/firebase";
 import { useParams } from "react-router-dom";
 
 export default() => {
