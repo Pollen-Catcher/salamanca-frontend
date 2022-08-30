@@ -8,7 +8,7 @@ import { sizeHeight } from '@mui/system';
 import { useState } from "react";
 import { auth, signInWithGoogle } from '../../config/firebase';
 
-function Login({setRegisterEmail, setRegisterPassword, setLoginEmail, setLoginPassword, register, logout, login, user}) {  
+function Login({setRegisterEmail, setRegisterPassword, setLoginEmail, setLoginPassword, register, logout, login, forgotPassword, user}) {  
   
   // Style
   const paperStyle={padding :20, height: '70vh', width:360, margin:"20px auto"}
@@ -39,7 +39,7 @@ function Login({setRegisterEmail, setRegisterPassword, setLoginEmail, setLoginPa
           label='Remember me'
         />
         <Typography>
-          <Link href="#">Forgot password ?</Link>
+          <Link href="#" onClick={forgotPassword}> Forgot password ?</Link>
         </Typography>
         <Button type ="submit" color="primary" variant="contained" onClick={login} style={buttonStyle} fullWidth>Sign In</Button>
         <Button type ="submit" color="primary" variant="contained" onClick={logout} style= {buttonStyle} fullWidth>Sign Out</Button>
@@ -49,7 +49,7 @@ function Login({setRegisterEmail, setRegisterPassword, setLoginEmail, setLoginPa
       <h4>USER LOGGED IN: 
       <p>{user?.email}</p>
       </h4>
-
+    
       {/*SIGN UP TAB*/} 
       <Paper style={paperStyle}>
         <Grid align='center'>
