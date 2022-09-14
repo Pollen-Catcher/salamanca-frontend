@@ -11,7 +11,7 @@ function App() {
           <Route index element={<Projects />} />
           <Route path=":sheetId" element={<Sheets />} />
         </Route>
-        <Route path="loginPage" element={<LoginPage />} />
+        <Route path="login" element={<LoginPage />} />
       </Routes>
     </Router>
   )
