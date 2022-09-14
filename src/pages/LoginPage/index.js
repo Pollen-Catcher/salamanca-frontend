@@ -5,8 +5,10 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth'
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { useState } from 'react'
 import { useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { FirebaseContext } from '../../contexts/firebaseContext'
 import Login from './LoginPage'
@@ -19,6 +21,8 @@ export default () => {
   const [loginPassword, setLoginPassword] = useState('')
 
   const [user, setUser] = useState({})
+
+  const navigate = useNavigate()
 
   onAuthStateChanged(auth, (currentUser) => {
     setUser(currentUser)
@@ -44,6 +48,7 @@ export default () => {
         loginEmail,
         loginPassword
       )
+      navigate('/', { replace: true })
       console.log(user)
     } catch (error) {
       console.log(error.message)
@@ -64,6 +69,25 @@ export default () => {
       })
   }
 
+  const signInWithGoogle = () => {
+    const provider = new GoogleAuthProvider()
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const name = result.user.displayName
+        const email = result.user.email
+        const profilePic = result.user.photoURL
+
+        localStorage.setItem('name', name)
+        localStorage.setItem('email', email)
+        localStorage.setItem('profilePic', profilePic)
+
+        navigate('/', { replace: true })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
   return (
     <Login
       setRegisterEmail={setRegisterEmail}
@@ -73,6 +97,7 @@ export default () => {
       register={register}
       logout={logout}
       login={login}
+      signInWithGoogle={signInWithGoogle}
       forgotPassword={forgotPassword}
       user={user}
     />

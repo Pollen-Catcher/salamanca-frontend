@@ -1,20 +1,64 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { useContext } from 'react'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 
 import { Projects, Sheets } from './components'
+import { FirebaseContext } from './contexts/firebaseContext'
 import { Layout, LoginPage } from './pages'
 
 function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<Layout />}>
-          <Route index element={<Projects />} />
-          <Route path=":sheetId" element={<Sheets />} />
+          <Route
+            index
+            element={
+              <RequireAuth>
+                <Projects />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path=":sheetId"
+            element={
+              <RequireAuth>
+                <Sheets />
+              </RequireAuth>
+            }
+          />
         </Route>
-        <Route path="login" element={<LoginPage />} />
       </Routes>
     </Router>
   )
+}
+
+function RequireAuth({ children }) {
+  const { auth } = useContext(FirebaseContext)
+  const [user, loading] = useAuthState(auth)
+  const location = useLocation()
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />
+  }
+
+  return children
+}
+
+RequireAuth.propTypes = {
+  children: PropTypes.node,
 }
 
 export default App

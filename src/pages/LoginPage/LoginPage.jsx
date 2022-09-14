@@ -12,8 +12,6 @@ import {
 } from '@mui/material'
 import PropTypes from 'prop-types'
 
-import { signInWithGoogle } from '../../config/firebase'
-
 function Login({
   setRegisterEmail,
   setRegisterPassword,
@@ -22,6 +20,7 @@ function Login({
   register,
   logout,
   login,
+  signInWithGoogle,
   forgotPassword,
   user,
 }) {
@@ -157,6 +156,7 @@ Login.propTypes = {
   register: PropTypes.func,
   logout: PropTypes.func,
   login: PropTypes.func,
+  signInWithGoogle: PropTypes.func,
   forgotPassword: PropTypes.func,
   user: PropTypes.object,
 }
