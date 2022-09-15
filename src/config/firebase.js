@@ -1,3 +1,5 @@
+// Import the functions you need from the SDKs you need
+
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const firebaseConfig = {
@@ -9,3 +11,5 @@ export const firebaseConfig = {
   appId: '1:877270673339:web:d356a9d640ae74eebe869e',
   measurementId: 'G-G4W9MT9ECW',
 }
+
+//connectFirestoreEmulator(db, "localhost", 8080);

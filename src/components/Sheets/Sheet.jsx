@@ -75,7 +75,7 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
       </Box>
       <br />
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} />
-      <div align="left" style={{ width: '100%' }}>
+      <div style={{ width: '100%' }}>
         <Box sx={{ display: 'flex-inline' }}>
           <br />
           <Typography
