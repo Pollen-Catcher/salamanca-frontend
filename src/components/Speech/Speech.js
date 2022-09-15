@@ -35,7 +35,7 @@ function Speech({
       </div>
 
       {transcript && (
-        <div className="microphone-result-container">
+        <div className="microphone-result-container justify-center p-2">
           <div style={{ color: '#5e6060' }} className="microphone-result-text">
             {transcript}
           </div>

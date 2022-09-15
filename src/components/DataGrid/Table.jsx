@@ -59,6 +59,7 @@ function ExportCustomToolbar(pollens) {
           }}
           rows={rows}
           columns={columns}
+          pageSize={7}
           pagination
           components={{
             Toolbar: CustomToolbar,
