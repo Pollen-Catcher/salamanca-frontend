@@ -7,7 +7,6 @@ import { evenRow, oddRow } from './styles'
 function rowKeyGetter(row) {
   return row.id
 }
-
 function DataGrid({ pollens }) {
   const rows = pollens.map((p, index) => ({
     positionId: index,
@@ -21,8 +20,10 @@ function DataGrid({ pollens }) {
       rowKeyGetter={rowKeyGetter}
       columns={columns}
       rows={rows}
+      cellNavigationMode={'LOOP_OVER_ROW'}
       className="fill-grid"
       rowClass={(row) => (row.positionId % 2 === 0 ? evenRow : oddRow)}
+      rowHeight={40}
     />
   )
 }

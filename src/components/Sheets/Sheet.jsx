@@ -2,7 +2,8 @@ import { Box, Button, Stack, TextField, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 
 import { Speech } from '../../components'
-import DataGrid from './DataGrid'
+import Table from '../DataGrid/Table' // A NOVA VERSÃO DA TABELA SE ENCONTRA NA PASTA DATAGRID
+//import DataGrid from './DataGrid' DATAGRID ANTERIOR
 function Sheets({ setName, pollens, sheetId, addPollen }) {
   return (
     <>
@@ -10,10 +11,11 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
         <Box
           sx={{
             p: 2,
-            width: '15%',
+            width: '30%',
             backgroundColor: '#e8e8e8',
             border: '1px solid #e8e8e8',
             borderRadius: '5px',
+            marginLeft: '5%',
           }}
         >
           <Typography
@@ -27,7 +29,7 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
           </Typography>
           <br />
 
-          <Stack direction={'row'} spacing={2}>
+          <Stack direction={'row'} spacing={2} justifyContent="space-around">
             <TextField
               id="standard-basic"
               label="Name"
@@ -51,7 +53,7 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
           flex
           sx={{
             p: 2,
-            width: '20%',
+            width: '30%',
             backgroundColor: '#e8e8e8',
             border: '1px solid #e8e8e8',
             borderRadius: '5px',
@@ -89,7 +91,8 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
         </Box>
       </div>
       <Box className="container box-border flex flex-col p-2 ">
-        {pollens && <DataGrid pollens={pollens} />}
+        {/*pollens && <DataGrid pollens={pollens} />    IMPLEMENTAÇÂO DO DATAGRID ANTERIOR*/}
+        {pollens && <Table pollens={pollens} />}
       </Box>
     </>
   )

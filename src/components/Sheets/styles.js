@@ -2,22 +2,23 @@ import { css } from '@emotion/css'
 
 export const oddRow = css`
   .rdg-cell {
-    background-color: #212529;
-    color: white;
+    background-color: #ffffff;
+    color: black;
   }
 
   &:hover .rdg-cell {
-    background-color: darkblue;
+    opacity: 85%;
+    background-color: #d7e9f0;
   }
 `
 
 export const evenRow = css`
   .rdg-cell {
-    background-color: #2c3034;
-    color: white;
+    background-color: #eff0f0;
+    color: black;
   }
 
   &:hover .rdg-cell {
-    background-color: darkblue;
+    background-color: #d7e9f0;
   }
 `
