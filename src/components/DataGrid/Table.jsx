@@ -38,15 +38,13 @@ function ExportCustomToolbar(pollens) {
     ...polen.intervals,
   }))
   return (
-    <div style={{ height: 'auto', width: 'auto' }}>
+    <div className="container flex flex-1 content-center justify-center">
       <Box
         sx={{
           height: 540,
           width: 960,
           '& .MuiDataGrid-columnHeaders': {
             fontSize: 18,
-            justifyContent: 'space-between',
-            alignSelf: 'center',
           },
         }}
       >

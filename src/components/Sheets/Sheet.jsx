@@ -7,7 +7,7 @@ import Table from '../DataGrid/Table' // A NOVA VERSÃO DA TABELA SE ENCONTRA NA
 function Sheets({ setName, pollens, sheetId, addPollen }) {
   return (
     <>
-      <Box className="flex">
+      <Box className="flex" justifyContent="space-around" content="center">
         <Box
           sx={{
             p: 2,
@@ -29,7 +29,12 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
           </Typography>
           <br />
 
-          <Stack direction={'row'} spacing={2} justifyContent="space-around">
+          <Stack
+            direction={'row'}
+            spacing={2}
+            justifyContent="space-around"
+            content="center"
+          >
             <TextField
               id="standard-basic"
               label="Name"
@@ -66,6 +71,7 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
             style={{ color: '#081627' }}
             sx={{ display: { xs: 'none', sm: 'block' } }}
             align="center"
+            justify-content="center"
           >
             Click to Start Listening
           </Typography>
@@ -76,9 +82,10 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
       <br />
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} />
       <div style={{ width: '100%' }}>
-        <Box sx={{ display: 'flex-inline' }}>
+        <Box className="flex content-center justify-center py-4">
           <br />
           <Typography
+            className="flex content-center justify-center py-4"
             noWrap
             variant="h6"
             component="div"
@@ -90,9 +97,14 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
           <br />
         </Box>
       </div>
-      <Box className="container box-border flex flex-col p-2 ">
-        {/*pollens && <DataGrid pollens={pollens} />    IMPLEMENTAÇÂO DO DATAGRID ANTERIOR*/}
-        {pollens && <Table pollens={pollens} />}
+      <Box className="container box-border flex flex-col content-center justify-center py-4">
+        {/*pollens && <DataGrid pollens={pollens} />    IMPLEMENTAÇÃO DO DATAGRID ANTERIOR*/}
+        {pollens && (
+          <Table
+            pollens={pollens}
+            className="flex flex-col content-center justify-center"
+          />
+        )}
       </Box>
     </>
   )

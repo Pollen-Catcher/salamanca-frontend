@@ -164,6 +164,7 @@ function Index({ pollens, sheetId }) {
 
   return (
     <Speech
+      align-content="center"
       transcript={transcript}
       isListening={isListening}
       handleListening={handleListening}

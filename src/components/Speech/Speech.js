@@ -10,7 +10,7 @@ function Speech({
   handleReset,
 }) {
   return (
-    <div className="microphone-wrapper">
+    <div className="microphone-wrapper flex content-center justify-center">
       <div className="microphone-container">
         <ButtonGroup disableElevation variant="contained">
           <Button onClick={handleListening}>Listen</Button>
