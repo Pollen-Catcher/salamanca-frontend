@@ -28,7 +28,7 @@ function App() {
             }
           />
           <Route
-            path=":sheetId"
+            path="/:sheetId"
             element={
               <RequireAuth>
                 <Sheets />

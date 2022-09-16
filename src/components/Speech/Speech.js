@@ -10,7 +10,7 @@ function Speech({
   handleReset,
 }) {
   return (
-    <div className="microphone-wrapper">
+    <div className="microphone-wrapper flex content-center justify-center">
       <div className="microphone-container">
         <ButtonGroup disableElevation variant="contained">
           <Button onClick={handleListening}>Listen</Button>
@@ -35,7 +35,7 @@ function Speech({
       </div>
 
       {transcript && (
-        <div className="microphone-result-container">
+        <div className="microphone-result-container justify-center p-2">
           <div style={{ color: '#5e6060' }} className="microphone-result-text">
             {transcript}
           </div>

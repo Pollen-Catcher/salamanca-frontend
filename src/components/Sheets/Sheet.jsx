@@ -1,19 +1,19 @@
 import { Box, Button, Stack, TextField, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 
-import { Speech } from '../../components'
-import DataGrid from './DataGrid'
+import { Speech, Table } from '../../components'
 function Sheets({ setName, pollens, sheetId, addPollen }) {
   return (
     <>
-      <Box className="flex">
+      <Box className="flex" justifyContent="space-around" content="center">
         <Box
           sx={{
             p: 2,
-            width: '15%',
+            width: '30%',
             backgroundColor: '#e8e8e8',
             border: '1px solid #e8e8e8',
             borderRadius: '5px',
+            marginLeft: '5%',
           }}
         >
           <Typography
@@ -27,7 +27,12 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
           </Typography>
           <br />
 
-          <Stack direction={'row'} spacing={2}>
+          <Stack
+            direction={'row'}
+            spacing={2}
+            justifyContent="space-around"
+            content="center"
+          >
             <TextField
               id="standard-basic"
               label="Name"
@@ -51,7 +56,7 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
           flex
           sx={{
             p: 2,
-            width: '20%',
+            width: '30%',
             backgroundColor: '#e8e8e8',
             border: '1px solid #e8e8e8',
             borderRadius: '5px',
@@ -64,6 +69,7 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
             style={{ color: '#081627' }}
             sx={{ display: { xs: 'none', sm: 'block' } }}
             align="center"
+            justify-content="center"
           >
             Click to Start Listening
           </Typography>
@@ -74,9 +80,10 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
       <br />
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} />
       <div style={{ width: '100%' }}>
-        <Box sx={{ display: 'flex-inline' }}>
+        <Box className="flex content-center justify-center py-4">
           <br />
           <Typography
+            className="flex content-center justify-center py-4"
             noWrap
             variant="h6"
             component="div"
@@ -88,8 +95,13 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
           <br />
         </Box>
       </div>
-      <Box className="container box-border flex flex-col p-2 ">
-        {pollens && <DataGrid pollens={pollens} />}
+      <Box className="container box-border flex flex-col content-center justify-center py-4">
+        {pollens && (
+          <Table
+            pollens={pollens}
+            className="flex flex-col content-center justify-center"
+          />
+        )}
       </Box>
     </>
   )

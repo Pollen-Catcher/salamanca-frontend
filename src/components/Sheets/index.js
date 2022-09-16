@@ -26,13 +26,6 @@ export default () => {
     await addDoc(pollenCollectionRef, pollen)
   }
 
-  // const handleCellEditCommit = async (params) => {
-  //   const currentRef = doc(db, 'sheets', sheetId, 'pollens', params.id)
-  //   await updateDoc(currentRef, {
-  //     [`intervals.${params.field}`]: params.value,
-  //   })
-  // }
-
   return (
     <Sheets
       setName={setName}

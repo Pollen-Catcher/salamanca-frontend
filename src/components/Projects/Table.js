@@ -31,7 +31,7 @@ export default () => {
   }
 
   return (
-    <Box sx={{ color: 'text.secondary' }}>
+    <Box sx={{ color: 'black' }}>
       {loading || !sheets.length >= 1 ? (
         <Box className="flex justify-center">
           <Typography>No sheets found</Typography>
