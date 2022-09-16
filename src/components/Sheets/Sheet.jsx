@@ -1,9 +1,7 @@
 import { Box, Button, Stack, TextField, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 
-import { Speech } from '../../components'
-import Table from '../DataGrid/Table' // A NOVA VERSÃO DA TABELA SE ENCONTRA NA PASTA DATAGRID
-//import DataGrid from './DataGrid' DATAGRID ANTERIOR
+import { Speech, Table } from '../../components'
 function Sheets({ setName, pollens, sheetId, addPollen }) {
   return (
     <>
@@ -98,7 +96,6 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
         </Box>
       </div>
       <Box className="container box-border flex flex-col content-center justify-center py-4">
-        {/*pollens && <DataGrid pollens={pollens} />    IMPLEMENTAÇÃO DO DATAGRID ANTERIOR*/}
         {pollens && (
           <Table
             pollens={pollens}

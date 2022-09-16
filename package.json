@@ -3,10 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/css": "^11.10.0",
     "@emotion/styled": "11.10.4",
     "@mui/icons-material": "^5.10.3",
-    "@mui/lab": "^5.0.0-alpha.99",
     "@mui/material": "5.10.5",
     "@mui/x-data-grid": "^5.17.2",
     "@testing-library/jest-dom": "^5.16.5",
@@ -18,7 +16,6 @@
     "prop-types": "^15.8.1",
     "propose": "^0.0.5",
     "react": "^18.2.0",
-    "react-data-grid": "7.0.0-beta.13",
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.0.3",
     "react-hook-form": "^7.35.0",
