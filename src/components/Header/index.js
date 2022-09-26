@@ -10,6 +10,8 @@ import {
 } from '@mui/material'
 import PropTypes from 'prop-types'
 
+import Breadcrumbs from '../Breadcrumbs'
+
 function Header({ onDrawerToggle }) {
   return (
     <>
@@ -55,6 +57,9 @@ function Header({ onDrawerToggle }) {
               <Typography color="inherit" variant="h5" component="h1">
                 Pollen Catcher
               </Typography>
+            </Grid>
+            <Grid item xs>
+              <Breadcrumbs />
             </Grid>
             <Grid item>
               <Tooltip title="Help">

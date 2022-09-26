@@ -17,8 +17,16 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<Layout />}>
+        <Route
+          path="/login"
+          element={<LoginPage />}
+          render={(props) => <LoginPage {...props} />}
+        />
+        <Route
+          path="/home"
+          element={<Layout />}
+          render={(props) => <Layout {...props} />}
+        >
           <Route
             index
             element={
@@ -28,7 +36,7 @@ function App() {
             }
           />
           <Route
-            path="/:sheetId"
+            path="/home/:sheetId"
             element={
               <RequireAuth>
                 <Sheets />
