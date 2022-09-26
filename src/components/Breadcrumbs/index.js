@@ -10,13 +10,6 @@ const Breadcrumbs = () => {
 
   return (
     <MUIBreadcrumbs color="inherit" aria-label="breadcrumb">
-      {pathnames.length ? (
-        <Link color="inherit" onClick={() => navigate('/home')}>
-          Home
-        </Link>
-      ) : (
-        <Typography color="inherit"> Home </Typography>
-      )}
       {pathnames.map((name, index) => {
         const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`
         const isLast = index === pathnames.length - 1
