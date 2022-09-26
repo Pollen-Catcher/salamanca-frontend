@@ -11,7 +11,9 @@ const Breadcrumbs = () => {
   return (
     <MUIBreadcrumbs color="inherit" aria-label="breadcrumb">
       {pathnames.length ? (
-        <Link onClick={() => navigate('/')}>Home</Link>
+        <Link color="inherit" onClick={() => navigate('/home')}>
+          Home
+        </Link>
       ) : (
         <Typography color="inherit"> Home </Typography>
       )}
