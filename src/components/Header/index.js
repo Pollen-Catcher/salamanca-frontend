@@ -31,13 +31,6 @@ function Header() {
               </Tooltip>
             </Grid>
             <Grid item>
-              {/* <IconButton
-                color="inherit"
-                sx={{ p: 0.5 }}
-                className="profileButton"
-              >
-                <Avatar src="/static/images/avatar/1.jpg" alt="My Avatar" />
-              </IconButton> */}
               <ProfileMenu />
             </Grid>
           </Grid>
