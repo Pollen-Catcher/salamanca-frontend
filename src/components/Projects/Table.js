@@ -58,7 +58,7 @@ export default () => {
                     </TableCell>
                     <TableCell align="center">{sheet.location}</TableCell>
                     <TableCell align="center">
-                      {new Date(
+                      {/* {new Date(
                         sheet.createdAt.seconds * 1000
                       ).toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -67,10 +67,10 @@ export default () => {
                         hour: 'numeric',
                         minute: 'numeric',
                         second: 'numeric',
-                      })}
+                      })} */}
                     </TableCell>
                     <TableCell align="center">
-                      {new Date(
+                      {/* {new Date(
                         sheet.lastEditedAt.seconds * 1000
                       ).toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -79,7 +79,7 @@ export default () => {
                         hour: 'numeric',
                         minute: 'numeric',
                         second: 'numeric',
-                      })}
+                      })} */}
                     </TableCell>
 
                     <TableCell align="center">
