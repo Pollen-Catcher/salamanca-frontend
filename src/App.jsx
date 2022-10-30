@@ -23,7 +23,7 @@ function App() {
           render={(props) => <LoginPage {...props} />}
         />
         <Route
-          path="/home"
+          path="/"
           element={<Layout />}
           render={(props) => <Layout {...props} />}
         >

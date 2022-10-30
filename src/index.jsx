@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import './index.css'
+import 'regenerator-runtime/runtime'
 
 import CssBaseline from '@mui/material/CssBaseline'
 import {
