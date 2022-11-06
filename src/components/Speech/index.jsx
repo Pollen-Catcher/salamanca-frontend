@@ -12,7 +12,6 @@ import { useContext, useState } from 'react'
 import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition'
-import wordsToNumbers from 'words-to-numbers'
 
 import { FirebaseContext } from '../../contexts/firebaseContext'
 import { pollensList } from '../../data/arrays'
@@ -34,14 +33,7 @@ function Index({ pollens, sheetId }) {
       console.log(chalk.magenta('hour: ', hour))
       setInterval(`intervals._${hour}h`)
     } else {
-      const refactordHour = wordsToNumbers(hour, { fuzzy: true })
-      console.log(chalk.bgBlueBright('refactordHour: ', refactordHour))
-      if (!isNaN(refactordHour) && refactordHour >= 0 && refactordHour <= 23) {
-        console.log(chalk.magenta('hour: ', refactordHour))
-        setInterval(`intervals._${refactordHour}h`)
-      } else {
-        console.log(chalk.red('Invalid hour'))
-      }
+      console.log(chalk.red('hour: ', hour))
     }
   }
 

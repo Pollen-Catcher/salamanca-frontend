@@ -10,9 +10,9 @@ import {
 } from '@mui/material'
 import PropTypes from 'prop-types'
 
-import ProfileMenu from '../ProfileMenu'
-
-function Header() {
+import Breadcrumbs from '../Breadcrumbs'
+import { ProfileMenu } from '../ProfileMenu/'
+function Header({ onDrawerToggle }) {
   return (
     <>
       <AppBar color="primary" position="sticky" elevation={0}>
@@ -49,6 +49,9 @@ function Header() {
               <Typography color="inherit" variant="h5" component="h1">
                 Pollen Catcher
               </Typography>
+            </Grid>
+            <Grid item xs>
+              <Breadcrumbs />
             </Grid>
             <Grid item>
               <Tooltip title="Help">
