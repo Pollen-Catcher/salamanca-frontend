@@ -9,7 +9,7 @@ import {
   Popper,
 } from '@mui/material'
 import React from 'react'
-function ProfileMenu() {
+export const ProfileMenu = () => {
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
   const handleClose = (event) => {
@@ -89,5 +89,3 @@ function ProfileMenu() {
     </div>
   )
 }
-
-export default ProfileMenu

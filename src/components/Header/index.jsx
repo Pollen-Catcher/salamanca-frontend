@@ -11,8 +11,8 @@ import {
 import PropTypes from 'prop-types'
 
 import Breadcrumbs from '../Breadcrumbs'
-import { ProfileMenu } from '../ProfileMenu/'
-function Header({ onDrawerToggle }) {
+import { ProfileMenu } from '../ProfileMenu'
+function Header(/*{ onDrawerToggle }*/) {
   return (
     <>
       <AppBar color="primary" position="sticky" elevation={0}>
