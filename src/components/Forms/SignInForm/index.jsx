@@ -48,7 +48,6 @@ export const SignInForm = ({ login, signInWithGoogle, forgotPassword }) => {
               {...field}
               style={textStyle}
               fullWidth
-              required
               error={!!errors.email}
               aria-errormessage={errors?.email?.message}
               type={'email'}
@@ -67,7 +66,6 @@ export const SignInForm = ({ login, signInWithGoogle, forgotPassword }) => {
               {...field}
               style={textStyle}
               fullWidth
-              required
               error={!!errors.password}
               aria-errormessage={errors?.password?.message}
               type={'password'}
@@ -80,11 +78,19 @@ export const SignInForm = ({ login, signInWithGoogle, forgotPassword }) => {
       </div>
       <div className="formSignContainer">
         <div className="flex flex-row content-center justify-around">
-          <FormControlLabel
-            className="content-center justify-center"
-            control={<Checkbox name="checkedB" color="primary" />}
-            label="Remember me"
+          <Controller
+            name="checkdB"
+            control={control}
+            rules={{ required: false }}
+            render={({ field }) => (
+              <FormControlLabel
+                className="content-center justify-center"
+                control={<Checkbox {...field} color="primary" />}
+                label="Remember me"
+              />
+            )}
           />
+
           <div className="py-2">
             <Typography>
               <Link href="#" onClick={forgotPassword}>
