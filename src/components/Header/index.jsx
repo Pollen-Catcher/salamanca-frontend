@@ -1,7 +1,6 @@
 import { Help, Notifications } from '@mui/icons-material'
 import {
   AppBar,
-  // Avatar,
   Grid,
   IconButton,
   Toolbar,
@@ -9,10 +8,13 @@ import {
   Typography,
 } from '@mui/material'
 import PropTypes from 'prop-types'
+import { useContext } from 'react'
 
+import { UserContext } from '../../contexts/Auth/UserContext'
 import Breadcrumbs from '../Breadcrumbs'
 import { ProfileMenu } from '../ProfileMenu'
 function Header(/*{ onDrawerToggle }*/) {
+  const { user } = useContext(UserContext)
   return (
     <>
       <AppBar color="primary" position="sticky" elevation={0}>
@@ -24,9 +26,19 @@ function Header(/*{ onDrawerToggle }*/) {
             justifyContent={'flex-end'}
           >
             <Grid item>
+              <p>{user?.displayName || user?.email}</p>
+            </Grid>
+            <Grid item>
               <Tooltip title="Alerts • No alerts">
                 <IconButton color="inherit">
                   <Notifications />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+            <Grid item>
+              <Tooltip title="Help">
+                <IconButton color="inherit">
+                  <Help />
                 </IconButton>
               </Tooltip>
             </Grid>
@@ -52,13 +64,6 @@ function Header(/*{ onDrawerToggle }*/) {
             </Grid>
             <Grid item xs>
               <Breadcrumbs />
-            </Grid>
-            <Grid item>
-              <Tooltip title="Help">
-                <IconButton color="inherit">
-                  <Help />
-                </IconButton>
-              </Tooltip>
             </Grid>
           </Grid>
         </Toolbar>
