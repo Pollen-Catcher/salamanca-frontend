@@ -4,7 +4,7 @@ import { useContext } from 'react'
 import { SignInForm, SignUpForm } from '../../components/Forms'
 import { UserContext } from '../../contexts/Auth/UserContext'
 function Login() {
-  const { user } = useContext(UserContext)
+  const { user, signOut } = useContext(UserContext)
   // Style
   return (
     <Grid container className="flex content-center justify-center py-4">
@@ -14,7 +14,7 @@ function Login() {
         <h4>USER LOGGED IN:</h4>
         <p>{user?.email}</p>
       </div>
-
+      <button onClick={() => signOut()}></button>
       {/*SIGN UP TAB*/}
       <SignUpForm />
     </Grid>
