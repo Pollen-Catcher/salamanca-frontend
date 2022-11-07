@@ -15,41 +15,32 @@ import Login from './LoginPage'
 
 export default () => {
   const { auth } = useContext(FirebaseContext)
-  const [registerEmail, setRegisterEmail] = useState('')
-  const [registerPassword, setRegisterPassword] = useState('')
-  const [loginEmail, setLoginEmail] = useState('')
-  const [loginPassword, setLoginPassword] = useState('')
-
   const [user, setUser] = useState({})
-
   const navigate = useNavigate()
 
   onAuthStateChanged(auth, (currentUser) => {
     setUser(currentUser)
   })
-
-  const register = async () => {
+  const signUp = async ({ email, password, confirmPassword }) => {
+    console.log(email, password, confirmPassword)
+    if (password !== confirmPassword) {
+      throw new Error('Password and Password Confirmation must be the same')
+    }
     try {
-      const user = await createUserWithEmailAndPassword(
-        auth,
-        registerEmail,
-        registerPassword
-      )
+      const user = await createUserWithEmailAndPassword(auth, email, password)
       console.log(user)
     } catch (error) {
       console.log(error.message)
     }
+    console.log(email, password, confirmPassword)
   }
-
-  const login = async () => {
+  const login = async ({ email, password }) => {
     try {
-      const user = await signInWithEmailAndPassword(
-        auth,
-        loginEmail,
-        loginPassword
-      )
+      const user = await signInWithEmailAndPassword(auth, email, password)
       navigate('/', { replace: true })
       console.log(user)
+      localStorage.setItem('name', name)
+      localStorage.setItem('email', email)
     } catch (error) {
       console.log(error.message)
     }
@@ -59,10 +50,10 @@ export default () => {
     await signOut(auth)
   }
 
-  const forgotPassword = async () => {
-    await sendPasswordResetEmail(auth, loginEmail)
+  const forgotPassword = async ({ email }) => {
+    await sendPasswordResetEmail(auth, email)
       .then(() => {
-        console.log('Password Sent' + loginEmail)
+        console.log('Password Sent' + email)
       })
       .catch((error) => {
         console.error(error)
@@ -90,11 +81,7 @@ export default () => {
 
   return (
     <Login
-      setRegisterEmail={setRegisterEmail}
-      setRegisterPassword={setRegisterPassword}
-      setLoginEmail={setLoginEmail}
-      setLoginPassword={setLoginPassword}
-      register={register}
+      signUp={signUp}
       logout={logout}
       login={login}
       signInWithGoogle={signInWithGoogle}
