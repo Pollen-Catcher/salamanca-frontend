@@ -20,7 +20,7 @@ export const Router = () => {
           render={(props) => <Layout {...props} />}
         >
           <Route index element={<Projects />} />
-          <Route path="/home/:sheetId" element={<Sheets />} />
+          <Route path="/:sheetId" element={<Sheets />} />
         </Route>
       </Routes>
     </UserProvider>
