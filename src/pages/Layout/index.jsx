@@ -69,7 +69,7 @@ export default function Layout() {
           />
         </Box> */}
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <Header onDrawerToggle={handleDrawerToggle} />
+        <Header />
         <Box
           component="main"
           sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}

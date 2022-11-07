@@ -1,7 +1,7 @@
-import { Help, Menu, Notifications } from '@mui/icons-material'
+import { Help, Notifications } from '@mui/icons-material'
 import {
   AppBar,
-  Avatar,
+  // Avatar,
   Grid,
   IconButton,
   Toolbar,
@@ -11,24 +11,18 @@ import {
 import PropTypes from 'prop-types'
 
 import Breadcrumbs from '../Breadcrumbs'
-
-function Header({ onDrawerToggle }) {
+import { ProfileMenu } from '../ProfileMenu'
+function Header(/*{ onDrawerToggle }*/) {
   return (
     <>
       <AppBar color="primary" position="sticky" elevation={0}>
         <Toolbar>
-          <Grid container spacing={1} alignItems="center">
-            <Grid sx={{ display: { sm: 'none', xs: 'block' } }} item>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={onDrawerToggle}
-                edge="start"
-              >
-                <Menu />
-              </IconButton>
-            </Grid>
-            <Grid item xs />
+          <Grid
+            container
+            spacing={1}
+            alignItems="center"
+            justifyContent={'flex-end'}
+          >
             <Grid item>
               <Tooltip title="Alerts • No alerts">
                 <IconButton color="inherit">
@@ -37,9 +31,7 @@ function Header({ onDrawerToggle }) {
               </Tooltip>
             </Grid>
             <Grid item>
-              <IconButton color="inherit" sx={{ p: 0.5 }}>
-                <Avatar src="/static/images/avatar/1.jpg" alt="My Avatar" />
-              </IconButton>
+              <ProfileMenu />
             </Grid>
           </Grid>
         </Toolbar>
