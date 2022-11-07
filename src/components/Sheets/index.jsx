@@ -3,7 +3,7 @@ import { useContext, useState } from 'react'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { useParams } from 'react-router-dom'
 
-import { FirebaseContext } from '../../contexts/firebaseContext'
+import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
 import { Pollen, pollenConverter } from '../../models/Pollen'
 import Sheets from './Sheet'
 

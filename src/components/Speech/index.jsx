@@ -13,7 +13,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition'
 
-import { FirebaseContext } from '../../contexts/firebaseContext'
+import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
 import { pollensList } from '../../data/arrays'
 import { Pollen, pollenConverter } from '../../models/Pollen'
 import Speech from './Speech'

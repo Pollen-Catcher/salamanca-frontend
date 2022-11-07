@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { Box, Link, Typography, useMediaQuery, useTheme } from '@mui/material'
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { Outlet } from 'react-router-dom'
 
 import { Header } from '../../components'
-
+import { UserContext } from '../../contexts/Auth/UserContext'
 const Copyright = () => {
   return (
     <Box
@@ -33,7 +34,13 @@ const Copyright = () => {
 
 export default function Layout() {
   // const drawerWidth = 256
-
+  const { user } = useContext(UserContext)
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { replace: true })
+    }
+  }, [])
   // const theme = useTheme()
   const [mobileOpen, setMobileOpen] = useState(false)
   // const isSmUp = useMediaQuery(theme.breakpoints.up('sm'))

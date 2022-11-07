@@ -2,7 +2,7 @@ import { addDoc, collection } from 'firebase/firestore'
 import { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { FirebaseContext } from '../../contexts/firebaseContext'
+import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
 import { Sheet, sheetConverter } from '../../models/Sheet'
 import Projects from './Projects'
 

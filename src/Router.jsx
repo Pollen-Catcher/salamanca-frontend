@@ -7,38 +7,22 @@ import { Layout, LoginPage } from './pages'
 
 export const Router = () => {
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          <UserProvider>
-            <LoginPage />
-          </UserProvider>
-        }
-        render={(props) => <LoginPage {...props} />}
-      />
-      <Route
-        path="/"
-        element={<Layout />}
-        render={(props) => <Layout {...props} />}
-      >
+    <UserProvider>
+      <Routes>
         <Route
-          index
-          element={
-            <UserProvider>
-              <Projects />
-            </UserProvider>
-          }
+          path="/login"
+          element={<LoginPage />}
+          render={(props) => <LoginPage {...props} />}
         />
         <Route
-          path="/home/:sheetId"
-          element={
-            <UserProvider>
-              <Sheets />
-            </UserProvider>
-          }
-        />
-      </Route>
-    </Routes>
+          path="/"
+          element={<Layout />}
+          render={(props) => <Layout {...props} />}
+        >
+          <Route index element={<Projects />} />
+          <Route path="/home/:sheetId" element={<Sheets />} />
+        </Route>
+      </Routes>
+    </UserProvider>
   )
 }

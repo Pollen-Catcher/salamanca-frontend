@@ -13,7 +13,7 @@ import { useContext } from 'react'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { Link } from 'react-router-dom'
 
-import { FirebaseContext } from '../../contexts/firebaseContext'
+import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
 import { sheetConverter } from '../../models/Sheet'
 import { StyledTableCell, StyledTableRow } from './styles'
 
