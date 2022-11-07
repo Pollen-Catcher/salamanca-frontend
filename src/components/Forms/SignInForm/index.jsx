@@ -52,7 +52,6 @@ export const SignInForm = () => {
                 style={textStyle}
                 fullWidth
                 error={!!errors.email}
-                aria-errormessage={errors?.email?.message}
                 type={'email'}
                 className="py-2"
                 label="Email"
@@ -70,7 +69,6 @@ export const SignInForm = () => {
                 style={textStyle}
                 fullWidth
                 error={!!errors.password}
-                aria-errormessage={errors?.password?.message}
                 type={'password'}
                 className="py-2"
                 label="password"

@@ -8,8 +8,13 @@ import {
   Paper,
   Popper,
 } from '@mui/material'
-import React from 'react'
+import React, { useContext } from 'react'
+import { useNavigate } from 'react-router'
+
+import { UserContext } from '../../contexts/Auth/UserContext'
 export const ProfileMenu = () => {
+  const navigate = useNavigate()
+  const { user, signOut } = useContext(UserContext)
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
   const handleClose = (event) => {
@@ -18,6 +23,10 @@ export const ProfileMenu = () => {
     }
 
     setOpen(false)
+  }
+  const onSignOut = () => {
+    signOut()
+    navigate('/login', { replace: true })
   }
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen)
@@ -51,7 +60,7 @@ export const ProfileMenu = () => {
         aria-haspopup="true"
         onClick={handleToggle}
       >
-        <Avatar src="/static/images/avatar/1.jpg" alt="My Avatar" />
+        <Avatar src={user?.photoURL ? user.photoURL : ''} alt="My Avatar" />
       </IconButton>
       <Popper
         open={open}
@@ -79,7 +88,7 @@ export const ProfileMenu = () => {
                 >
                   <MenuItem onClick={handleClose}>Profile</MenuItem>
                   <MenuItem onClick={handleClose}>My account</MenuItem>
-                  <MenuItem onClick={handleClose}>Logout</MenuItem>
+                  <MenuItem onClick={onSignOut}>sign out</MenuItem>
                 </MenuList>
               </ClickAwayListener>
             </Paper>

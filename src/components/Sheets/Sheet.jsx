@@ -1,8 +1,19 @@
 import { Box, Button, Stack, TextField, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
+import { useContext, useEffect } from 'react'
+import { useNavigate } from 'react-router'
 
 import { Speech, Table } from '../../components'
+import { UserContext } from '../../contexts/Auth/UserContext'
+
 function Sheets({ setName, pollens, sheetId, addPollen }) {
+  const { user } = useContext(UserContext)
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { replace: true })
+    }
+  }, [])
   return (
     <>
       <Box className="flex" justifyContent="space-around" content="center">
