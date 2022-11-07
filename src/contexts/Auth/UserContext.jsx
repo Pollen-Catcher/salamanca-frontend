@@ -8,9 +8,9 @@ import {
   signOut as signOutFirebase,
 } from 'firebase/auth'
 import PropTypes from 'prop-types'
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { Navigate, useLocation, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 
 import { FirebaseContext } from './firebaseContext'
 export const UserContext = createContext({})
@@ -18,12 +18,11 @@ export const UserContext = createContext({})
 export function UserProvider({ children }) {
   const { auth } = useContext(FirebaseContext)
   const [authUser, loading] = useAuthState(auth)
-  const [user, setUser] = useState(authUser)
-  const location = useLocation()
   const navigate = useNavigate()
 
   onAuthStateChanged(auth, (currentUser) => {
-    setUser(currentUser)
+    localStorage.setItem('name', currentUser?.displayName)
+    localStorage.setItem('email', currentUser?.email)
   })
   const signUp = async ({ email, password, confirmPassword }) => {
     console.log(email, password, confirmPassword)
@@ -40,11 +39,11 @@ export function UserProvider({ children }) {
   }
   const signIn = async ({ email, password }) => {
     try {
-      const user = await signInWithEmailAndPassword(auth, email, password)
-      navigate('/', { replace: true })
+      const { user } = await signInWithEmailAndPassword(auth, email, password)
       console.log(user)
-      localStorage.setItem('name', name)
-      localStorage.setItem('email', email)
+      localStorage.setItem('name', user.displayName)
+      localStorage.setItem('email', email.email)
+      navigate('/', { replace: true })
     } catch (error) {
       console.log(error.message)
     }
@@ -75,7 +74,6 @@ export function UserProvider({ children }) {
         localStorage.setItem('name', name)
         localStorage.setItem('email', email)
         localStorage.setItem('profilePic', profilePic)
-
         navigate('/', { replace: true })
       })
       .catch((error) => {
@@ -83,7 +81,7 @@ export function UserProvider({ children }) {
       })
   }
   const userProviderProps = {
-    user: user,
+    user: authUser,
     signUp: signUp,
     signIn: signIn,
     signOut: signOut,
@@ -93,11 +91,6 @@ export function UserProvider({ children }) {
   if (loading) {
     return <div>Loading...</div>
   }
-
-  if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />
-  }
-
   return (
     <UserContext.Provider value={userProviderProps}>
       {children}

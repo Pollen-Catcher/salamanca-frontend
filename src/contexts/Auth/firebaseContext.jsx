@@ -21,7 +21,7 @@ const FirebaseContext = createContext({ app, db, auth })
 /*******************************************************************************/
 export { FirebaseContext }
 export function AuthProvider({ children }) {
-  const { auth, db } = useContext(FirebaseContext)
+  const { auth, db } = useContext()
 
   return (
     <FirebaseContext.Provider value={{ db, auth }}>

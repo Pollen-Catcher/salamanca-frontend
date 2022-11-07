@@ -4,7 +4,7 @@ import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
 import { theme } from '../theme'
-export const GlobalContext = ({ children }) => {
+const GlobalContext = ({ children }) => {
   return (
     <BrowserRouter>
       <StyledEngineProvider injectFirst>
@@ -16,3 +16,4 @@ export const GlobalContext = ({ children }) => {
 GlobalContext.propTypes = {
   children: PropTypes.node,
 }
+export { GlobalContext }
