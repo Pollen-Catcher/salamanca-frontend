@@ -11,21 +11,23 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import PropTypes from 'prop-types'
-import React from 'react'
+import React, { useContext } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+
+import { UserContext } from '../../../contexts/Auth/UserContext'
 
 const avatarStyle = { backgroundColor: '#108AC9' }
 const textStyle = { margin: '10px auto' }
 const buttonStyle = { margin: '10px auto' }
-export const SignInForm = ({ login, signInWithGoogle, forgotPassword }) => {
+export const SignInForm = () => {
+  const { signIn, signInWithGoogle, forgotPassword } = useContext(UserContext)
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm()
   const onSignIn = (data) => {
-    login({
+    signIn({
       email: data.email,
       password: data.password,
     })
@@ -90,7 +92,6 @@ export const SignInForm = ({ login, signInWithGoogle, forgotPassword }) => {
               />
             )}
           />
-
           <div className="py-2">
             <Typography>
               <Link href="#" onClick={forgotPassword}>
@@ -132,9 +133,4 @@ export const SignInForm = ({ login, signInWithGoogle, forgotPassword }) => {
       </div>
     </Paper>
   )
-}
-SignInForm.propTypes = {
-  login: PropTypes.func,
-  signInWithGoogle: PropTypes.func,
-  forgotPassword: PropTypes.func,
 }
