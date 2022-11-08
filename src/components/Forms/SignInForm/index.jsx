@@ -16,9 +16,6 @@ import { Controller, useForm } from 'react-hook-form'
 
 import { UserContext } from '../../../contexts/Auth/UserContext'
 
-const avatarStyle = { backgroundColor: '#108AC9' }
-const textStyle = { margin: '10px auto' }
-const buttonStyle = { margin: '10px auto' }
 export const SignInForm = () => {
   const { signIn, signInWithGoogle, forgotPassword } = useContext(UserContext)
   const {
@@ -33,94 +30,87 @@ export const SignInForm = () => {
     })
   }
   return (
-    <form>
-      <Paper className="h-{70vh} mx-5 w-96 p-5">
-        <Grid align="center" className="py-5">
-          <Avatar style={avatarStyle} sx={{ width: 56, height: 56 }}>
-            <Lock sx={{ width: 30, height: 30 }} />
-          </Avatar>
-          <h2>Sign in</h2>
-        </Grid>
-        <div className="py-2">
-          <Controller
-            name="email"
-            control={control}
-            rules={{ required: false }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                style={textStyle}
-                fullWidth
-                error={!!errors.email}
-                type={'email'}
-                className="py-2"
-                label="Email"
-                placeholder="Enter email"
-              />
-            )}
-          />
-          <Controller
-            name="password"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                style={textStyle}
-                fullWidth
-                error={!!errors.password}
-                type={'password'}
-                className="py-2"
-                label="password"
-                placeholder="Enter password"
-              />
-            )}
-          />
-        </div>
-        <div className="formSignContainer">
-          <div className="flex flex-row content-center justify-around">
+    <main id="login-form" className=" flex flex-col justify-center  px-8">
+      <header>
+        <h1 className="my-2 text-6xl text-salamanca-blue-600">Login</h1>
+        <h3 className="text-base font-light text-zinc-400">
+          Welcome! Enter your account to get started.
+        </h3>
+      </header>
+      <form>
+        <div className="h-{70vh} w-96">
+          <div className=" py-8">
+            <Controller
+              name="email"
+              control={control}
+              rules={{ required: false }}
+              render={({ field }) => (
+                <TextField
+                  className=" my-2 w-[90%]"
+                  {...field}
+                  error={!!errors.email}
+                  type={'email'}
+                  label="E-mail"
+                  placeholder="Enter email"
+                />
+              )}
+            />
+            <Controller
+              name="password"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  error={!!errors.password}
+                  type={'password'}
+                  className=" my-2 w-[90%] py-2"
+                  label="Password"
+                  placeholder="Enter password"
+                />
+              )}
+            />
+          </div>
+
+          <div className="flex flex-row">
             <Controller
               name="checkdB"
               control={control}
               rules={{ required: false }}
               render={({ field }) => (
                 <FormControlLabel
-                  className="content-center justify-center"
-                  control={<Checkbox {...field} color="primary" />}
-                  label="Remember me"
+                  className="px-4"
+                  control={
+                    <Checkbox {...field} color="primary" className="h-8 w-8" />
+                  }
+                  label={
+                    <span className="text-sm text-zinc-400">Remember me</span>
+                  }
                 />
               )}
             />
-            <div className="py-2">
-              <Typography>
-                <Link href="#" onClick={forgotPassword}>
-                  Forgot password ?
-                </Link>
-              </Typography>
-            </div>
           </div>
-          <div className="align-center flex flex-row justify-between px-5">
+          <div className="mt-4">
             <Button
               type="submit"
               color="primary"
               variant="contained"
+              className="w-[90%] text-2xl font-bold"
               onClick={handleSubmit(onSignIn)}
-              style={buttonStyle}
             >
-              Sign In
+              Login
             </Button>
-            <Button
+            {/* <Button
               type="submit"
               color="primary"
               variant="contained"
               onClick={signInWithGoogle}
-              style={buttonStyle}
             >
               <GoogleIcon />
-            </Button>
+            </Button> */}
           </div>
         </div>
-      </Paper>
-    </form>
+      </form>
+    </main>
   )
 }

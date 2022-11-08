@@ -1,18 +1,25 @@
 /* eslint-disable no-unused-vars */
 import { Box, useTheme } from '@mui/material'
-import { useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 import { Header } from '../../components'
 import { Copyright } from '../../components/Copyright'
+import { UserContext } from '../../contexts/Auth/UserContext'
 
 export default function Layout() {
   // const drawerWidth = 256
 
   // const theme = useTheme()
+  const navigate = useNavigate()
+  const { user } = useContext(UserContext)
   const [mobileOpen, setMobileOpen] = useState(false)
   // const isSmUp = useMediaQuery(theme.breakpoints.up('sm'))
-
+  useEffect(() => {
+    if (!user) {
+      navigate('/', { replace: true })
+    }
+  }, [])
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
   }
