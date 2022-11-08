@@ -43,7 +43,7 @@ export function UserProvider({ children }) {
       //    email: user.user.email,
       //  })
       const docData = {
-        name: null,
+        name: 'teste',
         email: user.user.email,
       }
       const docRef = await setDoc(doc(db, 'users', user.user.uid), docData)
