@@ -28,8 +28,8 @@ export function UserProvider({ children }) {
     localStorage.setItem('email', currentUser?.email)
     localStorage.setItem('userID', currentUser?.uid)
   })
-  const signUp = async ({ email, password, confirmPassword }) => {
-    console.log(email, password, confirmPassword)
+  const signUp = async ({ name, email, password, confirmPassword }) => {
+    console.log(name, email, password, confirmPassword)
     if (password !== confirmPassword) {
       throw new Error('Password and Password Confirmation must be the same')
     }
@@ -38,7 +38,7 @@ export function UserProvider({ children }) {
       console.log('Credenciais')
       console.log(user)
       const docData = {
-        name: null,
+        name: name,
         email: user.user.email,
       }
       await setDoc(doc(db, 'users', user.user.uid), docData)

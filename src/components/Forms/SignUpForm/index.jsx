@@ -34,6 +34,21 @@ export const SignUpForm = () => {
       </header>
       <form className=" flex w-full flex-col items-center justify-center ">
         <Controller
+          name="name"
+          control={control}
+          rules={{ required: false }}
+          render={({ field }) => (
+            <TextField
+              className=" my-2 w-[90%]"
+              {...field}
+              error={!!errors.email}
+              type={'text'}
+              label="Name"
+              placeholder="Enter your name"
+            />
+          )}
+        />
+        <Controller
           name="email"
           control={control}
           rules={{ required: false }}
