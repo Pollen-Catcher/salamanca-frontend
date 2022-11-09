@@ -39,7 +39,13 @@ export function UserProvider({ children }) {
         email,
         password
       )
+      const docData = {
+        name: name,
+        email: user.email,
+      }
+      console.log(docData)
       await updateProfile(user, { displayName: name })
+      await setDoc(doc(db, 'users', user.uid), docData)
     } catch (error) {
       console.log(error.message)
     }
