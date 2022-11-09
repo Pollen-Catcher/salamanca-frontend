@@ -1,18 +1,24 @@
 import { Grid } from '@mui/material'
 import { useContext, useEffect } from 'react'
+import { useNavigate } from 'react-router'
 
 import { SignUpForm } from '../../components/Forms'
 import { UserContext } from '../../contexts/Auth/UserContext'
 
 function RegisterPage() {
   const { user } = useContext(UserContext)
+  const navigate = useNavigate()
   useEffect(() => {
-    console.log(user)
+    if (user) {
+      navigate('/dashboard', { replace: true })
+    }
   }, [user])
   return (
-    <Grid container className="flex content-center justify-center py-4">
-      <SignUpForm />
-    </Grid>
+    <>
+      <div className="flex h-[100vh] items-center justify-center bg-register bg-cover bg-scroll bg-center">
+        <SignUpForm />
+      </div>
+    </>
   )
 }
 

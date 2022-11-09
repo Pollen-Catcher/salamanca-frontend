@@ -5,3 +5,17 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.separator::before {
+  left: 0px;
+}
+.separator::after {
+  right: 0px;
+}
+.separator::before, .separator::after {
+  content: "";
+  position: absolute;
+  top: 70%;
+  width: calc(50% - 25px);
+  height: 1px;
+  @apply bg-zinc-300;
+}

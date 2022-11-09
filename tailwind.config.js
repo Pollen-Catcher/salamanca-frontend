@@ -9,6 +9,7 @@ module.exports = {
       },
       backgroundImage: {
         research: 'url("/pollen.png") ',
+        register: 'url("/bg-research.png") ',
       },
     },
   },

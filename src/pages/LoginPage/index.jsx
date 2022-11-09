@@ -1,4 +1,3 @@
-import { Grid } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 
@@ -12,15 +11,12 @@ function Login() {
     if (user) {
       navigate('/dashboard', { replace: true })
     }
-  }, [])
+  }, [user])
   return (
-    <div className="flex h-[100vh] items-center justify-center">
-      <Grid className="hidden h-[100vh] w-[50%] bg-cover bg-center sm:block sm:bg-research"></Grid>
-      <div className="flex w-[50%] flex-col justify-center">
-        {/*SIGN IN TAB*/}
-        <div className="flex content-center items-center justify-center">
-          <SignInForm />
-        </div>
+    <div className="flex h-[100vh] items-center justify-center ">
+      <div className=" hidden h-full min-w-[50vw] rounded-sm bg-salamanca-blue-600 bg-cover bg-center bg-no-repeat  sm:block sm:bg-research"></div>
+      <div className="relative top-0 flex h-full min-w-[50%] flex-col items-center justify-center">
+        <SignInForm />
       </div>
     </div>
   )
