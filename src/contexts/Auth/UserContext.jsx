@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut as signOutFirebase,
+  updateProfile,
 } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 import PropTypes from 'prop-types'
@@ -29,25 +30,19 @@ export function UserProvider({ children }) {
     localStorage.setItem('userID', currentUser?.uid)
   })
   const signUp = async ({ name, email, password, confirmPassword }) => {
-    console.log(name, email, password, confirmPassword)
     if (password !== confirmPassword) {
       throw new Error('Password and Password Confirmation must be the same')
     }
     try {
-      const user = await createUserWithEmailAndPassword(auth, email, password)
-      console.log('Credenciais')
-      console.log(user)
-      const docData = {
-        name: name,
-        email: user.user.email,
-      }
-      await setDoc(doc(db, 'users', user.user.uid), docData)
-
-      console.log('Document written with ID')
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      )
+      await updateProfile(user, { displayName: name })
     } catch (error) {
       console.log(error.message)
     }
-    console.log(email, password, confirmPassword)
   }
   const signIn = async ({ email, password }) => {
     try {

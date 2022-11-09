@@ -16,6 +16,7 @@ export const SignUpForm = () => {
   } = useForm()
   const onSignUp = (data) => {
     signUp({
+      name: data.name,
       email: data.email,
       password: data.password,
       confirmPassword: data.confirmPassword,
