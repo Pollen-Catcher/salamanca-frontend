@@ -7,7 +7,7 @@ import {
   signInWithPopup,
   signOut as signOutFirebase,
 } from 'firebase/auth'
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 import PropTypes from 'prop-types'
 import { createContext, useContext } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -37,18 +37,13 @@ export function UserProvider({ children }) {
       const user = await createUserWithEmailAndPassword(auth, email, password)
       console.log('Credenciais')
       console.log(user)
-      // const docRef = await addDoc(collection(db, 'users'), {
-      //    name: null,
-      //    userId: user.user.uid,
-      //    email: user.user.email,
-      //  })
       const docData = {
-        name: 'teste',
+        name: null,
         email: user.user.email,
       }
-      const docRef = await setDoc(doc(db, 'users', user.user.uid), docData)
+      await setDoc(doc(db, 'users', user.user.uid), docData)
 
-      console.log('Document written with ID', docRef)
+      console.log('Document written with ID')
     } catch (error) {
       console.log(error.message)
     }
@@ -88,6 +83,7 @@ export function UserProvider({ children }) {
         const name = result.user.displayName
         const email = result.user.email
         const profilePic = result.user.photoURL
+        console.log(result)
 
         localStorage.setItem('name', name)
         localStorage.setItem('email', email)
