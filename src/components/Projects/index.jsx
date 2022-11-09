@@ -1,8 +1,10 @@
 import { addDoc, collection } from 'firebase/firestore'
+import { useEffect } from 'react'
 import { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
+import { UserContext } from '../../contexts/Auth/UserContext'
 import { Sheet, sheetConverter } from '../../models/Sheet'
 import Projects from './Projects'
 
@@ -13,6 +15,7 @@ const defaultValues = {
 
 export default () => {
   const { db } = useContext(FirebaseContext)
+  const { user } = useContext(UserContext)
 
   //modal dialog
   const [openCreateSheet, setOpenCreateSheet] = useState(false)
@@ -27,8 +30,14 @@ export default () => {
     const { name, location } = data
 
     const sheet = new Sheet(name, location)
-    await addDoc(collection(db, 'sheets').withConverter(sheetConverter), sheet)
+    await addDoc(
+      collection(db, `users/${user.uid}/sheets`).withConverter(sheetConverter),
+      sheet
+    )
   }
+  useEffect(() => {
+    console.log(user)
+  }, [user])
 
   return (
     <Projects

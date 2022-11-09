@@ -7,22 +7,26 @@ import {
   signInWithPopup,
   signOut as signOutFirebase,
 } from 'firebase/auth'
+import { doc, setDoc } from 'firebase/firestore'
 import PropTypes from 'prop-types'
 import { createContext, useContext } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useNavigate } from 'react-router'
 
 import { FirebaseContext } from './firebaseContext'
+
 export const UserContext = createContext({})
 
 export function UserProvider({ children }) {
   const { auth } = useContext(FirebaseContext)
+  const { db } = useContext(FirebaseContext)
   const [authUser, loading] = useAuthState(auth)
   const navigate = useNavigate()
 
   onAuthStateChanged(auth, (currentUser) => {
     localStorage.setItem('name', currentUser?.displayName)
     localStorage.setItem('email', currentUser?.email)
+    localStorage.setItem('userID', currentUser?.uid)
   })
   const signUp = async ({ email, password, confirmPassword }) => {
     console.log(email, password, confirmPassword)
@@ -31,7 +35,15 @@ export function UserProvider({ children }) {
     }
     try {
       const user = await createUserWithEmailAndPassword(auth, email, password)
+      console.log('Credenciais')
       console.log(user)
+      const docData = {
+        name: null,
+        email: user.user.email,
+      }
+      await setDoc(doc(db, 'users', user.user.uid), docData)
+
+      console.log('Document written with ID')
     } catch (error) {
       console.log(error.message)
     }
@@ -43,6 +55,7 @@ export function UserProvider({ children }) {
       console.log(user)
       localStorage.setItem('name', user.displayName)
       localStorage.setItem('email', email.email)
+      localStorage.setItem('userID', user.uid)
       navigate('/', { replace: true })
     } catch (error) {
       console.log(error.message)
@@ -70,6 +83,7 @@ export function UserProvider({ children }) {
         const name = result.user.displayName
         const email = result.user.email
         const profilePic = result.user.photoURL
+        console.log(result)
 
         localStorage.setItem('name', name)
         localStorage.setItem('email', email)
