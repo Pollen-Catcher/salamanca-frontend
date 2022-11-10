@@ -14,19 +14,22 @@ import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { Link } from 'react-router-dom'
 
 import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
+import { UserContext } from '../../contexts/Auth/UserContext'
 import { sheetConverter } from '../../models/Sheet'
 import { StyledTableCell, StyledTableRow } from './styles'
 
 export default () => {
   const { db } = useContext(FirebaseContext)
+  const { user } = useContext(UserContext)
 
-  const sheetCollectionRef = collection(db, 'sheets').withConverter(
-    sheetConverter
-  )
+  const sheetCollectionRef = collection(
+    db,
+    `users/${user.uid}/sheets`
+  ).withConverter(sheetConverter)
   const [sheets, loading] = useCollectionData(sheetCollectionRef)
 
   const deleteSheet = async (id) => {
-    const currentRef = doc(db, 'sheets', id)
+    const currentRef = doc(db, `users/${user.uid}/sheets`, id)
     await deleteDoc(currentRef)
   }
 
