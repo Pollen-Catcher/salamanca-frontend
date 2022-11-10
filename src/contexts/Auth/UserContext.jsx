@@ -19,8 +19,7 @@ import { FirebaseContext } from './firebaseContext'
 export const UserContext = createContext({})
 
 export function UserProvider({ children }) {
-  const { auth } = useContext(FirebaseContext)
-  const { db } = useContext(FirebaseContext)
+  const { auth, db } = useContext(FirebaseContext)
   const [authUser, loading] = useAuthState(auth)
   const navigate = useNavigate()
 
@@ -53,7 +52,6 @@ export function UserProvider({ children }) {
   const signIn = async ({ email, password }) => {
     try {
       const { user } = await signInWithEmailAndPassword(auth, email, password)
-      console.log(user)
       localStorage.setItem('name', user.displayName)
       localStorage.setItem('email', email.email)
       localStorage.setItem('userID', user.uid)

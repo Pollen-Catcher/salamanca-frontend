@@ -1,5 +1,4 @@
 import { addDoc, collection } from 'firebase/firestore'
-import { useEffect } from 'react'
 import { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -24,21 +23,15 @@ export default () => {
 
   //form
   const { handleSubmit, control } = useForm({ defaultValues })
-  //const [data, setData] = useState(null);
 
   const addSheet = async (data) => {
     const { name, location } = data
-
     const sheet = new Sheet(name, location)
     await addDoc(
-      collection(db, `users/${user.uid}/sheets`).withConverter(sheetConverter),
+      collection(db, `users/${user?.uid}/sheets`).withConverter(sheetConverter),
       sheet
     )
   }
-  useEffect(() => {
-    console.log(user)
-  }, [user])
-
   return (
     <Projects
       openCreateSheet={openCreateSheet}

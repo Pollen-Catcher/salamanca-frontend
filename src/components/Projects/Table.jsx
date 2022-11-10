@@ -24,12 +24,12 @@ export default () => {
 
   const sheetCollectionRef = collection(
     db,
-    `users/${user.uid}/sheets`
+    `users/${user?.uid}/sheets`
   ).withConverter(sheetConverter)
   const [sheets, loading] = useCollectionData(sheetCollectionRef)
 
   const deleteSheet = async (id) => {
-    const currentRef = doc(db, `users/${user.uid}/sheets`, id)
+    const currentRef = doc(db, `users/${user?.uid}/sheets`, id)
     await deleteDoc(currentRef)
   }
 
