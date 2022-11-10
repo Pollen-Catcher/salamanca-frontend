@@ -167,8 +167,8 @@ function Index({ pollens, sheetId }) {
 }
 
 Index.propTypes = {
-  sheetId: PropTypes.string.isRequired,
-  pollens: PropTypes.array.isRequired,
+  sheetId: PropTypes.string,
+  pollens: PropTypes.array,
 }
 
 export default Index

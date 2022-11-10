@@ -10,28 +10,20 @@ function Speech({
   handleReset,
 }) {
   return (
-    <div className="microphone-wrapper flex content-center justify-center">
-      <div className="microphone-container">
-        <ButtonGroup disableElevation variant="contained">
-          <Button onClick={handleListening}>Listen</Button>
-          {isListening && (
-            <Button className="microphone-stop btn" onClick={stopHandle}>
-              Stop
-            </Button>
-          )}
-        </ButtonGroup>
-        <br />
-        <br />
-        <div className="microphone-status">
-          {isListening && (
-            <Alert
-              style={{ color: '#233143', backgroundColor: '#b8bcc2' }}
-              severity="info"
-            >
-              Listening...
-            </Alert>
-          )}
-        </div>
+    <div className="microphone-wrapper flex w-full flex-col items-center justify-center">
+      <ButtonGroup disableElevation variant="contained" className="py-2">
+        <Button onClick={handleListening}>Listen</Button>
+        {isListening && <Button onClick={stopHandle}>Stop</Button>}
+      </ButtonGroup>
+      <div className="">
+        {isListening && (
+          <Alert
+            style={{ color: '#233143', backgroundColor: '#b8bcc2' }}
+            severity="info"
+          >
+            Listening...
+          </Alert>
+        )}
       </div>
 
       {transcript && (

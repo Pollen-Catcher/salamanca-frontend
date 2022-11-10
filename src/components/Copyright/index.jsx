@@ -19,7 +19,7 @@ const Copyright = () => {
     >
       <Typography variant="body2" color="#b6b5b5" align="center">
         {'Copyright © '}
-        <Link color="inherit" href="LINK AQUI">
+        <Link className="text-inherit no-underline" href="LINK AQUI">
           Pollen Catcher
         </Link>{' '}
         {new Date().getFullYear()}.

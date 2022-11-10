@@ -73,7 +73,7 @@ function Header(/*{ onDrawerToggle }*/) {
 }
 
 Header.propTypes = {
-  onDrawerToggle: PropTypes.func.isRequired,
+  onDrawerToggle: PropTypes.func,
 }
 
 export default Header
