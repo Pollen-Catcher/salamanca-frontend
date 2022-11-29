@@ -8,8 +8,13 @@ import {
   Paper,
   Popper,
 } from '@mui/material'
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
+import { useNavigate } from 'react-router'
+
+import { UserContext } from '../../contexts/Auth/UserContext'
 export const ProfileMenu = () => {
+  const { user, signOut } = useContext(UserContext)
+  const navigate = useNavigate()
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
   const handleClose = (event) => {
@@ -18,6 +23,9 @@ export const ProfileMenu = () => {
     }
 
     setOpen(false)
+  }
+  const onSignOut = () => {
+    signOut()
   }
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen)
@@ -33,14 +41,19 @@ export const ProfileMenu = () => {
 
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = React.useRef(open)
-  React.useEffect(() => {
+  useEffect(() => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus()
     }
 
     prevOpen.current = open
   }, [open])
-
+  // Avalia se o usuário está logado ou não. Caso estiver, se mantém na página, se não, é redirecionado para a tela inicial (compatibilidade com logout)
+  useEffect(() => {
+    if (!user) {
+      navigate('/', { replace: true })
+    }
+  }, [user])
   return (
     <div>
       <IconButton
@@ -51,7 +64,7 @@ export const ProfileMenu = () => {
         aria-haspopup="true"
         onClick={handleToggle}
       >
-        <Avatar src="/static/images/avatar/1.jpg" alt="My Avatar" />
+        <Avatar src={user?.photoURL ? user.photoURL : ''} alt="My Avatar" />
       </IconButton>
       <Popper
         open={open}
@@ -79,7 +92,7 @@ export const ProfileMenu = () => {
                 >
                   <MenuItem onClick={handleClose}>Profile</MenuItem>
                   <MenuItem onClick={handleClose}>My account</MenuItem>
-                  <MenuItem onClick={handleClose}>Logout</MenuItem>
+                  <MenuItem onClick={onSignOut}>sign out</MenuItem>
                 </MenuList>
               </ClickAwayListener>
             </Paper>

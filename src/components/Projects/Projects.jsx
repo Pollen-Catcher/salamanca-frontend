@@ -70,14 +70,17 @@ function Projects({
                     <DialogTitle>Type the sheet name</DialogTitle>
                     <CreateSheetBox>
                       <DialogContentText>
-                        Fill in the blanks to generate a new work
+                        Fill in the fields below to generate a new work
                       </DialogContentText>
                       <Controller
                         render={({ field }) => (
                           <TextField
+                            {...field}
                             label={'Name'}
                             variant={'outlined'}
-                            {...field}
+                            sx={{
+                              margin: '.5rem 0rem',
+                            }}
                           />
                         )}
                         name="name"
@@ -86,9 +89,12 @@ function Projects({
                       <Controller
                         render={({ field }) => (
                           <TextField
+                            {...field}
                             label={'Location'}
                             variant={'outlined'}
-                            {...field}
+                            sx={{
+                              margin: '.5rem 0rem',
+                            }}
                           />
                         )}
                         name="location"
@@ -103,7 +109,7 @@ function Projects({
                     >
                       <Button
                         variant="contained"
-                        color={'secondary'}
+                        color={'primary'}
                         type={'submit'}
                       >
                         Add Sheet

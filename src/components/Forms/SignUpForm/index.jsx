@@ -1,115 +1,128 @@
-import { AddCircle } from '@mui/icons-material'
-import {
-  Avatar,
-  Button,
-  Grid,
-  Link,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material'
-import PropTypes from 'prop-types'
-import React from 'react'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Button, TextField } from '@mui/material'
+import React, { useContext } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { NavLink } from 'react-router-dom'
+
+import { UserContext } from '../../../contexts/Auth/UserContext'
+import { schema } from './schema'
 //styles??? Recomendo usar inline style com o tailwind
 const textStyle = { margin: '10px auto' }
-const avatarStyle = { backgroundColor: '#108AC9' }
 
-export const SignUpForm = ({ signUp }) => {
+export const SignUpForm = () => {
+  const { signUp } = useContext(UserContext)
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm()
+  } = useForm({ resolver: yupResolver(schema) })
   const onSignUp = (data) => {
     signUp({
+      name: data.name,
       email: data.email,
       password: data.password,
       confirmPassword: data.confirmPassword,
     })
   }
   return (
-    <Paper className="h-{70vh} mx-5 w-96 p-5">
-      <Grid align="center" className="py-5">
-        <Avatar style={avatarStyle} sx={{ width: 56, height: 56 }}>
-          <AddCircle sx={{ width: 30, height: 30 }} />
-        </Avatar>
-        <h2>Sign Up</h2>
-      </Grid>
-      <div className="py-2">
+    <main
+      id="login-form"
+      className=" flex min-w-[26rem] flex-col justify-evenly rounded-lg bg-white p-6 sm:shadow-lg"
+    >
+      <header className="ml-6 flex flex-col items-start">
+        <h2 className="my-1 text-6xl text-salamanca-blue-600">Salamanca</h2>
+        <h3 className="text-base font-light text-zinc-400">
+          Create your account.
+        </h3>
+      </header>
+      <form className=" flex min-h-[30rem] w-full flex-col items-center justify-between ">
+        <Controller
+          name="name"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              className=" mb-1 flex w-[90%] flex-col justify-start"
+              {...field}
+              error={!!errors.name}
+              type={'text'}
+              label="Name"
+              placeholder="Enter your name"
+              helperText={errors.name && errors?.name?.message}
+            />
+          )}
+        />
         <Controller
           name="email"
           control={control}
-          rules={{ required: true }}
           render={({ field }) => (
             <TextField
+              className=" my-1 w-[90%]"
               {...field}
-              style={textStyle}
-              fullWidth
-              required
               error={!!errors.email}
-              onError={() => console.log(errors?.email?.message)}
               type={'email'}
-              className="py-2"
-              label="Email"
+              label="E-mail"
               placeholder="Enter email"
+              helperText={errors.email && errors?.email?.message}
             />
           )}
         />
         <Controller
           name="password"
           control={control}
-          rules={{ required: true }}
           render={({ field }) => (
             <TextField
               {...field}
-              style={textStyle}
-              fullWidth
-              required
-              type={'password'}
               error={!!errors.password}
-              onError={() => console.log(errors?.password?.message)}
-              className="py-2"
-              label="password"
+              type={'password'}
+              color={'primary'}
+              className=" mt-1 w-[90%]"
+              label="Password"
               placeholder="Enter password"
+              helperText={errors.password && errors?.password?.message}
             />
           )}
         />
         <Controller
           name="confirmPassword"
           control={control}
-          rules={{ required: true }}
           render={({ field }) => (
             <TextField
               {...field}
               style={textStyle}
-              fullWidth
-              required
               type={'password'}
-              className="py-2"
+              error={!!errors.confirmPassword}
+              className=" my-1 w-[90%]"
               label="Password confirmation"
               placeholder="Confirm your password"
+              helperText={
+                errors.confirmPassword && errors?.confirmPassword?.message
+              }
             />
           )}
         />
-      </div>
-      <div className="align-center flex flex-row justify-center px-5 py-8">
-        <Button
-          type="submit"
-          color="primary"
-          variant="contained"
-          onClick={handleSubmit(onSignUp)}
-        >
-          Sign Up
-        </Button>
-      </div>
-      <div className="flex items-center justify-center py-2">
-        <Typography className="px-2">Already have a account?</Typography>
-        <Link href="#">Sign in</Link>
-      </div>
-    </Paper>
+        <div className="flex w-full  flex-col items-center">
+          <div className=" mt-4 flex w-full items-center justify-center">
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              className="w-[90%] text-2xl font-bold"
+              onClick={handleSubmit(onSignUp)}
+            >
+              Register
+            </Button>
+          </div>
+          <div className="flex w-[90%] items-center justify-between pt-8 text-sm">
+            <NavLink
+              to={'/'}
+              className="font-semibold text-zinc-500 no-underline hover:cursor-pointer hover:opacity-80 active:opacity-100"
+            >
+              <span>Already have a account?</span>
+            </NavLink>
+          </div>
+          <div className="flex w-[90%] items-center justify-around pt-4"></div>
+        </div>
+      </form>
+    </main>
   )
-}
-SignUpForm.propTypes = {
-  signUp: PropTypes.func,
 }

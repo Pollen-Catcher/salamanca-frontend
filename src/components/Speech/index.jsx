@@ -13,7 +13,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition'
 
-import { FirebaseContext } from '../../contexts/firebaseContext'
+import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
 import { pollensList } from '../../data/arrays'
 import { Pollen, pollenConverter } from '../../models/Pollen'
 import Speech from './Speech'
@@ -167,8 +167,8 @@ function Index({ pollens, sheetId }) {
 }
 
 Index.propTypes = {
-  sheetId: PropTypes.string.isRequired,
-  pollens: PropTypes.array.isRequired,
+  sheetId: PropTypes.string,
+  pollens: PropTypes.array,
 }
 
 export default Index

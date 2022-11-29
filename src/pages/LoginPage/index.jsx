@@ -1,92 +1,24 @@
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signOut,
-} from 'firebase/auth'
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
-import { useState } from 'react'
-import { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useContext, useEffect } from 'react'
+import { useNavigate } from 'react-router'
 
-import { FirebaseContext } from '../../contexts/firebaseContext'
-import Login from './LoginPage'
-
-export default () => {
-  const { auth } = useContext(FirebaseContext)
-  const [user, setUser] = useState({})
+import { SignInForm } from '../../components/Forms'
+import { UserContext } from '../../contexts/Auth/UserContext'
+function Login() {
+  const { user } = useContext(UserContext)
   const navigate = useNavigate()
-
-  onAuthStateChanged(auth, (currentUser) => {
-    setUser(currentUser)
-  })
-  const signUp = async ({ email, password, confirmPassword }) => {
-    console.log(email, password, confirmPassword)
-    if (password !== confirmPassword) {
-      throw new Error('Password and Password Confirmation must be the same')
+  // Style
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard', { replace: true })
     }
-    try {
-      const user = await createUserWithEmailAndPassword(auth, email, password)
-      console.log(user)
-    } catch (error) {
-      console.log(error.message)
-    }
-    console.log(email, password, confirmPassword)
-  }
-  const login = async ({ email, password }) => {
-    try {
-      const user = await signInWithEmailAndPassword(auth, email, password)
-      navigate('/', { replace: true })
-      console.log(user)
-      localStorage.setItem('name', name)
-      localStorage.setItem('email', email)
-    } catch (error) {
-      console.log(error.message)
-    }
-  }
-
-  const logout = async () => {
-    await signOut(auth)
-  }
-
-  const forgotPassword = async ({ email }) => {
-    await sendPasswordResetEmail(auth, email)
-      .then(() => {
-        console.log('Password Sent' + email)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }
-
-  const signInWithGoogle = () => {
-    const provider = new GoogleAuthProvider()
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const name = result.user.displayName
-        const email = result.user.email
-        const profilePic = result.user.photoURL
-
-        localStorage.setItem('name', name)
-        localStorage.setItem('email', email)
-        localStorage.setItem('profilePic', profilePic)
-
-        navigate('/', { replace: true })
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
-
+  }, [user])
   return (
-    <Login
-      signUp={signUp}
-      logout={logout}
-      login={login}
-      signInWithGoogle={signInWithGoogle}
-      forgotPassword={forgotPassword}
-      user={user}
-    />
+    <div className="flex h-[100vh] items-center justify-center ">
+      <div className=" hidden h-full min-w-[50vw] rounded-sm bg-salamanca-blue-600 bg-cover bg-center bg-no-repeat  sm:block sm:bg-research"></div>
+      <div className="relative top-0 flex h-full min-w-[50%] flex-col items-center justify-center">
+        <SignInForm />
+      </div>
+    </div>
   )
 }
+export default Login

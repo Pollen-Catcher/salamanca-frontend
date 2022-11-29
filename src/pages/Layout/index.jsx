@@ -1,43 +1,25 @@
 /* eslint-disable no-unused-vars */
-import { Box, Link, Typography, useMediaQuery, useTheme } from '@mui/material'
-import { useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Box, useTheme } from '@mui/material'
+import { useContext, useEffect, useState } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 import { Header } from '../../components'
-
-const Copyright = () => {
-  return (
-    <Box
-      sx={{
-        position: 'relative',
-        display: 'flex',
-        bottom: 0,
-        width: '100%',
-        textAlign: 'center',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f0f0f0',
-        p: 2,
-      }}
-    >
-      <Typography variant="body2" color="#b6b5b5" align="center">
-        {'Copyright © '}
-        <Link color="inherit" href="LINK AQUI">
-          Pollen Catcher
-        </Link>{' '}
-        {new Date().getFullYear()}.
-      </Typography>
-    </Box>
-  )
-}
+import { Copyright } from '../../components/Copyright'
+import { UserContext } from '../../contexts/Auth/UserContext'
 
 export default function Layout() {
   // const drawerWidth = 256
 
   // const theme = useTheme()
+  const navigate = useNavigate()
+  const { user } = useContext(UserContext)
   const [mobileOpen, setMobileOpen] = useState(false)
   // const isSmUp = useMediaQuery(theme.breakpoints.up('sm'))
-
+  useEffect(() => {
+    if (!user) {
+      navigate('/', { replace: true })
+    }
+  }, [])
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
   }

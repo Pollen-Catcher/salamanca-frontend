@@ -1,41 +1,34 @@
-import { Box, Button, Stack, TextField, Typography } from '@mui/material'
+import { Box, Button, TextField, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
+import { useContext, useEffect } from 'react'
+import { useNavigate } from 'react-router'
 
 import { Speech, Table } from '../../components'
+import { UserContext } from '../../contexts/Auth/UserContext'
+
 function Sheets({ setName, pollens, sheetId, addPollen }) {
+  const { user } = useContext(UserContext)
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { replace: true })
+    }
+  }, [])
   return (
     <>
-      <Box className="flex" justifyContent="space-around" content="center">
-        <Box
-          sx={{
-            p: 2,
-            width: '30%',
-            backgroundColor: '#e8e8e8',
-            border: '1px solid #e8e8e8',
-            borderRadius: '5px',
-            marginLeft: '5%',
-          }}
-        >
+      <div className="flex min-h-[24rem] flex-col items-center justify-around sm:flex-row sm:flex-wrap">
+        <div className="my-2 flex h-[10rem] min-w-[24rem] flex-col items-center justify-evenly rounded-lg shadow-md">
           <Typography
-            noWrap
-            align="center"
+            className=" text-center font-sans text-lg font-medium text-zinc-800"
             component="div"
-            style={{ color: '#081627' }}
-            sx={{ display: { xs: '5', sm: 'block' } }}
           >
             Add a New Name
           </Typography>
-          <br />
 
-          <Stack
-            direction={'row'}
-            spacing={2}
-            justifyContent="space-around"
-            content="center"
-          >
+          <div className="flex w-[70%] flex-row items-center justify-around">
             <TextField
+              className="flex w-full items-center justify-center"
               id="standard-basic"
-              label="Name"
               variant="standard"
               onChange={(e) => setName(e.target.value)}
             />
@@ -50,38 +43,21 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
                 Add
               </Button>
             </Box>
-          </Stack>
-        </Box>
-        <Box
-          flex
-          sx={{
-            p: 2,
-            width: '30%',
-            backgroundColor: '#e8e8e8',
-            border: '1px solid #e8e8e8',
-            borderRadius: '5px',
-            marginLeft: '5%',
-          }}
-        >
+          </div>
+        </div>
+        <div className="my-2 flex min-h-[10rem] min-w-[24rem] flex-col items-center justify-evenly rounded-lg shadow-md">
           <Typography
-            noWrap
+            className=" text-center font-sans text-lg font-medium text-zinc-800"
             component="div"
-            style={{ color: '#081627' }}
-            sx={{ display: { xs: 'none', sm: 'block' } }}
-            align="center"
-            justify-content="center"
           >
             Click to Start Listening
           </Typography>
-          <br />
           <Speech pollens={pollens} sheetId={sheetId} />
-        </Box>
-      </Box>
-      <br />
+        </div>
+      </div>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} />
       <div style={{ width: '100%' }}>
-        <Box className="flex content-center justify-center py-4">
-          <br />
+        <Box className="flex justify-center py-4">
           <Typography
             className="flex content-center justify-center py-4"
             noWrap
@@ -95,7 +71,7 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
           <br />
         </Box>
       </div>
-      <Box className="container box-border flex flex-col content-center justify-center py-4">
+      <Box className="flex flex-col items-center justify-center py-4">
         {pollens && (
           <Table
             pollens={pollens}
@@ -109,11 +85,11 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
 
 Sheets.propTypes = {
   setName: PropTypes.func.isRequired,
-  pollens: PropTypes.array.isRequired,
+  pollens: PropTypes.array,
   sheetId: PropTypes.string.isRequired,
   addPollen: PropTypes.func.isRequired,
-  selectedRowIndex: PropTypes.number.isRequired,
-  setSelectedRowIndex: PropTypes.func.isRequired,
+  selectedRowIndex: PropTypes.number,
+  setSelectedRowIndex: PropTypes.func,
 }
 
 export default Sheets
