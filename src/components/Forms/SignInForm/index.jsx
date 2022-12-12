@@ -116,7 +116,6 @@ export const SignInForm = () => {
           </div>
           <div className="flex w-[90%] items-center justify-around pt-4">
             <Button
-              type="submit"
               color="primary"
               variant="outlined"
               className="flex w-full justify-around px-6 text-lg font-semibold"

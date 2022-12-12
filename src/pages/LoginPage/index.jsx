@@ -14,7 +14,7 @@ function Login() {
   }, [user])
   return (
     <div className="flex h-[100vh] items-center justify-center ">
-      <div className=" hidden h-full min-w-[50vw] rounded-sm bg-salamanca-blue-600 bg-cover bg-center bg-no-repeat  sm:block sm:bg-research"></div>
+      <div className="hidden h-full min-w-[50vw] rounded-sm bg-salamanca-blue-600 bg-cover bg-center bg-no-repeat  sm:block sm:bg-research"></div>
       <div className="relative top-0 flex h-full min-w-[50%] flex-col items-center justify-center">
         <SignInForm />
       </div>
