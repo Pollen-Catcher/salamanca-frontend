@@ -79,14 +79,19 @@ export function UserProvider({ children }) {
     const provider = new GoogleAuthProvider()
     signInWithPopup(auth, provider)
       .then((result) => {
-        const name = result.user.displayName
-        const email = result.user.email
-        const profilePic = result.user.photoURL
+        const user = result.user
         console.log(result)
 
-        localStorage.setItem('name', name)
-        localStorage.setItem('email', email)
-        localStorage.setItem('profilePic', profilePic)
+        const docData = {
+          name: user.displayName,
+          email: user.email,
+        }
+
+        setDoc(doc(db, 'users', user.uid), docData)
+
+        localStorage.setItem('name', user.displayName)
+        localStorage.setItem('email', user.email)
+        localStorage.setItem('profilePic', user.photoURL)
         navigate('/', { replace: true })
       })
       .catch((error) => {
