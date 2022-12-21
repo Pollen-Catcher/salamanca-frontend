@@ -34,7 +34,6 @@ export class Pollen {
   }
 }
 
-// Firestore data converter
 export const pollenConverter = {
   toFirestore: (pollen) => {
     return {

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router'
 import { Speech, Table } from '../../components'
 import { UserContext } from '../../contexts/Auth/UserContext'
 
-function Sheets({ setName, pollens, sheetId, addPollen }) {
+function Sheets({ setName, pollens, sheetId, addPollen, setDate }) {
   const { user } = useContext(UserContext)
   const navigate = useNavigate()
   useEffect(() => {
@@ -56,28 +56,31 @@ function Sheets({ setName, pollens, sheetId, addPollen }) {
         </div>
       </div>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} />
-      <div style={{ width: '100%' }}>
-        <Box className="flex justify-center py-4">
-          <Typography
-            className="flex content-center justify-center py-4"
-            noWrap
-            variant="h6"
-            component="div"
-            style={{ color: '#b6b5b5' }}
-            sx={{ display: { xs: 'none', sm: 'block' } }}
-          >
-            View and Edit
-          </Typography>
-          <br />
-        </Box>
-      </div>
-      <Box className="flex flex-col items-center justify-center py-4">
-        {pollens && (
-          <Table
-            pollens={pollens}
-            className="flex flex-col content-center justify-center"
-          />
-        )}
+      <Box className="flex justify-center py-4">
+        <Typography
+          className="flex content-center justify-center py-4"
+          noWrap
+          variant="h6"
+          component="div"
+          style={{ color: '#b6b5b5' }}
+          sx={{ display: { xs: 'none', sm: 'block' } }}
+        >
+          View and Edit
+        </Typography>
+      </Box>
+      <TextField
+        id="date"
+        className="flex content-center justify-center py-4"
+        label="Sheet Date"
+        type="date"
+        defaultValue="2017-05-24"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={(e) => setDate(e.target.value)}
+      />
+      <Box className="flex w-full content-center justify-center py-4">
+        {pollens && <Table pollens={pollens} />}
       </Box>
     </>
   )
@@ -90,6 +93,7 @@ Sheets.propTypes = {
   addPollen: PropTypes.func.isRequired,
   selectedRowIndex: PropTypes.number,
   setSelectedRowIndex: PropTypes.func,
+  setDate: PropTypes.func.isRequired,
 }
 
 export default Sheets

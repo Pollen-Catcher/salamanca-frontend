@@ -19,7 +19,6 @@ const FirebaseContext = createContext({ app, db, auth })
 
 //                            By : Henrique
 /*******************************************************************************/
-export { FirebaseContext }
 export function AuthProvider({ children }) {
   const { auth, db } = useContext()
 
@@ -33,3 +32,5 @@ export function AuthProvider({ children }) {
 AuthProvider.propTypes = {
   children: PropTypes.node,
 }
+
+export { FirebaseContext }

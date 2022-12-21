@@ -16,12 +16,10 @@ export default () => {
   const { db } = useContext(FirebaseContext)
   const { user } = useContext(UserContext)
 
-  //modal dialog
   const [openCreateSheet, setOpenCreateSheet] = useState(false)
   const handleOpenCreateSheet = () => setOpenCreateSheet(true)
   const handleCloseCreateSheet = () => setOpenCreateSheet(false)
 
-  //form
   const { handleSubmit, control } = useForm({ defaultValues })
 
   const addSheet = async (data) => {
@@ -32,6 +30,7 @@ export default () => {
       sheet
     )
   }
+
   return (
     <Projects
       openCreateSheet={openCreateSheet}

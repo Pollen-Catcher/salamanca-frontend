@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
-import { Link } from 'react-router-dom'
+
 const Copyright = () => {
   return (
     <Box
@@ -18,11 +18,7 @@ const Copyright = () => {
       }}
     >
       <Typography variant="body2" color="#b6b5b5" align="center">
-        {'Copyright © '}
-        <Link className="text-inherit no-underline" href="LINK AQUI">
-          Pollen Catcher
-        </Link>{' '}
-        {new Date().getFullYear()}.
+        Copyright © Pollen Catcher {new Date().getFullYear()}
       </Typography>
     </Box>
   )

@@ -13,7 +13,6 @@ export class Sheet {
   }
 }
 
-// Firestore data converter
 export const sheetConverter = {
   toFirestore: (sheet) => {
     return {

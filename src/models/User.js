@@ -13,7 +13,6 @@ export class User {
   }
 }
 
-// Firestore data converter
 export const userConverter = {
   toFirestore: (user) => {
     return {

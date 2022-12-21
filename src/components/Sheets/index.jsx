@@ -12,6 +12,7 @@ export default () => {
   const { db } = useContext(FirebaseContext)
 
   const [name, setName] = useState('')
+  const [date, setDate] = useState('')
 
   const pollenCollectionRef = collection(
     db,
@@ -32,6 +33,7 @@ export default () => {
       pollens={pollens}
       sheetId={sheetId}
       addPollen={addPollen}
+      setDate={setDate}
     />
   )
 }
