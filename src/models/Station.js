@@ -1,6 +1,6 @@
 import { Timestamp } from 'firebase/firestore'
 
-export class Sheet {
+export class Station {
   constructor(name, location) {
     this.name = name
     this.location = location
@@ -13,13 +13,13 @@ export class Sheet {
   }
 }
 
-export const sheetConverter = {
-  toFirestore: (sheet) => {
+export const stationConverter = {
+  toFirestore: (station) => {
     return {
-      name: sheet.name,
-      location: sheet.location,
-      createdAt: sheet.createdAt,
-      lastEditedAt: sheet.lastEditedAt,
+      name: station.name,
+      location: station.location,
+      createdAt: station.createdAt,
+      lastEditedAt: station.lastEditedAt,
     }
   },
   fromFirestore: (snapshot, options) => {

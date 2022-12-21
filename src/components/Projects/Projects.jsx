@@ -21,9 +21,9 @@ import { CreateSheetBox } from './styles'
 import Table from './Table'
 
 function Projects({
-  openCreateSheet,
-  handleOpenCreateSheet,
-  handleCloseCreateSheet,
+  openCreateStation,
+  handleOpenCreateStation,
+  handleCloseCreateStation,
   handleSubmit,
   control,
   addSheet,
@@ -56,18 +56,18 @@ function Projects({
               <Button
                 variant="contained"
                 sx={{ mr: 1 }}
-                onClick={handleOpenCreateSheet}
+                onClick={handleOpenCreateStation}
               >
-                Create New Sheet
+                Create New Project
               </Button>
               <Dialog
-                open={openCreateSheet}
-                onClose={handleCloseCreateSheet}
+                open={openCreateStation}
+                onClose={handleCloseCreateStation}
                 disableEnforceFocus
               >
                 <form onSubmit={handleSubmit((data) => addSheet(data))}>
                   <DialogContent>
-                    <DialogTitle>Type the sheet name</DialogTitle>
+                    <DialogTitle>Type the project name</DialogTitle>
                     <CreateSheetBox>
                       <DialogContentText>
                         Fill in the fields below to generate a new work
@@ -112,7 +112,7 @@ function Projects({
                         color={'primary'}
                         type={'submit'}
                       >
-                        Add Sheet
+                        Add Project
                       </Button>
                     </DialogActions>
                   </DialogContent>
@@ -133,9 +133,9 @@ function Projects({
 }
 
 Projects.propTypes = {
-  openCreateSheet: PropTypes.bool.isRequired,
-  handleOpenCreateSheet: PropTypes.func.isRequired,
-  handleCloseCreateSheet: PropTypes.func.isRequired,
+  openCreateStation: PropTypes.bool.isRequired,
+  handleOpenCreateStation: PropTypes.func.isRequired,
+  handleCloseCreateStation: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   control: PropTypes.object.isRequired,
   addSheet: PropTypes.func.isRequired,
