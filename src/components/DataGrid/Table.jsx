@@ -1,9 +1,9 @@
 import { Box } from '@mui/system'
 import { DataGrid } from '@mui/x-data-grid'
-import * as React from 'react'
 
 import CustomToolbar from './CustomToolbar'
 import Pagination from './Pagination'
+
 const columns = [
   { field: 'name', headerName: 'Name', hideable: false },
   { field: '_0h', headerName: '0', width: 50 },
@@ -31,12 +31,18 @@ const columns = [
   { field: '_22h', headerName: '22', width: 50 },
   { field: '_23h', headerName: '23', width: 50 },
 ]
-function ExportCustomToolbar(pollens) {
-  const rows = pollens.pollens.map((polen, index) => ({
-    id: index,
-    name: polen.name,
-    ...polen.intervals,
-  }))
+export default function Table(pollens) {
+  const rows = []
+
+  for (const [key, value] of Object.entries(pollens.pollens)) {
+    rows.push({
+      id: key,
+      // name: 
+    })
+  }
+  // console.log(rows)
+  console.log(pollens.pollens)
+
   return (
     <div className="container flex flex-1 content-center justify-center">
       <Box
@@ -70,5 +76,3 @@ function ExportCustomToolbar(pollens) {
     </div>
   )
 }
-
-export default ExportCustomToolbar

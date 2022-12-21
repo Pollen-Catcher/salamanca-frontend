@@ -1,4 +1,8 @@
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material'
+import {
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  Insights as InsightsIcon,
+} from '@mui/icons-material'
 import {
   Box,
   Table,
@@ -49,6 +53,7 @@ export default () => {
               <StyledTableCell>Last Modified</StyledTableCell>
               <StyledTableCell>Edit</StyledTableCell>
               <StyledTableCell>Delete</StyledTableCell>
+              <StyledTableCell>Generate graph</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -97,6 +102,9 @@ export default () => {
                           deleteSheet(station.id)
                         }}
                       />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Link to={`${station.id}/graph`}>{<InsightsIcon />}</Link>
                     </TableCell>
                   </StyledTableRow>
                 )
