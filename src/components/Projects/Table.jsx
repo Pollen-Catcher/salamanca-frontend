@@ -15,29 +15,29 @@ import { Link } from 'react-router-dom'
 
 import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
 import { UserContext } from '../../contexts/Auth/UserContext'
-import { sheetConverter } from '../../models/Sheet'
+import { stationConverter } from '../../models/Station'
 import { StyledTableCell, StyledTableRow } from './styles'
 
 export default () => {
   const { db } = useContext(FirebaseContext)
   const { user } = useContext(UserContext)
 
-  const sheetCollectionRef = collection(
+  const stationCollectionRef = collection(
     db,
-    `users/${user?.uid}/sheets`
-  ).withConverter(sheetConverter)
-  const [sheets, loading] = useCollectionData(sheetCollectionRef)
+    `users/${user?.uid}/stations`
+  ).withConverter(stationConverter)
+  const [stations, loading] = useCollectionData(stationCollectionRef)
 
   const deleteSheet = async (id) => {
-    const currentRef = doc(db, `users/${user?.uid}/sheets`, id)
+    const currentRef = doc(db, `users/${user?.uid}/stations`, id)
     await deleteDoc(currentRef)
   }
 
   return (
     <Box sx={{ color: 'black' }}>
-      {loading || !sheets.length >= 1 ? (
+      {loading || !stations.length >= 1 ? (
         <Box className="flex justify-center">
-          <Typography>No sheets found</Typography>
+          <Typography>No Projects found</Typography>
         </Box>
       ) : (
         <Table stickyHeader>
@@ -53,13 +53,13 @@ export default () => {
           </TableHead>
           <TableBody>
             {!loading &&
-              sheets.map((sheet) => {
+              stations.map((station) => {
                 return (
-                  <StyledTableRow key={sheet.name}>
+                  <StyledTableRow key={station.name}>
                     <TableCell align="center">
-                      <Link to={`${sheet.id}`}>{sheet.name}</Link>
+                      <Link to={`${station.id}`}>{station.name}</Link>
                     </TableCell>
-                    <TableCell align="center">{sheet.location}</TableCell>
+                    <TableCell align="center">{station.location}</TableCell>
                     <TableCell align="center">
                       {/* {new Date(
                         sheet.createdAt.seconds * 1000
@@ -86,7 +86,7 @@ export default () => {
                     </TableCell>
 
                     <TableCell align="center">
-                      <Link to={`${sheet.id}`}>
+                      <Link to={`${station.id}`}>
                         <EditIcon sx={{ color: '#202020' }} />
                       </Link>
                     </TableCell>
@@ -94,7 +94,7 @@ export default () => {
                     <TableCell align="center">
                       <DeleteIcon
                         onClick={() => {
-                          deleteSheet(sheet.id)
+                          deleteSheet(station.id)
                         }}
                       />
                     </TableCell>

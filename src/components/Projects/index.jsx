@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 
 import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
 import { UserContext } from '../../contexts/Auth/UserContext'
-import { Sheet, sheetConverter } from '../../models/Sheet'
+import { Station, stationConverter } from '../../models/Station'
 import Projects from './Projects'
 
 const defaultValues = {
@@ -16,26 +16,28 @@ export default () => {
   const { db } = useContext(FirebaseContext)
   const { user } = useContext(UserContext)
 
-  const [openCreateSheet, setOpenCreateSheet] = useState(false)
-  const handleOpenCreateSheet = () => setOpenCreateSheet(true)
-  const handleCloseCreateSheet = () => setOpenCreateSheet(false)
+  const [openCreateStation, setOpenCreateStation] = useState(false)
+  const handleOpenCreateStation = () => setOpenCreateStation(true)
+  const handleCloseCreateStation = () => setOpenCreateStation(false)
 
   const { handleSubmit, control } = useForm({ defaultValues })
 
   const addSheet = async (data) => {
     const { name, location } = data
-    const sheet = new Sheet(name, location)
+    const station = new Station(name, location)
     await addDoc(
-      collection(db, `users/${user?.uid}/sheets`).withConverter(sheetConverter),
-      sheet
+      collection(db, `users/${user?.uid}/stations`).withConverter(
+        stationConverter
+      ),
+      station
     )
   }
 
   return (
     <Projects
-      openCreateSheet={openCreateSheet}
-      handleOpenCreateSheet={handleOpenCreateSheet}
-      handleCloseCreateSheet={handleCloseCreateSheet}
+      openCreateStation={openCreateStation}
+      handleOpenCreateStation={handleOpenCreateStation}
+      handleCloseCreateStation={handleCloseCreateStation}
       handleSubmit={handleSubmit}
       control={control}
       addSheet={addSheet}
