@@ -1,10 +1,9 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
-import { addDoc, collection, doc } from 'firebase/firestore'
+import { Box, TextField, Typography } from '@mui/material'
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
+import { doc } from 'firebase/firestore'
+import moment from 'moment/moment'
 import { useContext, useEffect, useState } from 'react'
-import {
-  useCollectionData,
-  useDocumentData,
-} from 'react-firebase-hooks/firestore'
+import { useDocumentData } from 'react-firebase-hooks/firestore'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { Speech, Table } from '../../components'
@@ -23,10 +22,10 @@ export default () => {
     }
   }, [])
 
-  const [name, setName] = useState('')
-  const [date, setDate] = useState(
-    new Date().toLocaleDateString('en-US').replace(/\//g, '-')
-  )
+  const [date, setDate] = useState(moment().format('MM-DD-YYYY'))
+  const handleChange = (newValue) => {
+    setDate(newValue.format('MM-DD-YYYY'))
+  }
 
   const pollenDocumentRef = doc(
     db,
@@ -41,45 +40,16 @@ export default () => {
 
   return (
     <>
-      <div className="flex min-h-[24rem] flex-col items-center justify-around sm:flex-row sm:flex-wrap">
-        <div className="my-2 flex h-[10rem] min-w-[24rem] flex-col items-center justify-evenly rounded-lg shadow-md">
-          <Typography
-            className=" text-center font-sans text-lg font-medium text-zinc-800"
-            component="div"
-          >
-            Add a New Name
-          </Typography>
-
-          <div className="flex w-[70%] flex-row items-center justify-around">
-            <TextField
-              className="flex w-full items-center justify-center"
-              id="standard-basic"
-              variant="standard"
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Box>
-              <Button
-                color={'primary'}
-                variant={'contained'}
-                onClick={() => { }}
-                className="bg-black"
-              >
-                {' '}
-                Add
-              </Button>
-            </Box>
-          </div>
-        </div>
-        <div className="my-2 flex min-h-[10rem] min-w-[24rem] flex-col items-center justify-evenly rounded-lg shadow-md">
-          <Typography
-            className=" text-center font-sans text-lg font-medium text-zinc-800"
-            component="div"
-          >
-            Click to Start Listening
-          </Typography>
-          <Speech pollens={pollens} sheetId={sheetId} />
-        </div>
+      <div className="my-2 flex min-h-[10rem] min-w-[24rem] flex-col items-center justify-evenly rounded-lg shadow-md">
+        <Typography
+          className=" text-center font-sans text-lg font-medium text-zinc-800"
+          component="div"
+        >
+          Click to Start Listening
+        </Typography>
+        {/* <Speech pollens={pollens} sheetId={sheetId} /> */}
       </div>
+
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} />
       <Box className="flex justify-center py-4">
         <Typography
@@ -93,16 +63,20 @@ export default () => {
           View and Edit
         </Typography>
       </Box>
-      <TextField
-        id="date"
-        className="flex content-center justify-center py-4"
+      <DesktopDatePicker
         label="Sheet Date"
-        type="date"
-        defaultValue="2022-01-01"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        onChange={(e) => setDate(e.target.value)}
+        className="flex w-full content-center justify-center py-4"
+        inputFormat="MM/DD/YYYY"
+        value={date}
+        onChange={handleChange}
+        renderInput={(params) => (
+          <TextField
+            InputLabelProps={{
+              shrink: true,
+            }}
+            {...params}
+          />
+        )}
       />
       <Box className="flex w-full content-center justify-center py-4">
         {pollens && <Table pollens={pollens} />}

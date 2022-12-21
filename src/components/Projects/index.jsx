@@ -1,10 +1,9 @@
-import { addDoc, collection } from 'firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 import { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
 import { UserContext } from '../../contexts/Auth/UserContext'
-import { Station, stationConverter } from '../../models/Station'
 import Projects from './Projects'
 
 const defaultValues = {
@@ -23,14 +22,7 @@ export default () => {
   const { handleSubmit, control } = useForm({ defaultValues })
 
   const addSheet = async (data) => {
-    const { name, location } = data
-    const station = new Station(name, location)
-    await addDoc(
-      collection(db, `users/${user?.uid}/stations`).withConverter(
-        stationConverter
-      ),
-      station
-    )
+    await setDoc(doc(db, `users/${user?.uid}/stations`, name), data)
   }
 
   return (

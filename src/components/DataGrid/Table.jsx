@@ -32,16 +32,11 @@ const columns = [
   { field: '_23h', headerName: '23', width: 50 },
 ]
 export default function Table(pollens) {
-  const rows = []
-
-  for (const [key, value] of Object.entries(pollens.pollens)) {
-    rows.push({
-      id: key,
-      // name: 
-    })
-  }
-  // console.log(rows)
-  console.log(pollens.pollens)
+  const rows = Object.entries(pollens.pollens).map(([key, value]) => ({
+    id: key,
+    name: key,
+    ...value,
+  }))
 
   return (
     <div className="container flex flex-1 content-center justify-center">
@@ -50,7 +45,7 @@ export default function Table(pollens) {
           height: 540,
           width: 960,
           '& .MuiDataGrid-columnHeaders': {
-            fontSize: 18,
+            fontSize: 16,
           },
         }}
       >
@@ -62,6 +57,7 @@ export default function Table(pollens) {
             '& .MuiDataGrid-cell:hover': {
               color: 'primary.main',
             },
+            cursor: 'pointer',
           }}
           rows={rows}
           columns={columns}

@@ -15,18 +15,12 @@ import SpeechRecognition, {
 
 import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
 import { pollensList } from '../../data/arrays'
-// import { Pollen, pollenConverter } from '../../models/Pollen'
 import Speech from './Speech'
 
 function Index({ pollens, sheetId }) {
   const { db } = useContext(FirebaseContext)
   const [interval, setInterval] = useState('intervals._0h')
-  // const pollenCollectionRef = collection(
-  //   db,
-  //   'sheets',
-  //   sheetId,
-  //   'pollens'
-  // );
+  const pollenCollectionRef = collection(db, 'sheets', sheetId, 'pollens')
 
   const hourCommand = (hour) => {
     if (!isNaN(hour) && hour >= 0 && hour <= 23) {
