@@ -8,8 +8,12 @@ import {
   Title,
   Tooltip,
 } from 'chart.js'
-import React from 'react'
+import { collectionGroup, getDocs, query, where } from 'firebase/firestore'
+import React, { useContext, useEffect, useState } from 'react'
 import { Line } from 'react-chartjs-2'
+import { useCollectionDataOnce } from 'react-firebase-hooks/firestore'
+
+import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -106,14 +110,30 @@ function getPollens(dateInitial, dateFinal) {
     }
   }
 }
-const data = {
+const data2 = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
   datasets,
 }
-function Graph() {
+const getAcer = async (query) => {
+  try {
+    const data = await getDocs(query)
+    return data
+  } catch (error) {
+    console.error(error)
+  }
+}
+async function Graph() {
+  const { db } = useContext(FirebaseContext)
+  const [data, setData] = useState()
+  const AcerQuery = query(collectionGroup(db, 'days'))
+  useEffect(async () => {
+    const data = await getAcer(AcerQuery)
+    setData(data)
+  }, [])
+  console.log(data)
   return (
     <div className="flex items-center justify-center">
-      <Line options={options} data={data} width={200} height={200} />
+      <Line options={options} data={data2} width={200} height={200} />
     </div>
   )
 }
