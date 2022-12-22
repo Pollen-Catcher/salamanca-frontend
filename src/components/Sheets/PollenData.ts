@@ -5,23 +5,28 @@ import {
   SnapshotOptions,
   WithFieldValue,
 } from 'firebase/firestore'
-import { Pollen, PollenDatagrid } from '../../types/pollen'
+import { Pollen } from '../../types/pollen'
 
-export const PollenDatagridConverter: FirestoreDataConverter<PollenDatagrid[]> =
-  {
-    toFirestore(data: WithFieldValue<PollenDatagrid[]>): DocumentData {
-      return { ...data }
-    },
-    fromFirestore(
-      snapshot: QueryDocumentSnapshot,
-      options: SnapshotOptions
-    ): PollenDatagrid[] {
-      const data = snapshot.data(options)
-      return Object.entries(data).map(([key, value]) => ({
-        id: key,
+export const PollenDatagridConverter: FirestoreDataConverter<Pollen[]> = {
+  toFirestore(data: WithFieldValue<Pollen[]>): DocumentData {
+    return {
+      ...data,
+    }
+  },
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions
+  ): Pollen[] {
+    const data = snapshot.data(options)
+    const pollens = Object.entries(data).filter(
+      ([key]) => key !== 'date' && key !== 'available'
+    )
+    return pollens.map(([key, value]) => {
+      const pollen: Pollen = {
         name: key,
-        dailySum: Object.values(value).reduce((a, b) => a + b, 0),
-        ...(value as Pollen),
-      }))
-    },
-  }
+        ...value,
+      }
+      return pollen
+    })
+  },
+}

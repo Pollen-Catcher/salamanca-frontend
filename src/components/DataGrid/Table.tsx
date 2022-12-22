@@ -33,6 +33,7 @@ export default function Table({ pollens }: Props) {
             cursor: 'pointer',
           }}
           rows={pollens || []}
+          getRowId={(row) => row.name}
           columns={columns}
           pageSize={8}
           pagination

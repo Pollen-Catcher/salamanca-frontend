@@ -1,6 +1,13 @@
 import { DocumentData, DocumentReference } from 'firebase/firestore'
 
+interface DayDocument {
+  available: string[]
+  date: string
+  
+}
+
 interface Pollen {
+  name: string
   _0h: number
   _1h: number
   _2h: number
@@ -25,10 +32,4 @@ interface Pollen {
   _21h: number
   _22h: number
   _23h: number
-}
-
-interface PollenDatagrid extends Pollen {
-  id: string
-  name: string
-  dailySum: any
 }

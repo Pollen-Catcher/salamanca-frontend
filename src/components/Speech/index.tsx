@@ -1,7 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Alert, Box, Button, ButtonGroup } from '@mui/material'
 import chalk from 'chalk'
-import { increment, updateDoc, setDoc, DocumentReference, DocumentData, FirestoreError } from 'firebase/firestore'
+import { arrayUnion, increment, updateDoc, setDoc, DocumentReference, DocumentData, FirestoreError } from 'firebase/firestore'
 import propose from 'propose'
 
 import { useState } from 'react'
@@ -10,18 +10,22 @@ import SpeechRecognition, {
 } from 'react-speech-recognition'
 
 import { pollensList } from '../../data/arrays'
-import { Pollen } from '../../types/pollen'
 
 interface Props {
-  pollens: Pollen[],
   sheetRef: DocumentReference<DocumentData>
+  date: string
 }
 
-export default function Speech({ pollens, sheetRef }: Props) {
+export default function Speech({ sheetRef, date }: Props) {
   const [interval, setInterval] = useState('_0h')
 
   const hourCommand = (hour: number) => {
     console.log("Hour Command")
+    if (isNaN(hour)) {
+      console.log(chalk.red('Hour is not a number'))
+      resetTranscript()
+      return
+    }
     if (hour >= 0 && hour <= 23) {
       console.log(chalk.blue('hour atualizada: ', hour))
       setInterval(`_${hour}h`)
@@ -49,12 +53,15 @@ export default function Speech({ pollens, sheetRef }: Props) {
 
     amount = operation === '+' ? amount : -amount
     await updateDoc(sheetRef, {
+      available: arrayUnion(proposedPollen),
       [`${proposedPollen}.${interval}`]: increment(amount),
     }).then(() => {
       console.log(chalk.green(`Updated ${proposedPollen}`))
     }).catch(async (e: FirestoreError) => {
       if (e.code === "not-found") {
         await setDoc(sheetRef, {
+          date: date,
+          available: [proposedPollen],
           [proposedPollen]: {
             [interval]: Math.abs(amount)
           }
@@ -154,7 +161,7 @@ export default function Speech({ pollens, sheetRef }: Props) {
   }
 
   return (
-    <Box className="microphone-wrapper flex w-full flex-col items-center justify-center">
+    <div className="microphone-wrapper flex w-full flex-col items-center justify-center">
       <ButtonGroup disableElevation variant="contained" className="py-2">
         <Button onClick={handleListening}>Listen</Button>
         {isListening && <Button onClick={stopHandle}>Stop</Button>}
@@ -170,7 +177,7 @@ export default function Speech({ pollens, sheetRef }: Props) {
       )}
 
       {transcript && (
-        <Box className="microphone-result-container justify-center p-2">
+        <div className="microphone-result-container justify-center p-2">
           <Box sx={{ color: '#5e6060' }}>{transcript}</Box>
           <br />
           <Button
@@ -180,10 +187,8 @@ export default function Speech({ pollens, sheetRef }: Props) {
           >
             Reset
           </Button>
-        </Box>
+        </div>
       )}
-    </Box>
+    </div>
   )
 }
-
-

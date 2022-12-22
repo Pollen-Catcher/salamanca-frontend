@@ -28,4 +28,4 @@ AuthProvider.propTypes = {
   children: PropTypes.node,
 }
 
-export { FirebaseContext }
+export { auth, db, FirebaseContext }

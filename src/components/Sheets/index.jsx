@@ -38,7 +38,6 @@ export default () => {
     date
   ).withConverter(PollenDatagridConverter)
   const [data, loading] = useDocumentData(sheetRef)
-  console.log(data)
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -46,7 +45,7 @@ export default () => {
         <Typography className=" text-center font-sans text-lg font-medium text-zinc-800">
           Click to Start Listening
         </Typography>
-        <Speech pollens={data} sheetRef={sheetRef} />
+        <Speech sheetRef={sheetRef} date={date} />
       </div>
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} />
