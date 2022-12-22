@@ -20,9 +20,8 @@ export default () => {
   const handleCloseCreateStation = () => setOpenCreateStation(false)
 
   const { handleSubmit, control } = useForm({ defaultValues })
-
   const addSheet = async (data) => {
-    await setDoc(doc(db, `users/${user?.uid}/stations`, name), data)
+    await setDoc(doc(db, `users/${user?.uid}/stations`, data.name), data)
   }
 
   return (

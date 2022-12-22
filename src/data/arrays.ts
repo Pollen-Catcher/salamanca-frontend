@@ -1,10 +1,58 @@
-import { Box } from '@mui/system'
-import { DataGrid } from '@mui/x-data-grid'
+interface DatagridColumn {
+  field: string
+  headerName: string
+  width?: number
+  hideable?: boolean
+}
 
-import CustomToolbar from './CustomToolbar'
-import Pagination from './Pagination'
+export const pollensList : string[] = [
+  'Acer',
+  'Aesculus',
+  'Alnus',
+  'Amaranthaceae',
+  'Apiaceae',
+  'Artemisia',
+  'Asteraceae',
+  'Betula',
+  'Brassicaceae',
+  'Cannabis',
+  'Castanea',
+  'Casuarina',
+  'Cedrus',
+  'Corylus',
+  'Cupressaceae',
+  'Cyperaceae',
+  'Echium',
+  'Ericaceae',
+  'Fabaceae',
+  'Fraxinus',
+  'Helianthus',
+  'Juncaceae',
+  'Liguliflora',
+  'Ligustrum',
+  'Mercurialis',
+  'Morus',
+  'Myrtaceae',
+  'Olea',
+  'Oleaeceae',
+  'Palmae',
+  'Pinus',
+  'Plantago',
+  'Platanus',
+  'Poaceae',
+  'Populus',
+  'Quercus',
+  'Rosaceae',
+  'Rumex',
+  'Salix',
+  'Sambucus',
+  'Ulmus',
+  'Urticaceae',
+  'Urtica memb',
+  'Indeterminado',
+]
 
-const columns = [
+export const columns: DatagridColumn[] = [
   { field: 'name', headerName: 'Name', hideable: false },
   { field: '_0h', headerName: '0', width: 50 },
   { field: '_1h', headerName: '1', width: 50 },
@@ -31,44 +79,3 @@ const columns = [
   { field: '_22h', headerName: '22', width: 50 },
   { field: '_23h', headerName: '23', width: 50 },
 ]
-export default function Table(pollens) {
-  const rows = Object.entries(pollens.pollens).map(([key, value]) => ({
-    id: key,
-    name: key,
-    ...value,
-  }))
-
-  return (
-    <div className="container flex flex-1 content-center justify-center">
-      <Box
-        sx={{
-          height: 540,
-          width: 960,
-          '& .MuiDataGrid-columnHeaders': {
-            fontSize: 16,
-          },
-        }}
-      >
-        <DataGrid
-          sx={{
-            boxShadow: 2,
-            border: 2,
-            borderColor: 'primary.light',
-            '& .MuiDataGrid-cell:hover': {
-              color: 'primary.main',
-            },
-            cursor: 'pointer',
-          }}
-          rows={rows}
-          columns={columns}
-          pageSize={7}
-          pagination
-          components={{
-            Toolbar: CustomToolbar,
-            Pagination: Pagination,
-          }}
-        />
-      </Box>
-    </div>
-  )
-}

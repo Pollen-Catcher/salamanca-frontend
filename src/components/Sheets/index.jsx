@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from '@mui/material'
+import { Box, Skeleton, TextField, Typography } from '@mui/material'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
 import { doc } from 'firebase/firestore'
 import moment from 'moment/moment'
@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Speech, Table } from '../../components'
 import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
 import { UserContext } from '../../contexts/Auth/UserContext'
+import { PollenDatagridConverter } from './PollenData'
 
 export default () => {
   const { sheetId } = useParams()
@@ -27,7 +28,7 @@ export default () => {
     setDate(newValue.format('MM-DD-YYYY'))
   }
 
-  const pollenDocumentRef = doc(
+  const sheetRef = doc(
     db,
     'users',
     user.uid,
@@ -35,34 +36,30 @@ export default () => {
     sheetId,
     'days',
     date
-  )
-  const [pollens] = useDocumentData(pollenDocumentRef)
+  ).withConverter(PollenDatagridConverter)
+  const [data, loading] = useDocumentData(sheetRef)
+  console.log(data)
 
   return (
-    <>
+    <div className="flex flex-col items-center justify-center">
       <div className="my-2 flex min-h-[10rem] min-w-[24rem] flex-col items-center justify-evenly rounded-lg shadow-md">
-        <Typography
-          className=" text-center font-sans text-lg font-medium text-zinc-800"
-          component="div"
-        >
+        <Typography className=" text-center font-sans text-lg font-medium text-zinc-800">
           Click to Start Listening
         </Typography>
-        {/* <Speech pollens={pollens} sheetId={sheetId} /> */}
+        <Speech pollens={data} sheetRef={sheetRef} />
       </div>
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} />
-      <Box className="flex justify-center py-4">
-        <Typography
-          className="flex content-center justify-center py-4"
-          noWrap
-          variant="h6"
-          component="div"
-          style={{ color: '#b6b5b5' }}
-          sx={{ display: { xs: 'none', sm: 'block' } }}
-        >
-          View and Edit
-        </Typography>
-      </Box>
+
+      <Typography
+        className="flex content-center justify-center overflow-clip py-4"
+        variant="h6"
+        component="h6"
+        sx={{ display: { xs: 'none', sm: 'block', color: '#b6b5b5' } }}
+      >
+        View and Edit
+      </Typography>
+
       <DesktopDatePicker
         label="Sheet Date"
         className="flex w-full content-center justify-center py-4"
@@ -78,9 +75,16 @@ export default () => {
           />
         )}
       />
-      <Box className="flex w-full content-center justify-center py-4">
-        {pollens && <Table pollens={pollens} />}
-      </Box>
-    </>
+
+      {loading ? (
+        <Skeleton variant="rectangular" width={960} height={540}>
+          <Table pollens={data} />
+        </Skeleton>
+      ) : (
+        <div className="mt-8 flex w-full">
+          <Table pollens={data} />
+        </div>
+      )}
+    </div>
   )
 }
