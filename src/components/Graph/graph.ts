@@ -1,7 +1,7 @@
 import { ChartOptions } from "chart.js"
 import { ChartData } from "chart.js"
 import {DocumentData}from "firebase/firestore"
-export const movingAverageOptions:ChartOptions = {
+export const movingAverageOptions:ChartOptions<"line"> = {
   responsive: true,
   plugins: {
     legend: {
@@ -129,6 +129,7 @@ export function getNextDay(day: Date) {
   return new Date(newDay)
 }
 export function getMovingAverage({dailyConcentrations,factor,n=5,pollenName}:IGetMovingAverageParams) {
+  // The line color of the current pollen
   const color = `${Math.random() * 256},${Math.random() * 256},${
     Math.random() * 256
   }`
@@ -137,19 +138,16 @@ export function getMovingAverage({dailyConcentrations,factor,n=5,pollenName}:IGe
   const dataMap:[string,number][]=Object.entries<number>(dailyConcentrations)
     .sort((a,b)=>{
       return new Date(a[0]).getTime()-new Date(b[0]).getTime()})
-  const interactions=dataMap.length+1
+  const interactions=dataMap.length
   let aux=dataMap.map(el=>el[1]) // array to remove the previous average daily concentration from the moving average
-  const movingAverage:any = {}  // 
+  const movingAverage:any = {}  // the map of points by 
   for (let i = 0; i < interactions; i++) {
     if (i >= n) {
       sum -= Number(aux.shift())*factor
-      console.log(i);
     }    
     sum += Number(dataMap[i]?.[1])*factor
     movingAverage[dataMap[i]?.[0]] = sum / n
-  }
-  console.log(dataMap.length);
-  
+  }  
   const data :ChartData<"line">= {
     labels: Object.keys(movingAverage),
     datasets: [
