@@ -1,7 +1,7 @@
 import { ChartOptions } from "chart.js"
-import { ChartData } from "chart.js"
-import {DocumentData}from "firebase/firestore"
-export const movingAverageOptions:ChartOptions<"line"> = {
+import { ChartData, ChartDataset } from "chart.js"
+import { DocumentData } from "firebase/firestore"
+export const movingAverageOptions: ChartOptions<"line"> = {
   responsive: true,
   plugins: {
     legend: {
@@ -10,23 +10,23 @@ export const movingAverageOptions:ChartOptions<"line"> = {
     title: {
       display: true,
       text: 'Moving Average',
-      font:{size:24,family:"Times New Roman"},
+      font: { size: 24, family: "Times New Roman" },
     },
-  },scales:{
-    x:{
-      title:{
-        display:true,
-        align:"end",
-        font:{size:24,family:"Times New Roman"},
-        text:"Days"
+  }, scales: {
+    x: {
+      title: {
+        display: true,
+        align: "end",
+        font: { size: 24, family: "Times New Roman" },
+        text: "Days"
       }
     },
-    y:{
-      title:{
-        display:true,
-        align:"start",
-        font:{size:24,family:"Times New Roman"},
-        text:"Average Pollen Concentration (Pollen/m³)"
+    y: {
+      title: {
+        display: true,
+        align: "start",
+        font: { size: 24, family: "Times New Roman" },
+        text: "Average Pollen Concentration (Pollen/m³)"
       }
     }
   }
@@ -83,16 +83,18 @@ export function getDailySum({ pollen }: IDataFetch) {
   return dailySum
 }
 export interface IGetDataGraphParams {
-  pollens: IDataFetch[],
+  pollens: IDataFetch[]|undefined,
   pollenName: string,
   initialDate: Date,
-  finalDate?: Date
+  finalDate: Date
 }
-export interface IGetMovingAverageParams{
-  dailyConcentrations:any
-  factor:number
-  n?:number
-  pollenName:string
+export interface IGetMovingAverageParams {
+  pollens: IDataFetch[]|undefined,
+  initialDate: Date,
+  finalDate?: Date
+  factor: number
+  n?: number
+  pollenNames: string[]
 }
 export function padTo2Digits(num: number) {
   return num.toString().padStart(2, '0');
@@ -104,23 +106,25 @@ export function formatDate(date: Date) {
     date.getFullYear(),
   ].join('-');
 }
-export function getDataGraph({ pollens, pollenName, initialDate, finalDate = new Date(formatDate(new Date())) }: IGetDataGraphParams) {
+export function getDataGraph({ pollens, pollenName, initialDate, finalDate }: IGetDataGraphParams) {
+  if(!pollens) return
+  if (initialDate.getTime() > Date.now()) return // Initial date greater to final date
   const pollenGraph = pollens.filter((pollen) => pollen.pollenName === pollenName)
   if (!pollenGraph) return // Pollen don't exists
-  if (initialDate.getTime() > Date.now()) return // Initial date greater to final date
   const validData: any = {}
   pollenGraph.forEach((pollen) => {
     const dailySum = getDailySum(pollen)
-    if (new Date(pollen.date).getTime() > Date.now()) return
+    const pollenDate = new Date(pollen.date).getTime() // date of collection of current data
+    if (pollenDate > Date.now() || pollenDate < initialDate.getTime()) return // check if date of collection isn't valid
     validData[pollen.date] = dailySum
   })
-  const qtdDays = (finalDate.getTime() - initialDate.getTime()) / (1000 * 60 * 60 * 24)// milliseconds to days
+  const qtdDays = (finalDate.getTime() - initialDate.getTime()) / (1000 * 60 * 60 * 24) // milliseconds to days
   let date = initialDate
   for (let i = 0; i < qtdDays; i++) {
-    const currentday = formatDate(date)
-    if (!validData[currentday]) validData[currentday] = 0
-    date = getNextDay(date)
-  }
+    const currentDay = formatDate(date)
+    if (!validData[currentDay]) validData[currentDay] = 0 // fills the map with days when there is no data
+    date = getNextDay(date) // go to next day
+  }  
   return validData
 }
 export function getNextDay(day: Date) {
@@ -128,50 +132,68 @@ export function getNextDay(day: Date) {
   const newDay = day.getTime() + oneDayInMilliseconds
   return new Date(newDay)
 }
-export function getMovingAverage({dailyConcentrations,factor,n=5,pollenName}:IGetMovingAverageParams) {
+export function getRandomColor() {
   // The line color of the current pollen
-  const color = `${Math.random() * 256},${Math.random() * 256},${
-    Math.random() * 256
-  }`
-  let sum = 0
+  const color = `${Math.random() * 256},${Math.random() * 256},${Math.random() * 256
+    }`
+  return color
+}
+export function getOrderedConcentrations(dailyConcentrations: any) {
   // data in ascending order to provide a consistent distribution of running mean values in the graph
-  const dataMap:[string,number][]=Object.entries<number>(dailyConcentrations)
-    .sort((a,b)=>{
-      return new Date(a[0]).getTime()-new Date(b[0]).getTime()})
-  const interactions=dataMap.length
-  let aux=dataMap.map(el=>el[1]) // array to remove the previous average daily concentration from the moving average
-  const movingAverage:any = {}  // the map of points by 
+  const dataMap: [string, number][] = Object.entries<number>(dailyConcentrations)
+    .sort((a, b) => {
+      return new Date(a[0]).getTime() - new Date(b[0]).getTime()
+    })    
+  return dataMap
+}
+export function getMovingAverage(dataMap: [string, number][], n: number, factor: number) {
+  let sum = 0
+  const interactions = dataMap.length  
+  let aux = dataMap.map(el => el[1]) // array to remove the previous average daily concentration from the moving average
+  const movingAverage: any = {}
   for (let i = 0; i < interactions; i++) {
     if (i >= n) {
-      sum -= Number(aux.shift())*factor
-    }    
-    sum += Number(dataMap[i]?.[1])*factor
+      sum -= Number(aux.shift()) * factor
+    }
+    sum += Number(dataMap[i]?.[1]) * factor
     movingAverage[dataMap[i]?.[0]] = sum / n
   }  
-  const data :ChartData<"line">= {
-    labels: Object.keys(movingAverage),
-    datasets: [
-      {
-        label: pollenName,
-        fill: false,
-        backgroundColor: `rgba(${color},0.4)`,
-        borderColor: `rgba(${color},1)`,
-        borderCapStyle: 'butt',
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: 'miter',
-        pointBorderColor: `rgba(${color},1)`,
-        pointBackgroundColor: '#fff',
-        pointBorderWidth: 1,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: `rgba(${color},1)`,
-        pointHoverBorderColor: 'rgba(220,220,220,1)',
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
-        data: Object.values(movingAverage),
-      },
-    ],
+  return movingAverage
+}
+export function getMovingAverageGraph({ initialDate, factor, n = 5, pollenNames, pollens, finalDate = new Date(formatDate(new Date())) }: IGetMovingAverageParams) {
+  const color = pollenNames.map(()=>getRandomColor())
+  const dailyConcentrations = pollenNames.map(pollenName=>getDataGraph({ initialDate, pollenName, pollens, finalDate }))
+  const dataMaps = dailyConcentrations.map(dailyConcentration=>getOrderedConcentrations(dailyConcentration))  
+  const movingAverages = dataMaps.map(dataMap=>getMovingAverage(dataMap, n, factor))
+  const datasets: ChartDataset<"line">[]=[]
+  movingAverages.forEach((movingAverage,index)=>{
+    
+  const dataset:ChartDataset<"line">={
+    
+      label: pollenNames[index],
+      fill: false,
+      backgroundColor: `rgba(${color[index]},0.4)`,
+      borderColor: `rgba(${color[index]},1)`,
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: `rgba(${color[index]},1)`,
+      pointBackgroundColor: '#fff',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: `rgba(${color[index]},1)`,
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: Object.values(movingAverage),
+  }
+  datasets.push(dataset)
+  })
+  const data: ChartData<"line"> = {
+    labels: Object.keys(movingAverages[0]),
+    datasets
   }
   return data
 }
