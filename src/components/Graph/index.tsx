@@ -11,7 +11,7 @@ import {
   CategoryScale
 } from 'chart.js'
 import { collectionGroup, query } from 'firebase/firestore'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { EventHandler, FormEventHandler, useContext, useEffect, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore'
 import { fetchPollens, getMovingAverageGraph, movingAverageOptions, IDataFetch } from "./graph"
@@ -41,7 +41,7 @@ function Graph() {
   const { db } = useContext(FirebaseContext)
   const AcerQuery = query(collectionGroup(db, 'days'))
   const [pollens] = useCollectionDataOnce(AcerQuery)
-  const handleAddPollen = (e) => {
+  const handleAddPollen :FormEventHandler= (e) => {
     e.preventDefault()
     const names: string[] | undefined = []
     if (pollenNames) {
