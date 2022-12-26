@@ -113,9 +113,9 @@ function Graph() {
           />
         </div>
       </div>
-      <div className="max-h-[90vh] w-full py-8 flex justify-center">
+      <div className="py-8 flex justify-center items-center">
         {data && !error ? (
-          <Line options={movingAverageOptions} data={data} width={2} height={2} />
+          <Line options={movingAverageOptions} data={data} width={2} height={2} className="max-w-[85vw] max-h-[85vh]"/>
         ) :
           error
             ? (
