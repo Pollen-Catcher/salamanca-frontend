@@ -12,7 +12,7 @@ interface Props {
 
 export default function Table({ pollens }: Props) {
   return (
-    <div className="container flex flex-1 content-center justify-center">
+    <div className="flex flex-1 content-center justify-center">
       <Box
         className="w-full"
         sx={{
