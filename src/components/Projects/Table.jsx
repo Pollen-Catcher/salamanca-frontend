@@ -33,9 +33,11 @@ export default () => {
     await deleteDoc(currentRef)
   }
 
+  console.log(stations);
+
   return (
     <Box sx={{ color: 'black' }}>
-      {loading || !stations.length >= 1 ? (
+      {loading || !stations?.length >= 1 ? (
         <Box className="flex justify-center">
           <Typography>No Projects found</Typography>
         </Box>

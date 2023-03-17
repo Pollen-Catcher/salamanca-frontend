@@ -1,4 +1,5 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, TextField, Tooltip, Typography } from '@mui/material'
+import { Info } from '@mui/icons-material'
 import PropTypes from 'prop-types'
 import { useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router'
@@ -16,6 +17,15 @@ function Sheets({ setName, pollens, sheetId, addPollen, setDate }) {
   }, [])
   return (
     <>
+    <div className = " flex justify-end ">
+      <div className = "px-100">
+      <Tooltip 
+       title={<b>{"testando o Tooltip"}</b>} 
+       placement= "left" style={{ color: '#009be5' }} >
+       <Info />
+      </Tooltip>
+      </div>
+    </div>
       <div className="flex min-h-[24rem] flex-col items-center justify-around sm:flex-row sm:flex-wrap">
         <div className="my-2 flex h-[10rem] min-w-[24rem] flex-col items-center justify-evenly rounded-lg shadow-md">
           <Typography
@@ -24,6 +34,7 @@ function Sheets({ setName, pollens, sheetId, addPollen, setDate }) {
           >
             Add a New Name
           </Typography>
+          
 
           <div className="flex w-[70%] flex-row items-center justify-around">
             <TextField
