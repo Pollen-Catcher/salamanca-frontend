@@ -18,7 +18,7 @@ function Sheets({ setName, pollens, sheetId, addPollen, setDate }) {
   return (
     <>
     <div className = " flex justify-end ">
-      <div className = "px-100">
+      <div>
       <Tooltip 
        title={<b>{"testando o Tooltip"}</b>} 
        placement= "left" style={{ color: '#009be5' }} >
