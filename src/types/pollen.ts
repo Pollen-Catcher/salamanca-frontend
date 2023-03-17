@@ -1,12 +1,9 @@
-import { DocumentData, DocumentReference } from 'firebase/firestore'
-
-interface DayDocument {
+export interface DayDocument {
   available: string[]
   date: string
-  
 }
 
-interface Pollen {
+export interface Pollen {
   name: string
   _0h: number
   _1h: number

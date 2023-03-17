@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.6",
     "@emotion/styled": "11.10.5",
     "@hookform/resolvers": "^2.9.10",
     "@mui/icons-material": "^5.10.16",
@@ -25,7 +26,6 @@
     "react-router-dom": "^6.4.0",
     "react-speech-recognition": "^3.10.0",
     "regenerator-runtime": "^0.13.10",
-    "typescript": "^4.9.4",
     "yup": "^0.32.11"
   },
   "devDependencies": {
@@ -40,10 +40,12 @@
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "^8.0.0",
-    "postcss": "^8.4.20",
-    "prettier": "^2.8.1",
-    "prettier-plugin-tailwindcss": "^0.2.1",
-    "tailwindcss": "^3.2.4",
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.4",
+    "prettier-plugin-firestore-rules": "^0.1.5",
+    "prettier-plugin-tailwindcss": "^0.2.4",
+    "tailwindcss": "^3.2.7",
+    "typescript": "^4.9.5",
     "vite": "^4.0.0"
   },
   "scripts": {

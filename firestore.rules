@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{userId} {
+      allow read, write: if belongsTo(userId);
+    }
+  
+    match /stations/{stationId} {
+      allow read: if resourceMatchesUID();
+      allow update: if requestMatchesUID() && resourceMatchesUID();
+      allow write: if requestMatchesUID();
+    }
+
+    match /stations/{stationId}/days/{day} {
+      allow read: if resourceMatchesUID();
+      allow update: if requestMatchesUID() && resourceMatchesUID();
+      allow write: if requestMatchesUID();
+    }
+
+    match /{path=**}/days/{day} {
+      allow read: if resourceMatchesUID();
+    }
+
+    function belongsTo(userId) {
+      return request.auth.uid == userId
+    }
+    function requestMatchesUID() {
+      return request.auth.uid == request.resource.data.userUid;
+    }
+    function resourceMatchesUID() {
+      return request.auth.uid == resource.data.userUid;
+    }
+    
+  }
+}

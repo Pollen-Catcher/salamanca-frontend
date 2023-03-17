@@ -1,19 +1,13 @@
-import { Box, Skeleton, TextField, Typography } from '@mui/material'
+import { Box, TextField, Typography } from '@mui/material'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
-import { doc } from 'firebase/firestore'
 import moment from 'moment/moment'
 import { useContext, useEffect, useState } from 'react'
-import { useDocumentData } from 'react-firebase-hooks/firestore'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
-import { Speech, Table } from '../../components'
-import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
+import { Datagrid, Speech } from '../../components'
 import { UserContext } from '../../contexts/Auth/UserContext'
-import { PollenDatagridConverter } from './PollenData'
 
-export default () => {
-  const { sheetId } = useParams()
-  const { db } = useContext(FirebaseContext)
+export default function Sheets() {
   const { user } = useContext(UserContext)
   const navigate = useNavigate()
 
@@ -28,25 +22,14 @@ export default () => {
     setDate(newValue.format('MM-DD-YYYY'))
   }
 
-  const sheetRef = doc(
-    db,
-    'users',
-    user.uid,
-    'stations',
-    sheetId,
-    'days',
-    date
-  ).withConverter(PollenDatagridConverter)
-  const [data, loading] = useDocumentData(sheetRef)
-
   return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="my-2 flex min-h-[10rem] min-w-[24rem] flex-col items-center justify-evenly rounded-lg shadow-md">
-        <Typography className=" text-center font-sans text-lg font-medium text-zinc-800">
+    <Box className="flex flex-col items-center justify-center">
+      <Box className="my-2 flex min-h-[10rem] min-w-[24rem] flex-col items-center justify-evenly rounded-lg shadow-md">
+        <Typography className="text-center font-sans text-lg font-medium text-zinc-800">
           Click to Start Listening
         </Typography>
-        <Speech sheetRef={sheetRef} date={date} />
-      </div>
+        <Speech date={date} />
+      </Box>
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} />
 
@@ -74,16 +57,9 @@ export default () => {
           />
         )}
       />
-
-      {loading ? (
-        <Skeleton variant="rectangular" width={960} height={540}>
-          <Table pollens={data} />
-        </Skeleton>
-      ) : (
-        <div className="mt-8 flex w-full">
-          <Table pollens={data} />
-        </div>
-      )}
-    </div>
+      <div className="mt-8 flex w-full">
+        <Datagrid date={date} />
+      </div>
+    </Box>
   )
 }

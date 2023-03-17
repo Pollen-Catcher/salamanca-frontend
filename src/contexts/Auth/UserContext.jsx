@@ -42,11 +42,10 @@ export function UserProvider({ children }) {
         name: name,
         email: user.email,
       }
-      console.log(docData)
       await updateProfile(user, { displayName: name })
       await setDoc(doc(db, 'users', user.uid), docData)
     } catch (error) {
-      console.log(error.message)
+      console.error(error.message)
     }
   }
   const signIn = async ({ email, password }) => {
@@ -57,7 +56,7 @@ export function UserProvider({ children }) {
       localStorage.setItem('userID', user.uid)
       navigate('/', { replace: true })
     } catch (error) {
-      console.log(error.message)
+      console.error(error.message)
     }
   }
 
@@ -68,7 +67,7 @@ export function UserProvider({ children }) {
   const forgotPassword = async ({ email }) => {
     await sendPasswordResetEmail(auth, email)
       .then(() => {
-        console.log('Password Sent' + email)
+        console.error('Password Sent' + email)
       })
       .catch((error) => {
         console.error(error)
@@ -80,7 +79,6 @@ export function UserProvider({ children }) {
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user
-        console.log(result)
 
         const docData = {
           name: user.displayName,
@@ -95,7 +93,7 @@ export function UserProvider({ children }) {
         navigate('/', { replace: true })
       })
       .catch((error) => {
-        console.log(error)
+        console.error(error)
       })
   }
   const userProviderProps = {

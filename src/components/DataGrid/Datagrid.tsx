@@ -1,16 +1,21 @@
 import { Box } from '@mui/system'
 import { DataGrid } from '@mui/x-data-grid'
+import { useDocumentData } from 'react-firebase-hooks/firestore'
+import { useParams } from 'react-router'
 
 import { columns } from '../../data/arrays'
-import { Pollen } from '../../types/pollen'
+import { getSheetDateRef } from '../../lib/sheet'
 import CustomToolbar from './CustomToolbar'
 import Pagination from './Pagination'
 
-interface Props {
-  pollens: Pollen[]
+interface TableProps {
+  date: string
 }
 
-export default function Table({ pollens }: Props) {
+export default function Datagrid({ date }: TableProps) {
+  const { sheetId } = useParams()
+  const [pollens] = useDocumentData(getSheetDateRef(sheetId!, date))
+
   return (
     <div className="flex flex-1 content-center justify-center">
       <Box

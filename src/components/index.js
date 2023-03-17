@@ -1,4 +1,4 @@
-export { default as Table } from './DataGrid/Table'
+export { default as Datagrid } from './DataGrid/Datagrid'
 export { default as Header } from './Header'
 export { default as Navigator } from './Navigator'
 export { default as Projects } from './Projects/'

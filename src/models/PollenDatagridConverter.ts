@@ -3,12 +3,11 @@ import {
   FirestoreDataConverter,
   QueryDocumentSnapshot,
   SnapshotOptions,
-  WithFieldValue,
 } from 'firebase/firestore'
-import { Pollen } from '../../types/pollen'
+import { Pollen } from '../types/pollen'
 
-export const PollenDatagridConverter: FirestoreDataConverter<Pollen[]> = {
-  toFirestore(data: WithFieldValue<Pollen[]>): DocumentData {
+const PollenDatagridConverter: FirestoreDataConverter<Pollen[]> = {
+  toFirestore(data: any): DocumentData {
     return {
       ...data,
     }
@@ -19,7 +18,7 @@ export const PollenDatagridConverter: FirestoreDataConverter<Pollen[]> = {
   ): Pollen[] {
     const data = snapshot.data(options)
     const pollens = Object.entries(data).filter(
-      ([key]) => key !== 'date' && key !== 'available'
+      ([key]) => key !== 'date' && key !== 'available' && key !== 'userUid' && key !== 'station'
     )
     return pollens.map(([key, value]) => {
       const pollen: Pollen = {
@@ -30,3 +29,5 @@ export const PollenDatagridConverter: FirestoreDataConverter<Pollen[]> = {
     })
   },
 }
+
+export default PollenDatagridConverter;

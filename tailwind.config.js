@@ -1,7 +1,8 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
-  important: '#root',
+  // important: '#root',
   theme: {
     extend: {
       colors: {
@@ -12,6 +13,9 @@ module.exports = {
         register: 'url("/bg-research.png") ',
       },
     },
+  },
+  corePlugins: {
+    preflight: false,
   },
   plugins: [],
 }
