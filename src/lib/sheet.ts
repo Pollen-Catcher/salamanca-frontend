@@ -14,8 +14,10 @@ import {
   Query,
 } from 'firebase/firestore'
 import { app } from '../contexts/Auth/firebaseContext'
-import PollenDatagridConverter from '../models/PollenDatagridConverter'
+
 import { Pollen } from '../types/pollen'
+import { PollenGraphData, PollenDatagridConverter as PollenConverter } from '../components/Graph/PollenData'
+import PollenDatagridConverter from '../models/PollenDatagridConverter'
 
 interface CreateDayDto {
   sheetId: string
@@ -67,12 +69,12 @@ export async function publishPollen({
   })
 }
 
-export function getPollensByStation(sheetIds: string[]): Query<Pollen[]> | null {
+export function getPollensByStation(sheetIds: string[] | undefined): Query<PollenGraphData[]> | null {
   const userUid = auth.currentUser?.uid
-  if (!userUid) return null
+  if (!userUid || !sheetIds) return null
 
   const daysRef = collectionGroup(db, 'days').withConverter(
-    PollenDatagridConverter
+    PollenConverter
   )
   const q = query(
     daysRef,

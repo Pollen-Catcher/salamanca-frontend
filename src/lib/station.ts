@@ -19,7 +19,6 @@ interface StationDto {
 
 const auth = getAuth(app)
 const db = getFirestore(app)
-
 export function getStationsRef(): CollectionReference<Station> {
   return collection(db, 'stations').withConverter(stationConverter)
 }
