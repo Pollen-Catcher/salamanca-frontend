@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
-import { connectAuthEmulator, getAuth } from 'firebase/auth'
-import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth'
+import { getFirestore } from 'firebase/firestore'
 import PropTypes from 'prop-types'
 import { createContext, useContext } from 'react'
 
@@ -11,8 +11,8 @@ const db = getFirestore(app)
 const auth = getAuth(app)
 const FirebaseContext = createContext({ app, db, auth })
 
-connectFirestoreEmulator(db, 'localhost', 8085)
-connectAuthEmulator(auth, 'http://localhost:9099')
+//connectFirestoreEmulator(db, 'localhost', 8085)     you have to add this if you want to connect to the database via emulators
+//connectAuthEmulator(auth, 'http://localhost:9099')  you have to add this if you want to emulators providing authentication
 
 export function AuthProvider({ children }) {
   const { auth, db } = useContext()

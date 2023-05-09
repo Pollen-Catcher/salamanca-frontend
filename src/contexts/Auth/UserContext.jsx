@@ -9,7 +9,6 @@ import {
   updateProfile,
 } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
-import PropTypes from 'prop-types'
 import { createContext, useContext } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useNavigate } from 'react-router'
@@ -18,6 +17,7 @@ import { FirebaseContext } from './firebaseContext'
 
 export const UserContext = createContext({})
 
+// eslint-disable-next-line react/prop-types
 export function UserProvider({ children }) {
   const { auth, db } = useContext(FirebaseContext)
   const [authUser, loading] = useAuthState(auth)
@@ -112,7 +112,4 @@ export function UserProvider({ children }) {
       {children}
     </UserContext.Provider>
   )
-}
-UserProvider.propTypes = {
-  children: PropTypes.node,
 }
