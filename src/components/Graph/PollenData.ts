@@ -5,7 +5,7 @@ import {
   SnapshotOptions,
 } from 'firebase/firestore'
 
-interface PollenGraphData {
+export interface PollenGraphData {
   name: string
   date: string
   dailySum: any
@@ -29,7 +29,7 @@ export const PollenDatagridConverter: FirestoreDataConverter<
       const pollen: PollenGraphData = {
         name: key,
         date: snapshot.id,
-        dailySum: Object.values(value).reduce((acc, curr) => acc + curr, 0),
+        dailySum: Object.values(value).reduce((acc:any, curr) => acc + curr, 0),
       }
       return pollen
     })

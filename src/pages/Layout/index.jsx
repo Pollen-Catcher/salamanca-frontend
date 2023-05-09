@@ -22,9 +22,6 @@ export default function Layout() {
   const [pollens, loading, error] = useCollectionData(
     getPollensByStation(['wbOHY7gupZThn4hRU3L4'])
   )
-
-  console.log({ pollens, error })
-
   return (
     <Box
       sx={{

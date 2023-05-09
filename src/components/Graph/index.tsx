@@ -10,14 +10,14 @@ import {
   ChartData,
   CategoryScale
 } from 'chart.js'
-import { collectionGroup, query } from 'firebase/firestore'
-import React, { EventHandler, FormEventHandler, useContext, useEffect, useState } from 'react'
+import React, { ChangeEvent, ChangeEventHandler, EventHandler, FormEventHandler, useEffect, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore'
 import { fetchPollens, getMovingAverageGraph, movingAverageOptions, IDataFetch } from "./graph"
 import { pollensList } from '../../data/arrays'
-import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
 import { Add } from '@mui/icons-material'
+import { getUsersStationRef } from '../../lib/station'
+import { getPollensByStation } from '../../lib/sheet'
 ChartJS.register(
   LinearScale,
   LineController,
@@ -35,12 +35,12 @@ function Graph() {
   const [dataFetch, setDataFetch] = useState<IDataFetch[]>()
   const [data, setData] = useState<ChartData<"line">>()
   const [error, setError] = useState<string>()
-  const [initialDate, setInitialDate] = useState<Date>()
+  const [intervalo, dateInterval] = useState<{initialDate:Date,finalDate:Date|undefined}>()
   const [pollenNames, setPollenNames] = useState<string[]>()
   const [pollenName, setPollenName] = useState<string>("Acer")
-  const { db } = useContext(FirebaseContext)
-  const AcerQuery = query(collectionGroup(db, 'days'))
-  const [pollens] = useCollectionDataOnce(AcerQuery)
+  const [stations] = useCollectionDataOnce(getUsersStationRef()); // Usar dentro de um use collection data  
+  const ids = stations?.map(st=>st.id)
+  const [pollens] = useCollectionDataOnce(getPollensByStation(ids))
   const handleAddPollen :FormEventHandler= (e) => {
     e.preventDefault()
     const names: string[] | undefined = []
@@ -54,6 +54,22 @@ function Graph() {
     names.push(pollenName)
     setPollenNames(names)
   }
+  const handleChangeInitialData : ChangeEventHandler<HTMLInputElement>= (el) => {
+    const date = el.target.value + "T00:00"
+    const newInterval = {initialDate:new Date(date), finalDate:intervalo?.finalDate}
+    dateInterval(newInterval);
+  }
+  const handleChangeFinalData : ChangeEventHandler<HTMLInputElement>= (el) => {
+    const date = el.target.value + "T00:00"
+    if(intervalo){
+      const newInterval = {initialDate:intervalo.initialDate,finalDate:new Date(date)}
+      dateInterval(newInterval);
+      return
+    }
+    const initialDate = new Date()
+    const newInterval = {initialDate:initialDate,finalDate:new Date(date)}
+      dateInterval(newInterval);
+  }
   useEffect(() => {
     if (pollens)
       setDataFetch(fetchPollens(pollens))
@@ -61,14 +77,15 @@ function Graph() {
   useEffect(() => {
     if (!dataFetch) return
     setError(undefined)
-    if (!initialDate || initialDate.getTime() > Date.now()) {
+    if (!intervalo|| !intervalo.initialDate || intervalo.initialDate.getTime() > Date.now()) {
       setError("The initial date cannot be greater than current date!")
       return
     }
     if (!pollenNames) return
-    const data = getMovingAverageGraph({ factor, initialDate, pollenNames, pollens: dataFetch })
+    const data = getMovingAverageGraph({ factor, initialDate:intervalo.initialDate,finalDate:intervalo.finalDate, pollenNames, pollens: dataFetch })
     setData(data)
-  }, [factor, pollenNames, initialDate])
+  }, [factor, pollenNames, dateInterval])
+
   return (
     <div className="flex flex-col justify-center">
       <div className="px-8 flex justify-around items-center">
@@ -93,10 +110,11 @@ function Graph() {
         </div>
         <div className="flex flex-col justify-around items-center">
           <label htmlFor='initialDate' className="mb-4 font-semibold text-lg">Select initial Date</label>
-          <input className="py-1.5 text-lg text-center" type={"date"} defaultValue={"2022-12-22"} onChange={(el) => {
-            const date = el.target.value + "T00:00"
-            setInitialDate(new Date(date));
-          }} id="initialDate" />
+          <input className="py-1.5 text-lg text-center" type={"date"} onChange={handleChangeInitialData} id="initialDate" />
+        </div>
+        <div className="flex flex-col justify-around items-center">
+          <label htmlFor='finalDate' className="mb-4 font-semibold text-lg">Select final Date</label>
+          <input className="py-1.5 text-lg text-center" type={"date"} onChange={handleChangeFinalData} id="finalDate" />
         </div>
         <div className="flex flex-col justify-around items-center">
           <label htmlFor='factor' className="text-lg font-bold text-black text-center mb-4">Factor : {factor}</label>
