@@ -1,39 +1,65 @@
-import { addDoc, collection } from 'firebase/firestore'
-import { useContext, useState } from 'react'
-import { useCollectionData } from 'react-firebase-hooks/firestore'
-import { useParams } from 'react-router-dom'
+import { Box, TextField, Typography } from '@mui/material'
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
+import moment from 'moment/moment'
+import { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
-import { Pollen, pollenConverter } from '../../models/Pollen'
-import Sheets from './Sheet'
+import { Datagrid, Speech } from '../../components'
+import { UserContext } from '../../contexts/Auth/UserContext'
 
-export default () => {
-  const { sheetId } = useParams()
-  const { db } = useContext(FirebaseContext)
+export default function Sheets() {
+  const { user } = useContext(UserContext)
+  const navigate = useNavigate()
 
-  const [name, setName] = useState('')
-  const [date, setDate] = useState('')
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { replace: true })
+    }
+  }, [])
 
-  const pollenCollectionRef = collection(
-    db,
-    'sheets',
-    sheetId,
-    'pollens'
-  ).withConverter(pollenConverter)
-  const [pollens] = useCollectionData(pollenCollectionRef)
-
-  const addPollen = async () => {
-    const pollen = new Pollen(name)
-    await addDoc(pollenCollectionRef, pollen)
+  const [date, setDate] = useState(moment().format('MM-DD-YYYY'))
+  const handleChange = (newValue) => {
+    setDate(newValue.format('MM-DD-YYYY'))
   }
 
   return (
-    <Sheets
-      setName={setName}
-      pollens={pollens}
-      sheetId={sheetId}
-      addPollen={addPollen}
-      setDate={setDate}
-    />
+    <Box className="flex flex-col items-center justify-center">
+      <Box className="my-2 flex min-h-[10rem] min-w-[24rem] flex-col items-center justify-evenly rounded-lg shadow-md">
+        <Typography className="text-center font-sans text-lg font-medium text-zinc-800">
+          Click to Start Listening
+        </Typography>
+        <Speech date={date} />
+      </Box>
+
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }} />
+
+      <Typography
+        className="flex content-center justify-center overflow-clip py-4"
+        variant="h6"
+        component="h6"
+        sx={{ display: { xs: 'none', sm: 'block', color: '#b6b5b5' } }}
+      >
+        View and Edit
+      </Typography>
+
+      <DesktopDatePicker
+        label="Sheet Date"
+        className="flex w-full content-center justify-center py-4"
+        inputFormat="MM/DD/YYYY"
+        value={date}
+        onChange={handleChange}
+        renderInput={(params) => (
+          <TextField
+            InputLabelProps={{
+              shrink: true,
+            }}
+            {...params}
+          />
+        )}
+      />
+      <div className="mt-8 flex w-full">
+        <Datagrid date={date} />
+      </div>
+    </Box>
   )
 }

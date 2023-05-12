@@ -1,4 +1,4 @@
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material'
+import { Edit as EditIcon, Insights as InsightsIcon } from '@mui/icons-material'
 import {
   Box,
   Table,
@@ -8,102 +8,69 @@ import {
   TableRow,
   Typography,
 } from '@mui/material'
-import { collection, deleteDoc, doc } from 'firebase/firestore'
-import { useContext } from 'react'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { Link } from 'react-router-dom'
 
-import { FirebaseContext } from '../../contexts/Auth/firebaseContext'
-import { UserContext } from '../../contexts/Auth/UserContext'
-import { stationConverter } from '../../models/Station'
+import { getUsersStationRef } from '../../lib/station'
 import { StyledTableCell, StyledTableRow } from './styles'
 
 export default () => {
-  const { db } = useContext(FirebaseContext)
-  const { user } = useContext(UserContext)
+  const [stations, loading, error] = useCollectionData(getUsersStationRef())
 
-  const stationCollectionRef = collection(
-    db,
-    `users/${user?.uid}/stations`
-  ).withConverter(stationConverter)
-  const [stations, loading] = useCollectionData(stationCollectionRef)
+  if (loading)
+    return (
+      <Box className="flex justify-center">
+        <Typography>Loading stations</Typography>
+      </Box>
+    )
 
-  const deleteSheet = async (id) => {
-    const currentRef = doc(db, `users/${user?.uid}/stations`, id)
-    await deleteDoc(currentRef)
-  }
+  if (error)
+    return (
+      <Box className="flex justify-center">
+        <Typography>Could not load stations</Typography>
+      </Box>
+    )
+
+  if (stations.length === 0)
+    return (
+      <Box className="flex justify-center">
+        <Typography>You do not have any stations</Typography>
+      </Box>
+    )
 
   return (
-    <Box sx={{ color: 'black' }}>
-      {loading || !stations.length >= 1 ? (
-        <Box className="flex justify-center">
-          <Typography>No Projects found</Typography>
-        </Box>
-      ) : (
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell>Location</StyledTableCell>
-              <StyledTableCell>First Created</StyledTableCell>
-              <StyledTableCell>Last Modified</StyledTableCell>
-              <StyledTableCell>Edit</StyledTableCell>
-              <StyledTableCell>Delete</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {!loading &&
-              stations.map((station) => {
-                return (
-                  <StyledTableRow key={station.name}>
-                    <TableCell align="center">
-                      <Link to={`${station.id}`}>{station.name}</Link>
-                    </TableCell>
-                    <TableCell align="center">{station.location}</TableCell>
-                    <TableCell align="center">
-                      {/* {new Date(
-                        sheet.createdAt.seconds * 1000
-                      ).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'numeric',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        second: 'numeric',
-                      })} */}
-                    </TableCell>
-                    <TableCell align="center">
-                      {/* {new Date(
-                        sheet.lastEditedAt.seconds * 1000
-                      ).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'numeric',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        second: 'numeric',
-                      })} */}
-                    </TableCell>
+    <>
+      <Table stickyHeader>
+        <TableHead>
+          <TableRow>
+            <StyledTableCell>Name</StyledTableCell>
+            <StyledTableCell>Location</StyledTableCell>
+            <StyledTableCell>Edit</StyledTableCell>
+            <StyledTableCell>Generate graph</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {stations.map((station) => {
+            return (
+              <StyledTableRow key={station.id}>
+                <TableCell align="center">
+                  <Link to={`${station.id}`}>{station.name}</Link>
+                </TableCell>
+                <TableCell align="center">{station.location}</TableCell>
+                <TableCell align="center">
+                  <Link to={`${station.id}`}>
+                    <EditIcon sx={{ color: '#202020' }} />
+                  </Link>
+                </TableCell>
 
-                    <TableCell align="center">
-                      <Link to={`${station.id}`}>
-                        <EditIcon sx={{ color: '#202020' }} />
-                      </Link>
-                    </TableCell>
-
-                    <TableCell align="center">
-                      <DeleteIcon
-                        onClick={() => {
-                          deleteSheet(station.id)
-                        }}
-                      />
-                    </TableCell>
-                  </StyledTableRow>
-                )
-              })}
-          </TableBody>
-        </Table>
-      )}
-    </Box>
+                <TableCell align="center">
+                  <Link to={`${station.id}/graph`}>{<InsightsIcon />}</Link>
+                </TableCell>
+              </StyledTableRow>
+            )
+          })}
+        </TableBody>
+      </Table>
+    </>
   )
 }

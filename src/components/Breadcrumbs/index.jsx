@@ -1,5 +1,4 @@
 import { Breadcrumbs as MUIBreadcrumbs, Link, Typography } from '@mui/material'
-import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const Breadcrumbs = () => {

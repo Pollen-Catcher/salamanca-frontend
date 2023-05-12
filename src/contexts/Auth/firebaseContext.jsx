@@ -11,14 +11,9 @@ const db = getFirestore(app)
 const auth = getAuth(app)
 const FirebaseContext = createContext({ app, db, auth })
 
-/*******************************************************************************/
-// Alguma coisa pro banco de dados do firebase mas eu não sei o que é
+//connectFirestoreEmulator(db, 'localhost', 8085)     you have to add this if you want to connect to the database via emulators
+//connectAuthEmulator(auth, 'http://localhost:9099')  you have to add this if you want to emulators providing authentication
 
-// connectFirestoreEmulator(db, 'localhost', 8080)
-// connectAuthEmulator(auth, 'http://localhost:9099')
-
-//                            By : Henrique
-/*******************************************************************************/
 export function AuthProvider({ children }) {
   const { auth, db } = useContext()
 
@@ -33,4 +28,4 @@ AuthProvider.propTypes = {
   children: PropTypes.node,
 }
 
-export { FirebaseContext }
+export { app, auth, db, FirebaseContext }
