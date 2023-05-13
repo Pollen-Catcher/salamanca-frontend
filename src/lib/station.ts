@@ -9,7 +9,7 @@ import {
   Query,
   getFirestore,
 } from 'firebase/firestore'
-import { app } from '../contexts/Auth/firebaseContext'
+import { app } from '../config/firebase'
 import { Station, stationConverter } from '../models/Station'
 
 interface StationDto {

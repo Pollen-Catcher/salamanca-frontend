@@ -4,13 +4,13 @@ import { useContext } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { NavLink } from 'react-router-dom'
 
-import { UserContext } from '../../../contexts/Auth/UserContext'
+import { useAuth } from '../../../contexts/UserContext'
 import { schema } from './schema'
 //styles??? Recomendo usar inline style com o tailwind
 const textStyle = { margin: '10px auto' }
 
 export const SignUpForm = () => {
-  const { signUp } = useContext(UserContext)
+  const { signUp } = useAuth()
   const {
     handleSubmit,
     control,

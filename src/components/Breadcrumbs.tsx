@@ -1,7 +1,7 @@
 import { Breadcrumbs as MUIBreadcrumbs, Link, Typography } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-const Breadcrumbs = () => {
+export default function Breadcrumbs() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
@@ -13,11 +13,9 @@ const Breadcrumbs = () => {
         const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`
         const isLast = index === pathnames.length - 1
         return isLast ? (
-          <Typography key={name} color="inherit">
-            {name}
-          </Typography>
+          <Typography key={name}>{name}</Typography>
         ) : (
-          <Link color="inherit" key={name} onClick={() => navigate(routeTo)}>
+          <Link key={name} onClick={() => navigate(routeTo)}>
             {name}
           </Link>
         )
@@ -25,5 +23,3 @@ const Breadcrumbs = () => {
     </MUIBreadcrumbs>
   )
 }
-
-export default Breadcrumbs

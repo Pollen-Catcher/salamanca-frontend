@@ -1,17 +1,18 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
+import { useAuth } from '../contexts/UserContext'
+import { SignInForm } from '../components/Forms'
 
-import { SignInForm } from '../../components/Forms'
-import { UserContext } from '../../contexts/Auth/UserContext'
-function Login() {
-  const { user } = useContext(UserContext)
+export default function Login() {
+  const { user } = useAuth()
   const navigate = useNavigate()
-  // Style
+
   useEffect(() => {
     if (user) {
       navigate('/dashboard', { replace: true })
     }
   }, [user])
+  
   return (
     <div className="flex h-[100vh] items-center justify-center ">
       <div className="hidden h-full min-w-[50vw] rounded-sm bg-salamanca-blue-600 bg-cover bg-center bg-no-repeat  sm:block sm:bg-research"></div>
@@ -21,4 +22,3 @@ function Login() {
     </div>
   )
 }
-export default Login

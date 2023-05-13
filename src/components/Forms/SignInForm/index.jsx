@@ -5,11 +5,11 @@ import React, { useContext } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { NavLink } from 'react-router-dom'
 
-import { UserContext } from '../../../contexts/Auth/UserContext'
 import { schema } from './schema'
+import { useAuth } from '../../../contexts/UserContext'
 
 export const SignInForm = () => {
-  const { signIn, signInWithGoogle, forgotPassword } = useContext(UserContext)
+  const { signIn, signInWithGoogle, forgotPassword } = useAuth()
   const {
     control,
     handleSubmit,

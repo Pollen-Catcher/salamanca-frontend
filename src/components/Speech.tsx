@@ -8,9 +8,8 @@ import { useParams } from 'react-router'
 import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition'
-
-import { pollensList } from '../../data/arrays'
-import { publishPollen } from '../../lib/sheet'
+import { publishPollen } from '../lib/sheet'
+import { pollensList } from '../data/arrays'
 
 interface Props {
   date: string

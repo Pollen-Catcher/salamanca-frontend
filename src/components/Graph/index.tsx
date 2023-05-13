@@ -8,12 +8,17 @@ import {
   Legend,
   Chart as ChartJS,
   ChartData,
-  CategoryScale
+  CategoryScale,
 } from 'chart.js'
 import React, { ChangeEvent, ChangeEventHandler, EventHandler, FormEventHandler, useCallback, useEffect, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore'
-import { fetchPollens, getMovingAverageGraph, movingAverageOptions, IDataFetch } from "./graph"
+import {
+  fetchPollens,
+  getMovingAverageGraph,
+  movingAverageOptions,
+  IDataFetch,
+} from './graph'
 import { pollensList } from '../../data/arrays'
 import { Add } from '@mui/icons-material'
 import { getUsersStationRef } from '../../lib/station'
@@ -33,7 +38,7 @@ ChartJS.register(
 function Graph() {
   const [factor, setFactor] = useState(0.486)
   const [dataFetch, setDataFetch] = useState<IDataFetch[]>()
-  const [data, setData] = useState<ChartData<"line">>()
+  const [data, setData] = useState<ChartData<'line'>>()
   const [error, setError] = useState<string>()
   const [interval, dateInterval] = useState<{initialDate:Date,finalDate:Date|undefined}>()
   const [pollenNames, setPollenNames] = useState<string[]>()
@@ -51,7 +56,7 @@ function Graph() {
     const names: string[] | undefined = []
     if (pollenNames) {
       names.push(...pollenNames)
-      if (names.find(pollen => pollen == pollenName)) {
+      if (names.find((pollen) => pollen == pollenName)) {
         return
       }
     }
@@ -76,8 +81,7 @@ function Graph() {
       dateInterval(newInterval);
   }
   useEffect(() => {
-    if (pollens)
-      setDataFetch(fetchPollens(pollens))
+    if (pollens) setDataFetch(fetchPollens(pollens))
   }, [pollens])
   useEffect(() => {
     if (!dataFetch) return
@@ -104,12 +108,20 @@ function Graph() {
               }}>
                 {pollensList.map((pollen) => {
                   return (
-                    <option key={pollen} value={pollen}>{pollen} </option>
+                    <option key={pollen} value={pollen}>
+                      {pollen}{' '}
+                    </option>
                   )
-                }
-                )}
+                })}
               </select>
-              <button title="add pollen" type={"submit"} name="add-pollen" className="mx-4 rounded-full bg-salamanca-blue-600 text-white w-12 h-12 border-none active:opacity-90"><Add /></button>
+              <button
+                title="add pollen"
+                type={'submit'}
+                name="add-pollen"
+                className="mx-4 h-12 w-12 rounded-full border-none bg-salamanca-blue-600 text-white active:opacity-90"
+              >
+                <Add />
+              </button>
             </div>
           </form>
         </div>
@@ -155,21 +167,27 @@ function Graph() {
           />
         </div>
       </div>
-      <div className="py-8 flex justify-center items-center">
+      <div className="flex items-center justify-center py-8">
         {data && !error ? (
-          <Line options={movingAverageOptions} data={data} width={2} height={2} className="max-w-[85vw] max-h-[85vh]"/>
-        ) :
-          error
-            ? (
-              <div className="py-4 border border-black">
-                <p className="text-red-500 text-lg text-center"> Error!!! {error}</p>
-              </div>
-            )
-            : (
-              <div>
-                <p>No data</p>
-              </div>
-            )}
+          <Line
+            options={movingAverageOptions}
+            data={data}
+            width={2}
+            height={2}
+            className="max-h-[85vh] max-w-[85vw]"
+          />
+        ) : error ? (
+          <div className="border border-black py-4">
+            <p className="text-center text-lg text-red-500">
+              {' '}
+              Error!!! {error}
+            </p>
+          </div>
+        ) : (
+          <div>
+            <p>No data</p>
+          </div>
+        )}
       </div>
     </div>
   )

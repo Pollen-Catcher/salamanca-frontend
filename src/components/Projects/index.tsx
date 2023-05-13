@@ -31,7 +31,7 @@ interface FormValues {
   location: string
 }
 
-export default () => {
+export default function Projects() {
   const [openCreateStation, setOpenCreateStation] = useState(false)
 
   const { handleSubmit, control } = useForm<FormValues>({ defaultValues })

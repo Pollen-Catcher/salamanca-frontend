@@ -7,14 +7,12 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import PropTypes from 'prop-types'
-import { useContext } from 'react'
 
-import { UserContext } from '../../contexts/Auth/UserContext'
-import Breadcrumbs from '../Breadcrumbs'
-import { ProfileMenu } from '../ProfileMenu'
-function Header(/*{ onDrawerToggle }*/) {
-  const { user } = useContext(UserContext)
+import { Breadcrumbs, ProfileMenu } from '../components'
+import { useAuth } from '../contexts/UserContext'
+export default function Header() {
+  const { user } = useAuth()
+
   return (
     <>
       <AppBar color="primary" position="sticky" elevation={0}>
@@ -71,9 +69,3 @@ function Header(/*{ onDrawerToggle }*/) {
     </>
   )
 }
-
-Header.propTypes = {
-  onDrawerToggle: PropTypes.func,
-}
-
-export default Header

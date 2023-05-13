@@ -13,8 +13,7 @@ import {
   query,
   Query,
 } from 'firebase/firestore'
-import { app } from '../contexts/Auth/firebaseContext'
-
+import { app } from '../config/firebase'
 import { Pollen } from '../types/pollen'
 import { PollenGraphData, PollenDatagridConverter as PollenConverter } from '../components/Graph/PollenData'
 import PollenDatagridConverter from '../models/PollenDatagridConverter'
