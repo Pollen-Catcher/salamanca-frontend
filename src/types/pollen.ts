@@ -30,3 +30,10 @@ export interface Pollen {
   _22h: number
   _23h: number
 }
+
+export interface PollenCsvInput {
+  date: string
+  name: string
+  interval: number
+  amount: number
+}

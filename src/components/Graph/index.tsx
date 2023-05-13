@@ -10,7 +10,15 @@ import {
   ChartData,
   CategoryScale,
 } from 'chart.js'
-import React, { ChangeEvent, ChangeEventHandler, EventHandler, FormEventHandler, useCallback, useEffect, useState } from 'react'
+import React, {
+  ChangeEvent,
+  ChangeEventHandler,
+  EventHandler,
+  FormEventHandler,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { Line } from 'react-chartjs-2'
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore'
 import {
@@ -40,18 +48,23 @@ function Graph() {
   const [dataFetch, setDataFetch] = useState<IDataFetch[]>()
   const [data, setData] = useState<ChartData<'line'>>()
   const [error, setError] = useState<string>()
-  const [interval, dateInterval] = useState<{initialDate:Date,finalDate:Date|undefined}>()
+  const [interval, dateInterval] = useState<{
+    initialDate: Date
+    finalDate: Date | undefined
+  }>()
   const [pollenNames, setPollenNames] = useState<string[]>()
-  const [pollenName, setPollenName] = useState<string>("Acer")
-  const [stationName,setStationName] = useState<string|undefined>()
-  const [stations] = useCollectionDataOnce(getUsersStationRef());
-  let stationsId= stations?.map(st=>st.id);// Usar dentro de um use collection data  
- if(stationName){
-   stationsId = stations?.filter(st=>st.name === stationName)?.map(st=>st.id)
- }
-  const stationNames = stations?.map(st=>st.name)
+  const [pollenName, setPollenName] = useState<string>('Acer')
+  const [stationName, setStationName] = useState<string | undefined>()
+  const [stations] = useCollectionDataOnce(getUsersStationRef())
+  let stationsId = stations?.map((st) => st.id) // Usar dentro de um use collection data
+  if (stationName) {
+    stationsId = stations
+      ?.filter((st) => st.name === stationName)
+      ?.map((st) => st.id)
+  }
+  const stationNames = stations?.map((st) => st.name)
   const [pollens] = useCollectionDataOnce(getPollensByStation(stationsId))
-  const handleAddPollen :FormEventHandler= (e) => {
+  const handleAddPollen: FormEventHandler = (e) => {
     e.preventDefault()
     const names: string[] | undefined = []
     if (pollenNames) {
@@ -64,21 +77,29 @@ function Graph() {
     names.push(pollenName)
     setPollenNames(names)
   }
-  const handleChangeInitialData : ChangeEventHandler<HTMLInputElement>= (el) => {
-    const date = el.target.value + "T00:00"
-    const newInterval = {initialDate:new Date(date), finalDate:interval?.finalDate}
-    dateInterval(newInterval);
+  const handleChangeInitialData: ChangeEventHandler<HTMLInputElement> = (
+    el
+  ) => {
+    const date = el.target.value + 'T00:00'
+    const newInterval = {
+      initialDate: new Date(date),
+      finalDate: interval?.finalDate,
+    }
+    dateInterval(newInterval)
   }
-  const handleChangeFinalData : ChangeEventHandler<HTMLInputElement>= (el) => {
-    const date = el.target.value + "T00:00"
-    if(interval){
-      const newInterval = {initialDate:interval.initialDate,finalDate:new Date(date)}
-      dateInterval(newInterval);
+  const handleChangeFinalData: ChangeEventHandler<HTMLInputElement> = (el) => {
+    const date = el.target.value + 'T00:00'
+    if (interval) {
+      const newInterval = {
+        initialDate: interval.initialDate,
+        finalDate: new Date(date),
+      }
+      dateInterval(newInterval)
       return
     }
     const initialDate = new Date()
-    const newInterval = {initialDate:initialDate,finalDate:new Date(date)}
-      dateInterval(newInterval);
+    const newInterval = { initialDate: initialDate, finalDate: new Date(date) }
+    dateInterval(newInterval)
   }
   useEffect(() => {
     if (pollens) setDataFetch(fetchPollens(pollens))
@@ -86,26 +107,51 @@ function Graph() {
   useEffect(() => {
     if (!dataFetch) return
     setError(undefined)
-    if (!interval|| !interval.initialDate || interval.initialDate.getTime() > Date.now()) {
-      setError("The initial date cannot be greater than current date!")
+    if (
+      !interval ||
+      !interval.initialDate ||
+      interval.initialDate.getTime() > Date.now()
+    ) {
+      setError('The initial date cannot be greater than current date!')
       return
     }
     if (!pollenNames) return
-    const data = getMovingAverageGraph({ factor, initialDate:interval.initialDate,finalDate:interval.finalDate, pollenNames, pollens: dataFetch })
+    const data = getMovingAverageGraph({
+      factor,
+      initialDate: interval.initialDate,
+      finalDate: interval.finalDate,
+      pollenNames,
+      pollens: dataFetch,
+    })
     setData(data)
   }, [factor, pollenNames, dateInterval])
 
   return (
     <div className="flex flex-col justify-center">
-      <div className="px-8 flex justify-around items-center gap-4 flex-wrap">
+      <div className="flex flex-wrap items-center justify-around gap-4 px-8">
         <div className="">
-          <form onSubmit={handleAddPollen} className="flex flex-col justify-around">
-            <label htmlFor="pollenName" className="text-lg text-center font-semibold">Add Pollen</label>
-            <div className="flex justify-around items-center mt-4">
-              <select id="pollenName" className="text-lg text-center py-3 rounded-lg" name="pollen" required value={pollenName} onChange={(e) => {
-                const selectedPollen = e.target.value
-                setPollenName(selectedPollen)
-              }}>
+          <form
+            onSubmit={handleAddPollen}
+            className="flex flex-col justify-around"
+          >
+            <label
+              htmlFor="pollenName"
+              className="text-center text-lg font-semibold"
+            >
+              Add Pollen
+            </label>
+            <div className="mt-4 flex items-center justify-around">
+              <select
+                id="pollenName"
+                className="rounded-lg py-3 text-center text-lg"
+                name="pollen"
+                required
+                value={pollenName}
+                onChange={(e) => {
+                  const selectedPollen = e.target.value
+                  setPollenName(selectedPollen)
+                }}
+              >
                 {pollensList.map((pollen) => {
                   return (
                     <option key={pollen} value={pollen}>
@@ -125,35 +171,64 @@ function Graph() {
             </div>
           </form>
         </div>
-        <div className="flex flex-col justify-around items-center">
-          <label htmlFor='initialDate' className="mb-4 font-semibold text-lg">Select initial Date</label>
-          <input className="py-1.5 text-lg text-center rounded-lg px-2" type={"date"} onChange={handleChangeInitialData} id="initialDate" />
+        <div className="flex flex-col items-center justify-around">
+          <label htmlFor="initialDate" className="mb-4 text-lg font-semibold">
+            Select initial Date
+          </label>
+          <input
+            className="rounded-lg px-2 py-1.5 text-center text-lg"
+            type={'date'}
+            onChange={handleChangeInitialData}
+            id="initialDate"
+          />
         </div>
-        <div className="flex flex-col justify-around items-center">
-          <label htmlFor='finalDate' className="mb-4 font-semibold text-lg">Select final Date</label>
-          <input className="py-1.5 text-lg text-center rounded-lg px-2" type={"date"} onChange={handleChangeFinalData} id="finalDate" />
+        <div className="flex flex-col items-center justify-around">
+          <label htmlFor="finalDate" className="mb-4 text-lg font-semibold">
+            Select final Date
+          </label>
+          <input
+            className="rounded-lg px-2 py-1.5 text-center text-lg"
+            type={'date'}
+            onChange={handleChangeFinalData}
+            id="finalDate"
+          />
         </div>
-        {!!stationNames&&(
-          <div className="flex flex-col justify-around items-center">
-            <label htmlFor="stationName" className="mb-4 font-semibold text-lg">Select station</label>
-          <>
-              <select id="stationName" className="text-lg text-center py-3 px-2 rounded-lg" name="station" required value={stationName} onChange={(e) => {
-                const selectedStation = e.target.value
-                setStationName(selectedStation)
-              }}>
+        {!!stationNames && (
+          <div className="flex flex-col items-center justify-around">
+            <label htmlFor="stationName" className="mb-4 text-lg font-semibold">
+              Select station
+            </label>
+            <>
+              <select
+                id="stationName"
+                className="rounded-lg px-2 py-3 text-center text-lg"
+                name="station"
+                required
+                value={stationName}
+                onChange={(e) => {
+                  const selectedStation = e.target.value
+                  setStationName(selectedStation)
+                }}
+              >
                 {stationNames.map((station) => {
                   return (
-                    <option key={station} value={station}>{station} </option>
+                    <option key={station} value={station}>
+                      {station}{' '}
+                    </option>
                   )
-                }
-                )}
+                })}
               </select>
-              </>
-        </div>
+            </>
+          </div>
         )}
 
-        <div className="flex flex-col justify-around items-center">
-          <label htmlFor='factor' className="text-lg font-bold text-black text-center mb-4">Factor : {factor}</label>
+        <div className="flex flex-col items-center justify-around">
+          <label
+            htmlFor="factor"
+            className="mb-4 text-center text-lg font-bold text-black"
+          >
+            Factor : {factor}
+          </label>
           <input
             id="factor"
             type="range"

@@ -4,7 +4,7 @@ import { Projects, Sheets } from './components'
 import Graph from './components/Graph'
 import { Layout, Login, Register } from './pages'
 
-export const Router = () => {
+export default function Router() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />

@@ -12,10 +12,14 @@ import {
   where,
   query,
   Query,
+  writeBatch,
 } from 'firebase/firestore'
-import { app } from '../config/firebase'
-import { Pollen } from '../types/pollen'
-import { PollenGraphData, PollenDatagridConverter as PollenConverter } from '../components/Graph/PollenData'
+import { auth, db } from '../config/firebase'
+import { Pollen, PollenCsvInput } from '../types/pollen'
+import {
+  PollenGraphData,
+  PollenDatagridConverter as PollenConverter,
+} from '../components/Graph/PollenData'
 import PollenDatagridConverter from '../models/PollenDatagridConverter'
 
 interface CreateDayDto {
@@ -25,9 +29,6 @@ interface CreateDayDto {
   interval: string
   amount: number
 }
-
-const db = getFirestore(app)
-const auth = getAuth(app)
 
 export function getSheetDateRef(
   stationId: string,
@@ -68,13 +69,39 @@ export async function publishPollen({
   })
 }
 
-export function getPollensByStation(sheetIds: string[] | undefined): Query<PollenGraphData[]> | null {
+export async function csvToFirestore(data: PollenCsvInput[], sheetId: string) {
+  const uid = auth.currentUser?.uid
+  if (!uid) return
+
+  const batch = writeBatch(db)
+
+  for (const { date, name, interval, amount } of data) {
+    const sheetRef = doc(db, `stations/${sheetId}/days/${date}`)
+    let selection: any = {}
+    selection[`_${interval}h`] = increment(amount)
+    batch.set(
+      sheetRef,
+      {
+        available: arrayUnion(name),
+        [name]: selection,
+        userUid: uid,
+        station: sheetId,
+        date: date
+      },
+      { merge: true }
+    )
+  }
+
+  await batch.commit()
+}
+
+export function getPollensByStation(
+  sheetIds: string[] | undefined
+): Query<PollenGraphData[]> | null {
   const userUid = auth.currentUser?.uid
   if (!userUid || !sheetIds) return null
 
-  const daysRef = collectionGroup(db, 'days').withConverter(
-    PollenConverter
-  )
+  const daysRef = collectionGroup(db, 'days').withConverter(PollenConverter)
   const q = query(
     daysRef,
     where('userUid', '==', userUid),

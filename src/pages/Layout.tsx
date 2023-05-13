@@ -1,7 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { Box, useTheme } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
-import { useCollectionData } from 'react-firebase-hooks/firestore'
+import { Box } from '@mui/material'
 import { Outlet, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../contexts/UserContext'
@@ -9,13 +6,15 @@ import { Copyright, Header } from '../components'
 
 export default function Layout() {
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/', { replace: true })
-    }
-  }, [])
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  if (!user) {
+    navigate('/', { replace: true })
+  }
 
   return (
     <Box

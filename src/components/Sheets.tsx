@@ -3,10 +3,21 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
 import dayjs, { Dayjs } from 'dayjs'
 import { useState } from 'react'
 import { Speech, Datagrid } from '../components'
+import CSVReader from 'react-csv-reader'
+import { PollenCsvInput } from '../types/pollen'
+import { csvToFirestore } from '../lib/sheet'
+import { useParams } from 'react-router'
+
+const papaparseOptions = {
+  header: true,
+  dynamicTyping: true,
+  skipEmptyLines: true,
+}
 
 export default function Sheets() {
+  const { sheetId } = useParams()
   const [date, setDate] = useState<Dayjs>(dayjs())
-  const stringDate = date.toString()
+  const stringDate = date.format('YYYY-MM-DD')
 
   return (
     <Box className="flex flex-col items-center">
@@ -15,8 +26,13 @@ export default function Sheets() {
           Click to Start Listening
         </Typography>
         <Speech date={stringDate} />
+        <CSVReader
+          parserOptions={papaparseOptions}
+          onFileLoaded={(data: PollenCsvInput[]) =>
+            csvToFirestore(data, sheetId!)
+          }
+        />
       </Box>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }} />
       <Typography
         className="flex content-center justify-center overflow-clip py-4"
         variant="h6"

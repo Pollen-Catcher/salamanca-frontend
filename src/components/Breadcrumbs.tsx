@@ -13,9 +13,11 @@ export default function Breadcrumbs() {
         const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`
         const isLast = index === pathnames.length - 1
         return isLast ? (
-          <Typography key={name}>{name}</Typography>
+          <Typography key={name} color="inherit">
+            {name}
+          </Typography>
         ) : (
-          <Link key={name} onClick={() => navigate(routeTo)}>
+          <Link key={name} color="inherit" onClick={() => navigate(routeTo)}>
             {name}
           </Link>
         )

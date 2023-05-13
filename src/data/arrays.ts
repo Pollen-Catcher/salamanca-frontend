@@ -54,7 +54,7 @@ export const pollensList: string[] = [
 ]
 
 export const columns: DatagridColumn[] = [
-  { field: 'name', headerName: 'Name', hideable: false, flex: 1 },
+  { field: 'name', headerName: 'Name', hideable: false, width: 100 },
   { field: '_0h', headerName: '0', flex: 1 },
   { field: '_1h', headerName: '1', flex: 1 },
   { field: '_2h', headerName: '2', flex: 1 },
