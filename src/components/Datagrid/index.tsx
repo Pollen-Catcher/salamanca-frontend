@@ -34,7 +34,7 @@ export default function Datagrid({ date }: TableProps) {
         rows={pollens || []}
         getRowId={(row) => row.name}
         columns={columns}
-        pageSize={8}
+        // pageSize={8}
         pagination
         components={{
           Toolbar: CustomToolbar,
