@@ -1,6 +1,0 @@
-export { default as Table } from './DataGrid/Table'
-export { default as Header } from './Header'
-export { default as Navigator } from './Navigator'
-export { default as Projects } from './Projects/'
-export { default as Sheets } from './Sheets'
-export { default as Speech } from './Speech'

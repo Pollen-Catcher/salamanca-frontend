@@ -1,10 +1,9 @@
 import { CssBaseline } from '@mui/material'
-import React from 'react'
 
-import { GlobalContext } from './contexts'
-import { Router } from './Router'
+import { GlobalContext } from './contexts/GlobalContext'
+import Router from './Router'
 
-function App() {
+export default function App() {
   return (
     <GlobalContext>
       <CssBaseline />
@@ -12,4 +11,3 @@ function App() {
     </GlobalContext>
   )
 }
-export default App

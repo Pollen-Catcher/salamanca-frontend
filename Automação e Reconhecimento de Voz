@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automação e Reconhecimento de Voz</title>
+</head>
+<body>
+    <h1>Automação e Reconhecimento de Voz</h1>
+    
+    <button id="startBtn">Iniciar Reconhecimento de Voz</button>
+    <p id="outputText">Resultado do Reconhecimento: </p>
+    
+    <script>
+        // Função para iniciar o reconhecimento de voz
+        function startSpeechRecognition() {
+            const recognition = new window.SpeechRecognition();
+            recognition.lang = 'pt-BR'; // Defina o idioma para o reconhecimento
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                const outputText = document.getElementById('outputText');
+                outputText.textContent = `Resultado do Reconhecimento: ${transcript}`;
+            }
+            
+            recognition.start();
+        }
+        
+        // Iniciar o reconhecimento de voz quando o botão é clicado
+        document.getElementById('startBtn').addEventListener('click', startSpeechRecognition);
+    </script>
+</body>
+</html>
