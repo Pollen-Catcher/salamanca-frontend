@@ -27,7 +27,15 @@ Você pode acessar o nosso projeto clicando no link: https://salamanca-project.w
 - `HTML`
 - `CSS`
 
+<h2>Agradecimentos:</h2>
+
+- `FAPEMIG`
+- `Diretoria de Graduação do CEFET-MG`
+- `Diretoria de Pesquisa e Pós-Graduação do CEFET-MG`
+- `COMPET`
+- `Universidade de Salamanca `
+
 <h2>Autores</h2>
 
-| [<img loading="lazy" src="https://avatars.githubusercontent.com/u/51031674?v=4" width=115><br><sub>Guilherme Augusto</sub>](https://github.com/Guilhermeaug) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/67330930?v=4" width=115><br><sub>Henrique de Paula Rodrigues</sub>](https://github.com/bidwolf) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/71090685?v=4" width=115><br><sub>Francisco Abreu Gonçalves</sub>](https://github.com/Francis1408) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/164511796?v=4" width=115><br><sub>Matheus Ramos</sub>](https://github.com/matheusd-ramos) |
-| :---: | :---: | :---: | :---: |
+| [<img loading="lazy" src="https://avatars.githubusercontent.com/u/51031674?v=4" width=115><br><sub>Guilherme Augusto</sub>](https://github.com/Guilhermeaug) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/67330930?v=4" width=115><br><sub>Henrique de Paula Rodrigues</sub>](https://github.com/bidwolf) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/71090685?v=4" width=115><br><sub>Francisco Abreu Gonçalves</sub>](https://github.com/Francis1408) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/164511796?v=4" width=115><br><sub>Matheus Ramos</sub>](https://github.com/matheusd-ramos) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/168022465?v=4" width=115><br><sub>Carlos Reis</sub>](https://github.com/CarlosReisDev) |
+| :---: | :---: | :---: | :---: | :---: |
