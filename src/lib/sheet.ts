@@ -13,6 +13,7 @@ import {
   query,
   Query,
   writeBatch,
+  deleteDoc,
 } from 'firebase/firestore'
 import { auth, db } from '../config/firebase'
 import { Pollen, PollenCsvInput } from '../types/pollen'
@@ -109,4 +110,10 @@ export function getPollensByStation(
   )
 
   return q
+}
+
+export async function deleteSheet(sheetId: string) {
+  const db = getFirestore();
+  const ref = doc(db, "sheets", sheetId);
+  await deleteDoc(ref);
 }

@@ -44,3 +44,32 @@ export async function createStation({ name, location }: StationDto) {
   const ref = getStationsRef()
   await addDoc(ref, station)
 }
+
+export async function deleteStation(id: string) {
+  if (!id) return
+  try {
+    const { deleteDoc, doc } = await import('firebase/firestore')
+    const dbRef = doc(getFirestore(app), 'stations', id)
+    await deleteDoc(dbRef)
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('failed to delete station', err)
+    throw err
+  }
+}
+
+export async function updateStation(id: string, data: Partial<StationDto>) {
+  if (!id) return
+  try {
+    const { updateDoc, doc, serverTimestamp } = await import('firebase/firestore')
+    const dbRef = doc(getFirestore(app), 'stations', id)
+    await updateDoc(dbRef, {
+      ...data,
+      lastEditedAt: serverTimestamp(),
+    })
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('failed to update station', err)
+    throw err
+  }
+}
