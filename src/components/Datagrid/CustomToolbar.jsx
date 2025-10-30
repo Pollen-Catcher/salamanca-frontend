@@ -19,18 +19,18 @@ export default function CustomToolbar() {
     >
       <GridToolbarExport
         sx={{
-          color: 'white',
+          color: 'black',
         }}
       />
       <GridToolbarColumnsButton
         sx={{
-          color: 'white',
+          color: 'black',
         }}
       />
       <GridToolbarQuickFilter
         sx={{
-          color: 'white',
-          borderColor: 'white',
+          color: 'black',
+          borderColor: 'black',
         }}
       />
     </GridToolbarContainer>
