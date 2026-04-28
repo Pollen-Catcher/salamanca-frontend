@@ -34,13 +34,6 @@ export default function Header() {
               </Tooltip>
             </Grid>
             <Grid item>
-              <Tooltip title="Help">
-                <IconButton color="inherit">
-                  <Help />
-                </IconButton>
-              </Tooltip>
-            </Grid>
-            <Grid item>
               <ProfileMenu />
             </Grid>
           </Grid>
