@@ -48,7 +48,11 @@ export async function publishPollen({
   date,
 }: CreateDayDto) {
   const uid = auth.currentUser?.uid
-  if (!uid) return
+  if (!uid) {
+    throw new Error(
+      'Your session expired. Refresh the page and sign in to save voice commands.'
+    )
+  }
 
   const sheetRef = doc(db, `stations/${sheetId}/days/${date}`)
   await updateDoc(sheetRef, {
@@ -70,9 +74,43 @@ export async function publishPollen({
   })
 }
 
+export async function setPollenValue({
+  pollen,
+  interval,
+  amount,
+  sheetId,
+  date,
+}: CreateDayDto) {
+  const uid = auth.currentUser?.uid
+  if (!uid) {
+    throw new Error(
+      'Your session expired. Refresh the page and sign in to save voice commands.'
+    )
+  }
+
+  const sheetRef = doc(db, `stations/${sheetId}/days/${date}`)
+  await setDoc(
+    sheetRef,
+    {
+      date,
+      station: sheetId,
+      userUid: uid,
+      available: arrayUnion(pollen),
+      [pollen]: {
+        [interval]: amount,
+      },
+    },
+    { merge: true }
+  )
+}
+
 export async function csvToFirestore(data: PollenCsvInput[], sheetId: string) {
   const uid = auth.currentUser?.uid
-  if (!uid) return
+  if (!uid) {
+    throw new Error(
+      'Your session expired. Refresh the page and sign in to save voice commands.'
+    )
+  }
 
   const batch = writeBatch(db)
 
