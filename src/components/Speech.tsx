@@ -426,7 +426,16 @@ export default function Speech({ date }: Props) {
       analyserRef.current = analyser
       shouldListenRef.current = true
 
-      const mediaRecorder = new MediaRecorder(stream)
+      const recorderOptions: MediaRecorderOptions = {
+        audioBitsPerSecond: 128000,
+      }
+      if (
+        typeof MediaRecorder !== 'undefined' &&
+        MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+      ) {
+        recorderOptions.mimeType = 'audio/webm;codecs=opus'
+      }
+      const mediaRecorder = new MediaRecorder(stream, recorderOptions)
       mediaRecorderRef.current = mediaRecorder
       chunksRef.current = []
 
