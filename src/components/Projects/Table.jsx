@@ -33,7 +33,8 @@ import {
 import { StyledTableCell, StyledTableRow } from './styles'
 
 export default () => {
-  const [stations, loading, error] = useCollectionData(getUsersStationRef())
+  const query = getUsersStationRef()
+  const [stations, loading, error] = useCollectionData(query)
   const [editingStation, setEditingStation] = useState(null)
   const [editName, setEditName] = useState('')
   const [editLocation, setEditLocation] = useState('')
@@ -79,7 +80,7 @@ export default () => {
       })
   }
 
-  if (loading)
+  if (loading || !stations)
     return (
       <Box className="flex justify-center">
         <Typography>Loading stations</Typography>
