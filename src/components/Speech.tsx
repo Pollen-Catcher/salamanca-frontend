@@ -13,15 +13,17 @@ import { pollensList } from '../data/arrays'
 
 interface Props {
   date: string
+  currentHour: number
+  onHourChange: (hour: number) => void
 }
 
-export default function Speech({ date }: Props) {
+export default function Speech({ date, currentHour, onHourChange }: Props) {
   const { sheetId } = useParams()
-  const [interval, setInterval] = useState('_0h')
+  const interval = `_${currentHour}h`
 
   function hourCommand(hour: number) {
     if (isNaN(hour)) return
-    if (hour >= 0 && hour <= 23) setInterval(`_${hour}h`)
+    if (hour >= 0 && hour <= 23) onHourChange(hour)
   }
 
   async function pollenCommand(

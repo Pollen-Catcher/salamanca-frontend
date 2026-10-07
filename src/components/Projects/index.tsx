@@ -155,11 +155,11 @@ export default function Projects() {
 
             <p>
               To create a new project, click on the “Create New Project” button.
-              Then, enter your name and location, and click “Add Project” to complete the process.
+              Then, enter your project name and location, and click “Add Project” to complete the process.
             </p>
 
             <p>
-              After the project is created, click on your name in the table to access it.
+              After the project is created, click on the name in the table to access it.
             </p>
 
             <ul>

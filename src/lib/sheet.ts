@@ -3,6 +3,7 @@ import {
   DocumentReference,
   getFirestore,
   doc,
+  getDoc,
   updateDoc,
   arrayUnion,
   increment,
@@ -31,6 +32,14 @@ interface CreateDayDto {
   amount: number
 }
 
+interface PollenValueDto {
+  sheetId: string
+  date: string
+  pollen: string
+  interval: string
+  amount: number
+}
+
 export function getSheetDateRef(
   stationId: string,
   date: string
@@ -48,7 +57,7 @@ export async function publishPollen({
   date,
 }: CreateDayDto) {
   const uid = auth.currentUser?.uid
-  if (!uid) return
+  if (!uid) throw new Error('É necessário estar autenticado para registrar dados.')
 
   const sheetRef = doc(db, `stations/${sheetId}/days/${date}`)
   await updateDoc(sheetRef, {
@@ -61,13 +70,56 @@ export async function publishPollen({
         date: date,
         available: [pollen],
         [pollen]: {
-          [interval]: Math.abs(amount),
+        [interval]: amount,
         },
         userUid: uid,
         station: sheetId,
       })
+      return
     }
+
+    throw e
   })
+}
+
+export async function setPollenValue({
+  pollen,
+  interval,
+  amount,
+  sheetId,
+  date,
+}: PollenValueDto) {
+  const uid = auth.currentUser?.uid
+  if (!uid) throw new Error('É necessário estar autenticado para registrar dados.')
+
+  const sheetRef = doc(db, `stations/${sheetId}/days/${date}`)
+  await updateDoc(sheetRef, {
+    available: arrayUnion(pollen),
+    [`${pollen}.${interval}`]: amount,
+    userUid: uid,
+  }).catch(async (error: FirestoreError) => {
+    if (error.code !== 'not-found') throw error
+
+    await setDoc(sheetRef, {
+      date,
+      available: [pollen],
+      [pollen]: { [interval]: amount },
+      userUid: uid,
+      station: sheetId,
+    })
+  })
+}
+
+export async function getPollenValue({
+  pollen,
+  interval,
+  sheetId,
+  date,
+}: Omit<PollenValueDto, 'amount'>): Promise<number> {
+  const sheetRef = doc(db, `stations/${sheetId}/days/${date}`)
+  const snapshot = await getDoc(sheetRef)
+  const value = snapshot.data()?.[pollen]?.[interval]
+  return typeof value === 'number' ? value : 0
 }
 
 export async function csvToFirestore(data: PollenCsvInput[], sheetId: string) {
