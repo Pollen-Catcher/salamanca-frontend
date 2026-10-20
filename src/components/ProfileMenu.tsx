@@ -15,7 +15,10 @@ export default function ProfileMenu() {
   const { user, signOut } = useAuth()
   const [open, setOpen] = useState(false)
   const anchorRef = useRef(null)
-  const { photoURL, displayName } = user!
+
+  if (!user) return null
+
+  const { photoURL, displayName } = user
 
   function handleListKeyDown(event: React.KeyboardEvent) {
     event.preventDefault()
@@ -34,7 +37,9 @@ export default function ProfileMenu() {
         aria-haspopup="true"
         onClick={() => setOpen((prevOpen) => !prevOpen)}
       >
-        <Avatar src={photoURL!}>{photoURL ? displayName![0] : ''}</Avatar>
+        <Avatar src={photoURL ?? undefined}>
+          {photoURL ? displayName?.[0] : ''}
+        </Avatar>
       </IconButton>
       <Popper
         open={open}
