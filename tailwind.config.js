@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'salamanca-blue-600': '#108AC9',
+        'salamanca-blue-600': '#2E7D32',
       },
       backgroundImage: {
         research: 'url("/pollen.png") ',

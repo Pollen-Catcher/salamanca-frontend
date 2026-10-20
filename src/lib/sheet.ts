@@ -1,8 +1,10 @@
 import { getAuth } from 'firebase/auth'
 import {
   DocumentReference,
+  DocumentData,
   getFirestore,
   doc,
+  collection,
   getDoc,
   updateDoc,
   arrayUnion,
@@ -49,6 +51,12 @@ export function getSheetDateRef(
   )
 }
 
+export function getDaysByStationRef(
+  stationId: string
+): Query<DocumentData> {
+  return collection(db, `stations/${stationId}/days`)
+}
+
 export async function publishPollen({
   pollen,
   interval,
@@ -57,7 +65,10 @@ export async function publishPollen({
   date,
 }: CreateDayDto) {
   const uid = auth.currentUser?.uid
-  if (!uid) throw new Error('É necessário estar autenticado para registrar dados.')
+  if (!uid)
+    throw new Error(
+      'Your session expired. Refresh the page and sign in to save data.'
+    )
 
   const sheetRef = doc(db, `stations/${sheetId}/days/${date}`)
   await updateDoc(sheetRef, {
@@ -90,7 +101,10 @@ export async function setPollenValue({
   date,
 }: PollenValueDto) {
   const uid = auth.currentUser?.uid
-  if (!uid) throw new Error('É necessário estar autenticado para registrar dados.')
+  if (!uid)
+    throw new Error(
+      'Your session expired. Refresh the page and sign in to save data.'
+    )
 
   const sheetRef = doc(db, `stations/${sheetId}/days/${date}`)
   await updateDoc(sheetRef, {
@@ -124,7 +138,11 @@ export async function getPollenValue({
 
 export async function csvToFirestore(data: PollenCsvInput[], sheetId: string) {
   const uid = auth.currentUser?.uid
-  if (!uid) return
+  if (!uid) {
+    throw new Error(
+      'Your session expired. Refresh the page and sign in to save voice commands.'
+    )
+  }
 
   const batch = writeBatch(db)
 

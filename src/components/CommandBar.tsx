@@ -71,7 +71,7 @@ export default function CommandBar({
       return
     }
 
-    if (!Number.isFinite(amount)) {
+    if (amount === undefined || !Number.isFinite(amount)) {
       window.alert('Informe um número válido.')
       return
     }
