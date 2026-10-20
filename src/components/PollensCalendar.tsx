@@ -18,7 +18,6 @@ const legendSwatch = {
   borderColor: 'divider',
 }
 
-const MAX_POLLENS = pollensList.length
 const data = new Map(pollenCalendarData.map((row) => [row.pollen, row.values]))
 
 type CellColor = string | undefined
@@ -28,9 +27,9 @@ export default function PollensCalendar() {
 
   const byPollen = useMemo(
     () =>
-      pollensList
-        .slice(0, MAX_POLLENS)
-        .map((pollen) => data.get(pollen) ?? Array<number>(12).fill(0)),
+      pollensList.map(
+        (pollen) => data.get(pollen) ?? Array<number>(12).fill(0)
+      ),
     []
   )
 
@@ -99,7 +98,6 @@ export default function PollensCalendar() {
           </TableHead>
           <TableBody>
             {pollensList.map((pollen, row) => {
-              const max = Math.max(...byPollen[row])
               return (
                 <TableRow key={pollen}>
                   <TableCell
