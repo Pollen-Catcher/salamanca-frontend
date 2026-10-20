@@ -10,6 +10,7 @@ import { pollensList } from '../data/arrays'
 
 interface Props {
   date: string
+  onCommit?: (pollen: string, interval: string) => void
 }
 
 const ASR_ENDPOINT =
@@ -47,7 +48,7 @@ function asrErrorMessage(status: number, responseText: string): string {
     : `Falha no servidor de voz (${status}). Tente novamente.`
 }
 
-export default function Speech({ date }: Props) {
+export default function Speech({ date, onCommit }: Props) {
   const { sheetId } = useParams()
   const [interval, setInterval] = useState('_0h')
   const [isListening, setIsListening] = useState(false)
@@ -120,6 +121,7 @@ export default function Speech({ date }: Props) {
       }
 
       setErrorMessage('')
+      onCommit?.(proposedPollen, intervalRef.current)
     } catch (error) {
       setErrorMessage(
         error instanceof Error
@@ -314,11 +316,6 @@ export default function Speech({ date }: Props) {
     const parsedCount = Number(countToken)
     if (isNaN(parsedCount)) {
       setErrorMessage('No numeric count recognized in ASR response.')
-      return
-    }
-
-    if (parsedCount < 0) {
-      setErrorMessage('Negative count not allowed for this command.')
       return
     }
 

@@ -1,8 +1,10 @@
 import { getAuth } from 'firebase/auth'
 import {
   DocumentReference,
+  DocumentData,
   getFirestore,
   doc,
+  collection,
   updateDoc,
   arrayUnion,
   increment,
@@ -38,6 +40,12 @@ export function getSheetDateRef(
   return doc(db, `stations/${stationId}/days/${date}`).withConverter(
     PollenDatagridConverter
   )
+}
+
+export function getDaysByStationRef(
+  stationId: string
+): Query<DocumentData> {
+  return collection(db, `stations/${stationId}/days`)
 }
 
 export async function publishPollen({
