@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 
-import { Projects, Sheets } from './components'
+import { Projects, Sheets, PollensCalendar } from './components'
 import Graph from './components/Graph'
 import { Layout, Login, Register } from './pages'
 
@@ -11,6 +11,7 @@ export default function Router() {
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Layout />}>
         <Route index element={<Projects />} />
+        <Route path="calendar" element={<PollensCalendar />} />
         <Route path=":sheetId" element={<Sheets />} />
         <Route path=":sheetId/graph" element={<Graph />} />
       </Route>

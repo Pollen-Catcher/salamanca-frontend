@@ -22,14 +22,14 @@ export default function Layout() {
         display: 'flex',
         minHeight: '100vh',
         position: 'relative',
-        backgroundColor: '#f0f0f0',
+        backgroundColor: 'grey.100',
       }}
     >
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Header />
         <Box
           component="main"
-          sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}
+          sx={{ flex: 1, py: 6, px: 4, bgcolor: 'background.default' }}
         >
           <Outlet />
         </Box>
