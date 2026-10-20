@@ -35,7 +35,7 @@ export default function Datagrid({ date, highlight }: TableProps) {
         sx={{
           minWidth: 0,
           width: '100%',
-e          boxShadow: 2,
+          boxShadow: 2,
           border: 2,
           borderColor: 'primary.light',
           '& .MuiDataGrid-cell:hover': {

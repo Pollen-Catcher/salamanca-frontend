@@ -5,6 +5,7 @@ import {
   getFirestore,
   doc,
   collection,
+  getDoc,
   updateDoc,
   arrayUnion,
   increment,
@@ -26,6 +27,14 @@ import {
 import PollenDatagridConverter from '../models/PollenDatagridConverter'
 
 interface CreateDayDto {
+  sheetId: string
+  date: string
+  pollen: string
+  interval: string
+  amount: number
+}
+
+interface PollenValueDto {
   sheetId: string
   date: string
   pollen: string
@@ -56,11 +65,10 @@ export async function publishPollen({
   date,
 }: CreateDayDto) {
   const uid = auth.currentUser?.uid
-  if (!uid) {
+  if (!uid)
     throw new Error(
-      'Your session expired. Refresh the page and sign in to save voice commands.'
+      'Your session expired. Refresh the page and sign in to save data.'
     )
-  }
 
   const sheetRef = doc(db, `stations/${sheetId}/days/${date}`)
   await updateDoc(sheetRef, {
@@ -73,12 +81,15 @@ export async function publishPollen({
         date: date,
         available: [pollen],
         [pollen]: {
-          [interval]: Math.abs(amount),
+        [interval]: amount,
         },
         userUid: uid,
         station: sheetId,
       })
+      return
     }
+
+    throw e
   })
 }
 
@@ -88,28 +99,41 @@ export async function setPollenValue({
   amount,
   sheetId,
   date,
-}: CreateDayDto) {
+}: PollenValueDto) {
   const uid = auth.currentUser?.uid
-  if (!uid) {
+  if (!uid)
     throw new Error(
-      'Your session expired. Refresh the page and sign in to save voice commands.'
+      'Your session expired. Refresh the page and sign in to save data.'
     )
-  }
 
   const sheetRef = doc(db, `stations/${sheetId}/days/${date}`)
-  await setDoc(
-    sheetRef,
-    {
+  await updateDoc(sheetRef, {
+    available: arrayUnion(pollen),
+    [`${pollen}.${interval}`]: amount,
+    userUid: uid,
+  }).catch(async (error: FirestoreError) => {
+    if (error.code !== 'not-found') throw error
+
+    await setDoc(sheetRef, {
       date,
-      station: sheetId,
+      available: [pollen],
+      [pollen]: { [interval]: amount },
       userUid: uid,
-      available: arrayUnion(pollen),
-      [pollen]: {
-        [interval]: amount,
-      },
-    },
-    { merge: true }
-  )
+      station: sheetId,
+    })
+  })
+}
+
+export async function getPollenValue({
+  pollen,
+  interval,
+  sheetId,
+  date,
+}: Omit<PollenValueDto, 'amount'>): Promise<number> {
+  const sheetRef = doc(db, `stations/${sheetId}/days/${date}`)
+  const snapshot = await getDoc(sheetRef)
+  const value = snapshot.data()?.[pollen]?.[interval]
+  return typeof value === 'number' ? value : 0
 }
 
 export async function csvToFirestore(data: PollenCsvInput[], sheetId: string) {
