@@ -3,7 +3,7 @@ import { Alert, Box, Button, ButtonGroup, Typography } from '@mui/material'
 
 import propose from 'propose'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { publishPollen, setPollenValue } from '../lib/sheet'
 import { pollensList } from '../data/arrays'
@@ -15,13 +15,18 @@ interface Props {
   onCommit?: (pollen: string, interval: string) => void
 }
 
-const ASR_ENDPOINT =
-  'https://salamanca-project-asr-microservice-space.hf.space/command'
+const ASR_BASE_URL = 'https://salamanca-project-asr-microservice-space.hf.space'
+const ASR_ENDPOINT = `${ASR_BASE_URL}/command`
 const SILENCE_DURATION_MS = 1500
 const MIN_UTTERANCE_GAP_MS = 1200
 const MIN_SPEECH_DURATION_MS = 500
 const MAX_SEGMENT_DURATION_MS = 10000
+// Com o modelo acordado o comando responde em ~2s. O HF Space hiberna e o
+// primeiro request depois disso pode levar ~80s, então o primeiro comando
+// ganha um teto bem maior em vez de morrer no timeout curto.
 const ASR_TIMEOUT_MS = 15000
+const ASR_COLD_START_TIMEOUT_MS = 90000
+const ASR_WARMUP_TIMEOUT_MS = 100000
 const SPEECH_THRESHOLD = 0.03
 const NOISE_CALIBRATION_DURATION_MS = 400
 const SPEECH_CONFIRMATION_MS = 180
@@ -79,6 +84,36 @@ export default function Speech({
   const pendingSegmentsRef = useRef(0)
   const processingChainRef = useRef<Promise<void>>(Promise.resolve())
   const lastSpeechAtRef = useRef<number | null>(null)
+  const isModelWarmRef = useRef(false)
+  const [isWakingModel, setIsWakingModel] = useState(false)
+
+  // Aquece o HF Space no mount: se ele hibernou, o /health já dispara o boot
+  // enquanto o usuário ainda está escolhendo a estação, em vez de fazer o
+  // primeiro comando pagar o cold start inteiro.
+  useEffect(() => {
+    const controller = new AbortController()
+    const timeoutId = window.setTimeout(
+      () => controller.abort(),
+      ASR_WARMUP_TIMEOUT_MS
+    )
+
+    fetch(`${ASR_BASE_URL}/health`, {
+      signal: controller.signal,
+      cache: 'no-store',
+    })
+      .then((response) => {
+        if (response.ok) isModelWarmRef.current = true
+      })
+      .catch(() => {
+        // silencioso: o próximo comando tenta de novo com timeout longo
+      })
+      .finally(() => window.clearTimeout(timeoutId))
+
+    return () => {
+      window.clearTimeout(timeoutId)
+      controller.abort()
+    }
+  }, [])
 
   const intervalRef = useRef(interval)
   intervalRef.current = interval
@@ -359,10 +394,11 @@ export default function Speech({
     })
 
     const controller = new AbortController()
-    const timeoutId = window.setTimeout(
-      () => controller.abort(),
-      ASR_TIMEOUT_MS
-    )
+    const isWarm = isModelWarmRef.current
+    const timeoutMs = isWarm ? ASR_TIMEOUT_MS : ASR_COLD_START_TIMEOUT_MS
+    const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs)
+
+    if (!isWarm) setIsWakingModel(true)
 
     let response: Response
     try {
@@ -373,12 +409,20 @@ export default function Speech({
       })
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error('ASR request timed out. Please try again.')
+        throw new Error(
+          isWarm
+            ? 'ASR request timed out. Please try again.'
+            : 'O modelo de voz demorou para acordar. Tente falar de novo agora que ele está carregado.'
+        )
       }
       throw error
     } finally {
       window.clearTimeout(timeoutId)
+      setIsWakingModel(false)
     }
+
+    // Se este request voltou, o modelo está de pé.
+    isModelWarmRef.current = true
 
     const responseText = await response.text()
 
@@ -556,6 +600,16 @@ export default function Speech({
             }}
           />
         </Box>
+      )}
+
+      {isWakingModel && (
+        <Alert
+          style={{ color: '#233143', backgroundColor: '#b8bcc2' }}
+          severity="info"
+        >
+          Acordando o modelo de voz... o primeiro comando pode levar até 1
+          minuto.
+        </Alert>
       )}
 
       {isProcessing && (
