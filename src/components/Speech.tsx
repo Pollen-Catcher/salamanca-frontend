@@ -5,7 +5,7 @@ import propose from 'propose'
 
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
-import { publishPollen, setPollenValue } from '../lib/sheet'
+import { getPollenValue, publishPollen, setPollenValue } from '../lib/sheet'
 import { pollensList } from '../data/arrays'
 
 interface Props {
@@ -55,6 +55,38 @@ function asrErrorMessage(status: number, responseText: string): string {
     : `Falha no servidor de voz (${status}). Tente novamente.`
 }
 
+// Fala um texto: busca o mp3 no servidor (funciona em qualquer navegador - a
+// voz nativa do navegador não existe em todos, ex.: Brave no Linux) e, se o
+// servidor falhar, cai para a voz nativa (quando ela existir).
+async function speak(text: string) {
+  try {
+    const controller = new AbortController()
+    const timeoutId = window.setTimeout(() => controller.abort(), 10000)
+    let blob: Blob
+    try {
+      const response = await fetch(
+        `${ASR_BASE_URL}/tts?text=${encodeURIComponent(text)}`,
+        { signal: controller.signal, cache: 'no-store' }
+      )
+      if (!response.ok) throw new Error(`tts ${response.status}`)
+      blob = await response.blob()
+    } finally {
+      window.clearTimeout(timeoutId)
+    }
+
+    const audio = new Audio(URL.createObjectURL(blob))
+    audio.onended = () => URL.revokeObjectURL(audio.src)
+    await audio.play()
+  } catch {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
+    const synth = window.speechSynthesis
+    synth.cancel()
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang = navigator.language || 'pt-BR'
+    synth.speak(utterance)
+  }
+}
+
 export default function Speech({
   date,
   currentHour,
@@ -67,6 +99,7 @@ export default function Speech({
   const [isProcessing, setIsProcessing] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [lastResult, setLastResult] = useState('')
+  const [readResult, setReadResult] = useState('')
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const chunksRef = useRef<Blob[]>([])
@@ -124,6 +157,36 @@ export default function Speech({
     if (isNaN(hour)) return
     if (hour >= 0 && hour <= 23) onHourChange(hour)
     else setErrorMessage(`Invalid hour: ${hour}`)
+  }
+
+  // "read alnus": lê o valor salvo da planta na coluna (intervalo) selecionado
+  // e fala "planta, quantidade" com a voz do navegador.
+  async function readCommand(proposedPollen: string) {
+    if (!sheetId) {
+      setErrorMessage('No sheet selected. Open a station sheet and try again.')
+      return
+    }
+    if (!pollensList.find((p) => p === proposedPollen)) return
+
+    try {
+      const value = await getPollenValue({
+        pollen: proposedPollen,
+        sheetId,
+        interval: intervalRef.current,
+        date: dateRef.current,
+      })
+      setErrorMessage('')
+      setReadResult(
+        `${proposedPollen} às ${intervalRef.current.replace('_', '')}: ${value}`
+      )
+      void speak(`${proposedPollen}, ${value}`)
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : 'Could not read from Firestore. Please try again.'
+      )
+    }
   }
 
   async function pollenCommand(
@@ -315,6 +378,8 @@ export default function Speech({
     const isPollenCommand =
       !isHourCommand && !isMinusCommand && !isSetCommand && !isReadCommand
 
+    setReadResult('')
+
     if (isHourCommand) {
       const countToken = tokens.find((token) => !isNaN(Number(token)))
       const parsedCount = Number(countToken)
@@ -325,6 +390,31 @@ export default function Speech({
 
       hourCommand(parsedCount)
       setErrorMessage('')
+      return
+    }
+
+    // "read" não leva quantidade: o número (se falado) é descartado e o app
+    // lê em voz alta o valor SALVO da planta na coluna selecionada.
+    if (isReadCommand) {
+      const readTokens = tokens.filter((token) => isNaN(Number(token)))
+      const normalizedLatin = readTokens.join(' ').replace(/[-_]+/g, ' ').trim()
+
+      if (!normalizedLatin) {
+        setErrorMessage('No pollen name recognized in ASR response.')
+        return
+      }
+
+      const pollen = propose(normalizedLatin, pollensList, {
+        ignoreCase: true,
+        threshold: 0.45,
+      })
+
+      if (!pollen) {
+        setErrorMessage(`Unrecognized pollen: ${normalizedLatin}`)
+        return
+      }
+
+      await readCommand(pollen)
       return
     }
 
@@ -344,11 +434,6 @@ export default function Speech({
 
     if (!pollen) {
       setErrorMessage(`Unrecognized pollen: ${normalizedLatin}`)
-      return
-    }
-
-    if (isReadCommand) {
-      setErrorMessage(`Read command recognized for ${pollen}.`)
       return
     }
 
@@ -452,6 +537,7 @@ export default function Speech({
 
     setErrorMessage('')
     setLastResult('')
+    setReadResult('')
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -564,6 +650,7 @@ export default function Speech({
     stopHandle()
     setErrorMessage('')
     setLastResult('')
+    setReadResult('')
   }
 
   return (
@@ -622,6 +709,8 @@ export default function Speech({
       )}
 
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+
+      {readResult && <Alert severity="success">{readResult}</Alert>}
 
       {lastResult && (
         <Box className="justify-center p-2">
