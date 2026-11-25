@@ -1,5 +1,16 @@
 import DeleteIcon from '@mui/icons-material/Delete'
-import { Alert, Box, Button, ButtonGroup, Typography } from '@mui/material'
+import HistoryIcon from '@mui/icons-material/History'
+import {
+  Alert,
+  Box,
+  Button,
+  ButtonGroup,
+  Fab,
+  List,
+  ListItem,
+  Paper,
+  Typography,
+} from '@mui/material'
 
 import propose from 'propose'
 
@@ -13,11 +24,19 @@ interface Props {
   currentHour: number
   onHourChange: (hour: number) => void
   onCommit?: (pollen: string, interval: string) => void
+  // Controlado por Sheets para que ajuda e log nunca fiquem abertos juntos.
+  logOpen: boolean
+  onLogOpenChange: (open: boolean) => void
 }
 
 const ASR_BASE_URL = 'https://salamanca-project-asr-microservice-space.hf.space'
 const ASR_ENDPOINT = `${ASR_BASE_URL}/command`
-const SILENCE_DURATION_MS = 1500
+// Silêncio para fechar o segmento. Era 1500 ms; medido nas gravações reais de
+// inputTests, a maior PAUSA INTERNA entre palavras de um comando é 992 ms
+// (setUrticaMembranacea21). 1000 ms cortaria esse comando no meio (planta sem
+// número -> 400); 1200 ms mantém ~200 ms de margem e ainda economiza 300 ms por
+// fala. O hard-split de nova fala continua em MIN_UTTERANCE_GAP_MS.
+const SILENCE_DURATION_MS = 1200
 const MIN_UTTERANCE_GAP_MS = 1200
 const MIN_SPEECH_DURATION_MS = 500
 const MAX_SEGMENT_DURATION_MS = 10000
@@ -37,6 +56,63 @@ const ASR_WARMUP_TIMEOUT_MS = 100000
 const SPEECH_THRESHOLD = 0.03
 const NOISE_CALIBRATION_DURATION_MS = 400
 const SPEECH_CONFIRMATION_MS = 180
+
+// O frontend não manda ?prefix nem ?preproc, então o log registra os defaults
+// do servidor (ASR_PREFIX_MODE / ASR_PREPROC em server.py, 2026-11-25).
+const ASR_PREFIX_MODE = 'full'
+const ASR_PREPROC_MODE = 'on'
+const MAX_LOG_ENTRIES = 50
+const NO_SPEECH_MESSAGE =
+  'No speech detected in that segment. Try speaking closer to the microphone.'
+
+type ErrorSink = (message: string) => void
+
+type SegmentCloseReason =
+  | 'silence'
+  | 'hard-split'
+  | 'max-duration'
+  | 'idle-guard'
+  | 'manual-stop'
+  | 'unknown'
+
+interface AsrResult {
+  httpStatus: number | null
+  recognizedText: string
+  latencyMs: number | null
+  stageTimings: Record<string, number>
+  prefixMode: string
+  preprocMode: string
+}
+
+interface CommandLogEntry extends AsrResult {
+  id: number
+  at: string
+  error: string
+  segmentSpeechMs: number
+  segmentDurationMs: number
+  silenceMs: number | null
+  silenceTailMs: number
+  discarded: boolean
+  closeReason: SegmentCloseReason
+  endpoint: string
+}
+
+// O Space devolve "kaldi;dur=1024.3, ffmpeg;dur=174.4" em Server-Timing e
+// expõe o header ao browser (access-control-expose-headers: *, 2026-11-25).
+function parseServerTiming(header: string | null): Record<string, number> {
+  const timings: Record<string, number> = {}
+  if (!header) return timings
+  header.split(',').forEach((part) => {
+    const [name, duration] = part.trim().split(';dur=')
+    const ms = Number(duration)
+    if (name && Number.isFinite(ms)) timings[name] = ms
+  })
+  return timings
+}
+
+function withAsrMeta(error: Error, meta: AsrResult): Error {
+  return Object.assign(error, { asrMeta: meta })
+}
 
 function extractErrorDetail(responseText: string): string {
   try {
@@ -99,14 +175,44 @@ export default function Speech({
   currentHour,
   onHourChange,
   onCommit,
+  logOpen,
+  onLogOpenChange,
 }: Props) {
   const { sheetId } = useParams()
   const interval = `_${currentHour}h`
   const [isListening, setIsListening] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessageState] = useState('')
   const [lastResult, setLastResult] = useState('')
   const [readResult, setReadResult] = useState('')
+  // Cada segmento em processamento tem seu próprio sink: com comandos seguidos,
+  // o showError('') do segmento novo não pode apagar o erro que vai no log do
+  // anterior. O sink continua atualizando a tela igual a antes.
+  function makeErrorSink(onCapture?: (message: string) => void): ErrorSink {
+    return (message) => {
+      setErrorMessageState(message)
+      onCapture?.(message)
+    }
+  }
+  const showError = makeErrorSink()
+
+  // Log passivo da sessão: segmentos descartados não chegam ao servidor, então
+  // só o frontend pode registrar o que aconteceu com eles.
+  const [logEntries, setLogEntries] = useState<CommandLogEntry[]>([])
+  const logSeqRef = useRef(0)
+  function appendLog(entry: Omit<CommandLogEntry, 'id' | 'at'>) {
+    logSeqRef.current += 1
+    setLogEntries((previous) =>
+      [
+        {
+          ...entry,
+          id: logSeqRef.current,
+          at: new Date().toLocaleTimeString(),
+        },
+        ...previous,
+      ].slice(0, MAX_LOG_ENTRIES)
+    )
+  }
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const chunksRef = useRef<Blob[]>([])
@@ -132,6 +238,8 @@ export default function Speech({
   const segmentStartedAtRef = useRef<number | null>(null)
   const segmentGuardRef = useRef<number | null>(null)
   const discardSegmentRef = useRef(false)
+  // Por que o segmento foi fechado - usado no log e não altera a segmentação.
+  const closeReasonRef = useRef<SegmentCloseReason>('unknown')
   const isModelWarmRef = useRef(false)
   const [isWakingModel, setIsWakingModel] = useState(false)
 
@@ -177,17 +285,20 @@ export default function Speech({
   const dateRef = useRef(date)
   dateRef.current = date
 
-  function hourCommand(hour: number) {
+  function hourCommand(hour: number, reportError: ErrorSink = showError) {
     if (isNaN(hour)) return
     if (hour >= 0 && hour <= 23) onHourChange(hour)
-    else setErrorMessage(`Invalid hour: ${hour}`)
+    else reportError(`Invalid hour: ${hour}`)
   }
 
   // "read alnus": lê o valor salvo da planta na coluna (intervalo) selecionado
   // e fala "planta, quantidade" com a voz do navegador.
-  async function readCommand(proposedPollen: string) {
+  async function readCommand(
+    proposedPollen: string,
+    reportError: ErrorSink = showError
+  ) {
     if (!sheetId) {
-      setErrorMessage('No sheet selected. Open a station sheet and try again.')
+      reportError('No sheet selected. Open a station sheet and try again.')
       return
     }
     if (!pollensList.find((p) => p === proposedPollen)) return
@@ -199,13 +310,13 @@ export default function Speech({
         interval: intervalRef.current,
         date: dateRef.current,
       })
-      setErrorMessage('')
+      reportError('')
       setReadResult(
         `${proposedPollen} às ${intervalRef.current.replace('_', '')}: ${value}`
       )
       void speak(`${proposedPollen}, ${value}`)
     } catch (error) {
-      setErrorMessage(
+      reportError(
         error instanceof Error
           ? error.message
           : 'Could not read from Firestore. Please try again.'
@@ -216,10 +327,11 @@ export default function Speech({
   async function pollenCommand(
     proposedPollen: string,
     amount: number,
-    operation: '+' | '-' | 'set'
+    operation: '+' | '-' | 'set',
+    reportError: ErrorSink = showError
   ) {
     if (!sheetId) {
-      setErrorMessage('No sheet selected. Open a station sheet and try again.')
+      reportError('No sheet selected. Open a station sheet and try again.')
       return
     }
 
@@ -246,10 +358,10 @@ export default function Speech({
         })
       }
 
-      setErrorMessage('')
+      reportError('')
       onCommit?.(proposedPollen, intervalRef.current)
     } catch (error) {
-      setErrorMessage(
+      reportError(
         error instanceof Error
           ? error.message
           : 'Could not save to Firestore. Please try again.'
@@ -260,6 +372,7 @@ export default function Speech({
   function resetRecorderState() {
     stopSegmentGuard()
     discardSegmentRef.current = false
+    closeReasonRef.current = 'unknown'
     segmentStartedAtRef.current = null
     chunksRef.current = []
     mediaRecorderRef.current = null
@@ -307,8 +420,9 @@ export default function Speech({
     }
   }
 
-  function stopCurrentSegment() {
+  function stopCurrentSegment(reason: SegmentCloseReason = 'unknown') {
     if (mediaRecorderRef.current?.state === 'recording') {
+      closeReasonRef.current = reason
       mediaRecorderRef.current.stop()
     }
   }
@@ -337,7 +451,7 @@ export default function Speech({
       speechStartedAt !== null &&
       now - speechStartedAt >= MAX_SEGMENT_DURATION_MS
     ) {
-      stopCurrentSegment()
+      stopCurrentSegment('max-duration')
       return
     }
 
@@ -348,7 +462,7 @@ export default function Speech({
       now - segmentStartedAt >= SEGMENT_MAX_IDLE_MS
     ) {
       discardSegmentRef.current = true
-      stopCurrentSegment()
+      stopCurrentSegment('idle-guard')
     }
   }
 
@@ -414,7 +528,7 @@ export default function Speech({
         lastSpeechAtRef.current !== null &&
         now - lastSpeechAtRef.current >= MIN_UTTERANCE_GAP_MS
       ) {
-        stopCurrentSegment()
+        stopCurrentSegment('hard-split')
         return
       }
       lastSpeechAtRef.current = now
@@ -436,21 +550,29 @@ export default function Speech({
     const speechStartedAt = speechStartedAtRef.current
     const silenceStartedAt = silenceStartedAtRef.current
     if (
-      (silenceStartedAt !== null &&
-        now - silenceStartedAt >= SILENCE_DURATION_MS &&
-        speechStartedAt !== null &&
-        now - speechStartedAt >= MIN_SPEECH_DURATION_MS) ||
-      (speechStartedAt !== null &&
-        now - speechStartedAt >= MAX_SEGMENT_DURATION_MS)
+      silenceStartedAt !== null &&
+      now - silenceStartedAt >= SILENCE_DURATION_MS &&
+      speechStartedAt !== null &&
+      now - speechStartedAt >= MIN_SPEECH_DURATION_MS
     ) {
-      stopCurrentSegment()
+      stopCurrentSegment('silence')
+      return
+    }
+    if (
+      speechStartedAt !== null &&
+      now - speechStartedAt >= MAX_SEGMENT_DURATION_MS
+    ) {
+      stopCurrentSegment('max-duration')
       return
     }
 
     animationFrameRef.current = requestAnimationFrame(monitorSpeech)
   }
 
-  async function applyCommand(commandText: string) {
+  async function applyCommand(
+    commandText: string,
+    reportError: ErrorSink = showError
+  ) {
     const tokens = commandText
       .trim()
       .replace(/[.,!?]+$/g, '')
@@ -470,12 +592,12 @@ export default function Speech({
       const countToken = tokens.find((token) => !isNaN(Number(token)))
       const parsedCount = Number(countToken)
       if (isNaN(parsedCount)) {
-        setErrorMessage('No numeric count recognized for hour command.')
+        reportError('No numeric count recognized for hour command.')
         return
       }
 
-      hourCommand(parsedCount)
-      setErrorMessage('')
+      hourCommand(parsedCount, reportError)
+      reportError('')
       return
     }
 
@@ -486,7 +608,7 @@ export default function Speech({
       const normalizedLatin = readTokens.join(' ').replace(/[-_]+/g, ' ').trim()
 
       if (!normalizedLatin) {
-        setErrorMessage('No pollen name recognized in ASR response.')
+        reportError('No pollen name recognized in ASR response.')
         return
       }
 
@@ -496,11 +618,11 @@ export default function Speech({
       })
 
       if (!pollen) {
-        setErrorMessage(`Unrecognized pollen: ${normalizedLatin}`)
+        reportError(`Unrecognized pollen: ${normalizedLatin}`)
         return
       }
 
-      await readCommand(pollen)
+      await readCommand(pollen, reportError)
       return
     }
 
@@ -509,7 +631,7 @@ export default function Speech({
     const normalizedLatin = tokens.join(' ').replace(/[-_]+/g, ' ').trim()
 
     if (!normalizedLatin) {
-      setErrorMessage('No pollen name recognized in ASR response.')
+      reportError('No pollen name recognized in ASR response.')
       return
     }
 
@@ -519,35 +641,38 @@ export default function Speech({
     })
 
     if (!pollen) {
-      setErrorMessage(`Unrecognized pollen: ${normalizedLatin}`)
+      reportError(`Unrecognized pollen: ${normalizedLatin}`)
       return
     }
 
     const parsedCount = Number(countToken)
     if (isNaN(parsedCount)) {
-      setErrorMessage('No numeric count recognized in ASR response.')
+      reportError('No numeric count recognized in ASR response.')
       return
     }
 
     if (isMinusCommand) {
-      await pollenCommand(pollen, parsedCount, '-')
+      await pollenCommand(pollen, parsedCount, '-', reportError)
       return
     }
 
     if (isSetCommand) {
-      await pollenCommand(pollen, parsedCount, 'set')
+      await pollenCommand(pollen, parsedCount, 'set', reportError)
       return
     }
 
     if (isPollenCommand) {
-      await pollenCommand(pollen, parsedCount, '+')
+      await pollenCommand(pollen, parsedCount, '+', reportError)
       return
     }
 
-    setErrorMessage(`Unsupported command: ${command}`)
+    reportError(`Unsupported command: ${command}`)
   }
 
-  async function sendAudioToAsr(audioBlob: Blob) {
+  async function sendAudioToAsr(
+    audioBlob: Blob,
+    reportError: ErrorSink = showError
+  ): Promise<AsrResult> {
     const formData = new FormData()
     const mimeType = audioBlob.type || 'audio/webm'
     const extension = mimeType.split('/')[1]?.split(';')[0] || 'webm'
@@ -562,6 +687,16 @@ export default function Speech({
       mimeType,
       size: audioFile.size,
       fileName: audioFile.name,
+    })
+
+    const startedAt = performance.now()
+    // Anexa latência/etapas até nos erros: assim o log distingue "não chegou
+    // ao servidor" de "o servidor não reconheceu o comando".
+    const baseMeta = () => ({
+      latencyMs: Math.round(performance.now() - startedAt),
+      stageTimings: {} as Record<string, number>,
+      prefixMode: ASR_PREFIX_MODE,
+      preprocMode: ASR_PREPROC_MODE,
     })
 
     const controller = new AbortController()
@@ -579,14 +714,19 @@ export default function Speech({
         signal: controller.signal,
       })
     } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error(
-          isWarm
+      const message =
+        error instanceof Error && error.name === 'AbortError'
+          ? isWarm
             ? 'ASR request timed out. Please try again.'
             : 'O modelo de voz demorou para acordar. Tente falar de novo agora que ele está carregado.'
-        )
-      }
-      throw error
+          : error instanceof Error
+            ? error.message
+            : 'Failed to reach the voice server.'
+      throw withAsrMeta(new Error(message), {
+        httpStatus: null,
+        recognizedText: '',
+        ...baseMeta(),
+      })
     } finally {
       window.clearTimeout(timeoutId)
       setIsWakingModel(false)
@@ -596,6 +736,10 @@ export default function Speech({
     isModelWarmRef.current = true
 
     const responseText = await response.text()
+    const meta = {
+      ...baseMeta(),
+      stageTimings: parseServerTiming(response.headers.get('Server-Timing')),
+    }
 
     if (!response.ok) {
       console.error('[ASR] request failed', {
@@ -603,25 +747,38 @@ export default function Speech({
         statusText: response.statusText,
         body: responseText,
       })
-      throw new Error(asrErrorMessage(response.status, responseText))
+      throw withAsrMeta(
+        new Error(asrErrorMessage(response.status, responseText)),
+        { httpStatus: response.status, recognizedText: '', ...meta }
+      )
     }
 
     const commandText = responseText.trim()
     if (!commandText) {
-      throw new Error('ASR returned an empty command.')
+      throw withAsrMeta(new Error('ASR returned an empty command.'), {
+        httpStatus: response.status,
+        recognizedText: '',
+        ...meta,
+      })
     }
 
     setLastResult(commandText)
-    await applyCommand(commandText)
+    await applyCommand(commandText, reportError)
+
+    return {
+      httpStatus: response.status,
+      recognizedText: commandText,
+      ...meta,
+    }
   }
 
   const handleListening = async () => {
     if (!navigator.mediaDevices?.getUserMedia) {
-      setErrorMessage('Microphone is not available in this browser.')
+      showError('Microphone is not available in this browser.')
       return
     }
 
-    setErrorMessage('')
+    showError('')
     setLastResult('')
     setReadResult('')
 
@@ -670,6 +827,23 @@ export default function Speech({
           type: chunksRef.current[0]?.type || 'audio/webm',
         })
         const segmentSpeechMs = segmentSpeechMsRef.current
+        // Capturado antes dos resets: são os números que o log precisa mostrar.
+        const stoppedAt = Date.now()
+        const segmentStartedAt = segmentStartedAtRef.current
+        const silenceStartedAt = silenceStartedAtRef.current
+        const closeReason = closeReasonRef.current
+        const segmentMeta = {
+          segmentSpeechMs,
+          segmentDurationMs:
+            segmentStartedAt !== null ? stoppedAt - segmentStartedAt : 0,
+          silenceMs:
+            silenceStartedAt !== null ? stoppedAt - silenceStartedAt : null,
+          silenceTailMs: SILENCE_DURATION_MS,
+          discarded,
+          closeReason,
+          endpoint: ASR_ENDPOINT,
+        }
+        closeReasonRef.current = 'unknown'
 
         chunksRef.current = []
         speechStartedAtRef.current = null
@@ -685,17 +859,41 @@ export default function Speech({
         }
 
         if (!audioBlob.size) {
+          appendLog({
+            ...segmentMeta,
+            recognizedText: '',
+            httpStatus: null,
+            latencyMs: null,
+            stageTimings: {},
+            prefixMode: ASR_PREFIX_MODE,
+            preprocMode: ASR_PREPROC_MODE,
+            error: 'Empty audio segment (not sent).',
+          })
           resumeListening()
           return
         }
 
         // Segmento sem fala confirmada (hesitação, ventilador, clique) ou que
-        // estourou o teto sem nunca ter fala: não vai pro ASR.
+        // estourou o teto sem nunca ter fala: não vai pro ASR. Parada manual não
+        // é erro - o usuário pode apertar Stop logo após falar, antes do VAD
+        // acumular 500 ms, e não deve ver "no speech" por isso.
         if (discarded || segmentSpeechMs < MIN_SPEECH_DURATION_MS) {
+          const manualStop = closeReason === 'manual-stop'
+          const message = manualStop ? '' : NO_SPEECH_MESSAGE
           setLastResult('')
-          setErrorMessage(
-            'No speech detected in that segment. Try speaking closer to the microphone.'
-          )
+          showError(message)
+          appendLog({
+            ...segmentMeta,
+            recognizedText: '',
+            httpStatus: null,
+            latencyMs: null,
+            stageTimings: {},
+            prefixMode: ASR_PREFIX_MODE,
+            preprocMode: ASR_PREPROC_MODE,
+            error: manualStop
+              ? 'Manual stop (no confirmed speech, not sent).'
+              : NO_SPEECH_MESSAGE,
+          })
           resumeListening()
           return
         }
@@ -703,21 +901,43 @@ export default function Speech({
         // Resultado/erro na tela sempre se referem a ESTE segmento: sem isso o
         // texto do comando anterior continuava visível ao lado de um erro novo.
         setLastResult('')
-        setErrorMessage('')
+        showError('')
 
         pendingSegmentsRef.current += 1
         setIsProcessing(true)
 
         processingChainRef.current = processingChainRef.current
           .then(async () => {
+            let segmentError = ''
+            const reportError = makeErrorSink((message) => {
+              segmentError = message
+            })
             try {
-              await sendAudioToAsr(audioBlob)
+              const result = await sendAudioToAsr(audioBlob, reportError)
+              appendLog({
+                ...segmentMeta,
+                ...result,
+                error: segmentError,
+              })
             } catch (error) {
-              setErrorMessage(
+              const meta = (error as Error & { asrMeta?: AsrResult }).asrMeta
+              reportError(
                 error instanceof Error
                   ? error.message
                   : 'Failed to process audio command.'
               )
+              appendLog({
+                ...segmentMeta,
+                ...(meta ?? {
+                  httpStatus: null,
+                  recognizedText: '',
+                  latencyMs: null,
+                  stageTimings: {},
+                  prefixMode: ASR_PREFIX_MODE,
+                  preprocMode: ASR_PREPROC_MODE,
+                }),
+                error: segmentError,
+              })
             } finally {
               pendingSegmentsRef.current -= 1
               if (pendingSegmentsRef.current === 0) {
@@ -739,7 +959,7 @@ export default function Speech({
     } catch {
       resetRecorderState()
       shouldListenRef.current = false
-      setErrorMessage('Could not access microphone.')
+      showError('Could not access microphone.')
       setIsListening(false)
     }
   }
@@ -749,6 +969,7 @@ export default function Speech({
     setIsListening(false)
 
     if (mediaRecorderRef.current?.state === 'recording') {
+      closeReasonRef.current = 'manual-stop'
       mediaRecorderRef.current.stop()
       return
     }
@@ -758,7 +979,7 @@ export default function Speech({
 
   const handleReset = () => {
     stopHandle()
-    setErrorMessage('')
+    showError('')
     setLastResult('')
     setReadResult('')
   }
@@ -835,6 +1056,108 @@ export default function Speech({
           </Button>
         </Box>
       )}
+
+      {logOpen && (
+        <Paper
+          elevation={3}
+          sx={{
+            position: 'fixed',
+            right: 24,
+            bottom: 152,
+            width: { xs: 'calc(100vw - 48px)', sm: 300 },
+            maxWidth: 'calc(100vw - 48px)',
+            maxHeight: '50vh',
+            overflowY: 'auto',
+            zIndex: (theme) => theme.zIndex.appBar - 1,
+          }}
+        >
+          <Box
+            sx={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 1,
+              bgcolor: 'background.paper',
+              px: 2,
+              py: 1.5,
+              borderBottom: 1,
+              borderColor: 'divider',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 1,
+            }}
+          >
+            <Typography
+              variant="h6"
+              component="h2"
+              sx={{ fontWeight: 600, color: 'primary.main', fontSize: '1.1rem' }}
+            >
+              Log de comandos ({logEntries.length})
+            </Typography>
+            <Button
+              size="small"
+              onClick={() => setLogEntries([])}
+              disabled={logEntries.length === 0}
+            >
+              Limpar
+            </Button>
+          </Box>
+          {logEntries.length === 0 ? (
+            <Box sx={{ px: 2, py: 2 }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                Nenhum comando nesta sessão.
+              </Typography>
+            </Box>
+          ) : (
+            <List dense sx={{ py: 0.5 }}>
+              {logEntries.map((entry) => (
+                <ListItem
+                  key={entry.id}
+                  alignItems="flex-start"
+                  sx={{
+                    display: 'block',
+                    px: 2,
+                    py: 0.75,
+                    borderBottom: 1,
+                    borderColor: 'divider',
+                  }}
+                >
+                  <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
+                    {entry.at}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 600,
+                      wordBreak: 'break-word',
+                      color:
+                        !entry.recognizedText && entry.error
+                          ? 'error.main'
+                          : 'text.primary',
+                    }}
+                  >
+                    {entry.recognizedText || entry.error || '—'}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </Paper>
+      )}
+      <Fab
+        color="secondary"
+        aria-label={logOpen ? 'Fechar log de comandos' : 'Abrir log de comandos'}
+        onClick={() => onLogOpenChange(!logOpen)}
+        sx={{
+          position: 'fixed',
+          bottom: 88,
+          right: 24,
+          zIndex: (theme) => theme.zIndex.appBar - 1,
+          boxShadow: 4,
+        }}
+      >
+        <HistoryIcon />
+      </Fab>
     </Box>
   )
 }

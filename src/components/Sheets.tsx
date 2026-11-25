@@ -1,4 +1,11 @@
-import { Box, Typography, Accordion, AccordionSummary,AccordionDetails } from '@mui/material'
+import {
+  Box,
+  Fab,
+  List,
+  ListItem,
+  Paper,
+  Typography,
+} from '@mui/material'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay'
 import dayjs, { Dayjs } from 'dayjs'
@@ -12,7 +19,7 @@ import { query, where } from 'firebase/firestore'
 import { auth } from '../config/firebase'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useCollection } from 'react-firebase-hooks/firestore'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import CommandBar from './CommandBar'
 
 const papaparseOptions = {
@@ -52,6 +59,8 @@ export default function Sheets() {
     field: string
     ts: number
   } | null>(null)
+  const [helpOpen, setHelpOpen] = useState(false)
+  const [logOpen, setLogOpen] = useState(false)
   const [user] = useAuthState(auth)
   const [daysSnap] = useCollection(
     sheetId && user
@@ -65,26 +74,6 @@ export default function Sheets() {
 
   return (
     <Box className="flex flex-col items-center">
-      <Box className="my-3 w-full max-w-[24rem]">
-        <Accordion sx={{ boxShadow: 1, borderRadius: '8px', '&:before': { display: 'none' } }}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="instrucoes-content"
-            id="instrucoes-header"
-          >
-            <Typography variant="h6" className="font-semibold text-gray-800">
-              Instruções de Uso
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography variant="body2" className="text-gray-600">
-              1. Clique em <strong>LISTEN</strong> para iniciar o reconhecimento de voz.<br />
-              2. Fale os comandos ou dados desejados para registrar na tabela.<br />
-              3. Alternativamente, selecione um arquivo <strong>CSV</strong> para importar os dados diretamente.
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-      </Box>
       <Box
         sx={{
           display: 'grid',
@@ -107,6 +96,11 @@ export default function Sheets() {
               onCommit={(pollen, interval) =>
                 setHighlight({ id: pollen, field: interval, ts: Date.now() })
               }
+              logOpen={logOpen}
+              onLogOpenChange={(open) => {
+                setLogOpen(open)
+                if (open) setHelpOpen(false)
+              }}
             />
             <CommandBar
               date={stringDate}
@@ -141,6 +135,73 @@ export default function Sheets() {
         </Box>
         <PollensList />
       </Box>
+
+      {helpOpen && (
+        <Paper
+          elevation={3}
+          sx={{
+            position: 'fixed',
+            right: 24,
+            bottom: 216,
+            width: { xs: 'calc(100vw - 48px)', sm: 300 },
+            maxWidth: 'calc(100vw - 48px)',
+            maxHeight: '50vh',
+            overflowY: 'auto',
+            zIndex: (theme) => theme.zIndex.appBar - 1,
+          }}
+        >
+          <Box
+            sx={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 1,
+              bgcolor: 'background.paper',
+              px: 2,
+              py: 1.5,
+              borderBottom: 1,
+              borderColor: 'divider',
+            }}
+          >
+            <Typography
+              variant="h6"
+              component="h2"
+              sx={{ fontWeight: 600, color: 'primary.main', fontSize: '1.1rem' }}
+            >
+              Instruções de Uso
+            </Typography>
+          </Box>
+          <List dense sx={{ py: 0.5 }}>
+            <ListItem sx={{ px: 2, py: 1 }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                1. Clique em <strong>LISTEN</strong> para iniciar o reconhecimento de voz.
+                <br />
+                2. Fale os comandos ou dados desejados para registrar na tabela.
+                <br />
+                3. Alternativamente, selecione um arquivo <strong>CSV</strong> para
+                importar os dados diretamente.
+              </Typography>
+            </ListItem>
+          </List>
+        </Paper>
+      )}
+      <Fab
+        color="secondary"
+        aria-label={helpOpen ? 'Fechar instruções de uso' : 'Abrir instruções de uso'}
+        onClick={() => {
+          setHelpOpen((previous) => !previous)
+          setLogOpen(false)
+        }}
+        sx={{
+          position: 'fixed',
+          bottom: 152,
+          right: 24,
+          // Atrás do painel de log: quando ele abre, cobre esta posição.
+          zIndex: (theme) => theme.zIndex.appBar - 2,
+          boxShadow: 4,
+        }}
+      >
+        <HelpOutlineIcon />
+      </Fab>
     </Box>
   )
 }
