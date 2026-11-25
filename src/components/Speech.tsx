@@ -21,6 +21,13 @@ const SILENCE_DURATION_MS = 1500
 const MIN_UTTERANCE_GAP_MS = 1200
 const MIN_SPEECH_DURATION_MS = 500
 const MAX_SEGMENT_DURATION_MS = 10000
+// Teto absoluto do segmento quando NENHUMA fala foi confirmada (aba em
+// background, ruído contínuo). Ao bater, o segmento é DESCARTADO, nunca
+// enviado ao ASR: é o que evita clipes de 31 s de ruído.
+const SEGMENT_MAX_IDLE_MS = 30000
+// Os tetos são aplicados por um intervalo próprio porque o loop de segmentação
+// roda em requestAnimationFrame, que o navegador congela em aba sem foco.
+const SEGMENT_GUARD_INTERVAL_MS = 250
 // Com o modelo acordado o comando responde em ~2s. O HF Space hiberna e o
 // primeiro request depois disso pode levar ~80s, então o primeiro comando
 // ganha um teto bem maior em vez de morrer no timeout curto.
@@ -117,6 +124,14 @@ export default function Speech({
   const pendingSegmentsRef = useRef(0)
   const processingChainRef = useRef<Promise<void>>(Promise.resolve())
   const lastSpeechAtRef = useRef<number | null>(null)
+  // Fala confirmada (acima do limiar) acumulada no segmento atual: segmento
+  // com pouco ou nenhum frame de fala é ruído/hesitação e não vai pro ASR.
+  const segmentSpeechMsRef = useRef(0)
+  const lastFrameAtRef = useRef<number | null>(null)
+  // Tetos de duração do segmento aplicados fora do rAF (checkSegmentLimits).
+  const segmentStartedAtRef = useRef<number | null>(null)
+  const segmentGuardRef = useRef<number | null>(null)
+  const discardSegmentRef = useRef(false)
   const isModelWarmRef = useRef(false)
   const [isWakingModel, setIsWakingModel] = useState(false)
 
@@ -145,6 +160,15 @@ export default function Speech({
     return () => {
       window.clearTimeout(timeoutId)
       controller.abort()
+    }
+  }, [])
+
+  // Trocar de página com o mic ligado não pode deixar o recorder, o rAF e o
+  // guard de segmento rodando em background.
+  useEffect(() => {
+    return () => {
+      shouldListenRef.current = false
+      resetRecorderState()
     }
   }, [])
 
@@ -234,6 +258,9 @@ export default function Speech({
   }
 
   function resetRecorderState() {
+    stopSegmentGuard()
+    discardSegmentRef.current = false
+    segmentStartedAtRef.current = null
     chunksRef.current = []
     mediaRecorderRef.current = null
 
@@ -262,6 +289,8 @@ export default function Speech({
     noiseSamplesRef.current = []
     noiseThresholdRef.current = SPEECH_THRESHOLD
     lastSpeechAtRef.current = null
+    segmentSpeechMsRef.current = 0
+    lastFrameAtRef.current = null
 
     if (levelMeterRef.current) {
       levelMeterRef.current.style.width = '0%'
@@ -271,6 +300,7 @@ export default function Speech({
   function resumeListening() {
     if (shouldListenRef.current && streamRef.current) {
       mediaRecorderRef.current?.start(100)
+      startSegmentGuard()
       animationFrameRef.current = requestAnimationFrame(monitorSpeech)
     } else {
       resetRecorderState()
@@ -281,6 +311,54 @@ export default function Speech({
     if (mediaRecorderRef.current?.state === 'recording') {
       mediaRecorderRef.current.stop()
     }
+  }
+
+  function stopSegmentGuard() {
+    if (segmentGuardRef.current !== null) {
+      window.clearInterval(segmentGuardRef.current)
+      segmentGuardRef.current = null
+    }
+  }
+
+  // Aplica os tetos de duração fora do requestAnimationFrame. Sem isto, uma aba
+  // em background congela o loop de segmentação e a gravação só para no Stop
+  // manual (foi assim que apareceu um clipe de 31 s em produção).
+  function checkSegmentLimits() {
+    const recorder = mediaRecorderRef.current
+    if (!recorder || recorder.state !== 'recording') return
+
+    const now = Date.now()
+    const speechStartedAt = speechStartedAtRef.current
+    const segmentStartedAt = segmentStartedAtRef.current
+
+    // Fala contínua longa demais: encerra e ENVIA o que já existe. 10 s é ~3x o
+    // maior comando contínuo medido (3,5 s), então nada real fica de fora.
+    if (
+      speechStartedAt !== null &&
+      now - speechStartedAt >= MAX_SEGMENT_DURATION_MS
+    ) {
+      stopCurrentSegment()
+      return
+    }
+
+    // Segmento arrastado sem fala confirmada: descarta sem chamar o ASR.
+    if (
+      speechStartedAt === null &&
+      segmentStartedAt !== null &&
+      now - segmentStartedAt >= SEGMENT_MAX_IDLE_MS
+    ) {
+      discardSegmentRef.current = true
+      stopCurrentSegment()
+    }
+  }
+
+  function startSegmentGuard() {
+    stopSegmentGuard()
+    segmentStartedAtRef.current = Date.now()
+    segmentGuardRef.current = window.setInterval(
+      checkSegmentLimits,
+      SEGMENT_GUARD_INTERVAL_MS
+    )
   }
 
   function monitorSpeech() {
@@ -317,6 +395,14 @@ export default function Speech({
         100,
         Math.round(volume * 220)
       )}%`
+    }
+
+    const previousFrameAt = lastFrameAtRef.current
+    lastFrameAtRef.current = now
+    // Fala confirmada do segmento: só conta frame acima do limiar, e o delta é
+    // limitado para que uma aba em background (rAF congelado) não infle o tempo.
+    if (previousFrameAt !== null && volume >= noiseThresholdRef.current) {
+      segmentSpeechMsRef.current += Math.min(now - previousFrameAt, 200)
     }
 
     if (volume >= noiseThresholdRef.current) {
@@ -577,15 +663,22 @@ export default function Speech({
       }
 
       mediaRecorder.onstop = () => {
+        stopSegmentGuard()
+        const discarded = discardSegmentRef.current
+        discardSegmentRef.current = false
         const audioBlob = new Blob(chunksRef.current, {
           type: chunksRef.current[0]?.type || 'audio/webm',
         })
+        const segmentSpeechMs = segmentSpeechMsRef.current
 
         chunksRef.current = []
         speechStartedAtRef.current = null
         silenceStartedAtRef.current = null
         speechCandidateAtRef.current = null
         lastSpeechAtRef.current = null
+        segmentSpeechMsRef.current = 0
+        lastFrameAtRef.current = null
+        segmentStartedAtRef.current = null
 
         if (levelMeterRef.current) {
           levelMeterRef.current.style.width = '0%'
@@ -595,6 +688,22 @@ export default function Speech({
           resumeListening()
           return
         }
+
+        // Segmento sem fala confirmada (hesitação, ventilador, clique) ou que
+        // estourou o teto sem nunca ter fala: não vai pro ASR.
+        if (discarded || segmentSpeechMs < MIN_SPEECH_DURATION_MS) {
+          setLastResult('')
+          setErrorMessage(
+            'No speech detected in that segment. Try speaking closer to the microphone.'
+          )
+          resumeListening()
+          return
+        }
+
+        // Resultado/erro na tela sempre se referem a ESTE segmento: sem isso o
+        // texto do comando anterior continuava visível ao lado de um erro novo.
+        setLastResult('')
+        setErrorMessage('')
 
         pendingSegmentsRef.current += 1
         setIsProcessing(true)
@@ -624,6 +733,7 @@ export default function Speech({
       calibrationStartedAtRef.current = null
       noiseSamplesRef.current = []
       mediaRecorder.start(100)
+      startSegmentGuard()
       setIsListening(true)
       animationFrameRef.current = requestAnimationFrame(monitorSpeech)
     } catch {
